@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 
+import datapacks from '@/datapacks';
 import { args } from '@/utils';
 
 const debug: boolean = args.debug;
@@ -7,10 +8,8 @@ const debug: boolean = args.debug;
 try {
   switch (args._[0]) {
     case 'datapacks':
-      // TODO: Datapacks
-      console.error('Datapacks TBD');
+      await datapacks();
       break;
-
     default:
       throw new Error('Invalid usage! Usage TBD');
   }
