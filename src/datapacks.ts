@@ -16,28 +16,49 @@ ${DATAPACKS_ACTIONS.map(
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
 
-const fetchDatapacksList = async (
-  mcVersion: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
+const fetchDatapacksCategories = async (
+  version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
 ) => {
   const res = await fetch(
-    `https://vanillatweaks.net/assets/resources/json/${mcVersion}/dpcategories.json`
+    `https://vanillatweaks.net/assets/resources/json/${version}/dpcategories.json`
   );
   try {
-    const resJson: DatapacksListResponse = await res.json();
+    const resBody: DatapacksListResponse = await res.json();
     if (!res.ok)
       throw new Error(`Vanilla Tweaks request failed with status ${res.status}:
-${JSON.stringify(resJson, undefined, 2)}`);
+${JSON.stringify(resBody, undefined, 2)}`);
 
-    const packs = resJson.categories.reduce(
-      (arr, { packs }) => [...arr, ...packs],
-      [] as Datapack[]
-    );
-    return packs.sort((a, b) =>
-      a.name > b.name ? 1 : a.name < b.name ? -1 : 0
-    );
+    return resBody.categories;
   } catch (err) {
     throw new Error("Couldn't parse response from server.");
   }
+};
+
+const logDatapacksList = async (
+  version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
+) => {
+  const categories = await fetchDatapacksCategories(version);
+  const packs = categories.reduce(
+    (arr, { packs }) => [...arr, ...packs],
+    [] as Datapack[]
+  );
+  console.log(
+    packs
+      .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0))
+      .map(
+        ({ name, display, version, description, incompatible }) =>
+          `${chalk.bold(
+            `${chalk.yellow(datapackNameToId(name))}: ${display} v${version}`
+          )}\n${description}${
+            incompatible.length > 0
+              ? `\n${chalk.red('Incompatible with:')} ${incompatible
+                  .map((incompatibleName) => datapackNameToId(incompatibleName))
+                  .join(', ')}`
+              : ''
+          }`
+      )
+      .join('\n\n')
+  );
 };
 
 const datapacks = async () => {
@@ -51,30 +72,9 @@ const datapacks = async () => {
     throw new Error('Action missing!');
   }
 
-  const packs = await fetchDatapacksList();
-
   switch (action) {
     case 'list':
-      console.log(
-        packs
-          .map(
-            ({ name, display, version, description, incompatible }) =>
-              `${chalk.bold(
-                `${chalk.yellow(
-                  datapackNameToId(name)
-                )}: ${display} v${version}`
-              )}\n${description}${
-                incompatible.length > 0
-                  ? `\n${chalk.red('Incompatible with:')} ${incompatible
-                      .map((incompatibleName) =>
-                        datapackNameToId(incompatibleName)
-                      )
-                      .join(', ')}`
-                  : ''
-              }`
-          )
-          .join('\n\n')
-      );
+      await logDatapacksList(args.version);
       break;
     case 'download':
       throw new Error(`Datapacks ${action} not implemented yet.`);
