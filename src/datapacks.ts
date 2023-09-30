@@ -117,7 +117,7 @@ const downloadDatapacks = async (
 ${JSON.stringify(resBody, undefined, 2)}`);
 
   const blob = await (await fetch(`${BASE_URL}${resBody.link}`)).blob();
-  const outDir: string = args.outDir || process.cwd();
+  const outDir = args.outDir || process.cwd();
 
   if (args.noUnzip) {
     await Bun.write(path.join(outDir, 'datapacks.zip'), blob);

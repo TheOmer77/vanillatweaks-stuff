@@ -3,8 +3,6 @@ import chalk from 'chalk';
 import datapacks from '@/datapacks';
 import { args } from '@/utils';
 
-const debug: boolean = args.debug;
-
 try {
   switch (args._[0]) {
     case 'datapacks':
@@ -22,7 +20,7 @@ try {
   console.error(
     chalk.red(
       `${chalk.bold('Error: ')}${chalk.reset(errMsg)}${
-        debug && errStack ? chalk.reset(`\n${errStack}`) : ''
+        args.debug && errStack ? chalk.reset(`\n${errStack}`) : ''
       }`
     )
   );
