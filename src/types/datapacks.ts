@@ -18,6 +18,10 @@ export interface DatapacksCategory {
   packs: Datapack[];
 }
 
-export interface DatapacksListResponse {
+export interface DatapacksCategoriesResponse {
   categories: DatapacksCategory[];
+}
+export interface DatapacksZipResponse {
+  status: 'success' | 'error';
+  link: string;
 }
