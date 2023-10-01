@@ -68,6 +68,20 @@ const downloadDatapacks = async (
   const categories = await fetchDatapacksCategories(version),
     packList = datapacksListFromCategories(categories);
 
+  const incompatiblePackIds = datapackIds.filter((id) => {
+    const pack = packList.find(({ name }) => id === datapackNameToId(name));
+    if (!pack) return false;
+    return datapackIds.some((dpId) =>
+      pack.incompatible.map(datapackNameToId).includes(dpId)
+    );
+  });
+  if (incompatiblePackIds.length > 0)
+    throw new Error(
+      `The following datapacks are incompatible with each other: ${incompatiblePackIds.join(
+        ', '
+      )}`
+    );
+
   const packsByCategory: Record<string, string[]> = categories.reduce(
     (obj, { category, packs }) =>
       packs.some(({ name }) => datapackIds.includes(datapackNameToId(name)))
