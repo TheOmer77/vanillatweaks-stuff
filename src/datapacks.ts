@@ -167,9 +167,9 @@ const downloadDatapacks = async (
       ({ status }) => status === 'rejected'
     ) as PromiseRejectedResult[];
 
-  if (successfulFiles.length > 1)
+  if (successfulFiles.length > 0)
     console.log(DATAPACKS_SUCCESS_MSG(successfulFiles.length, outDir));
-  if (failedFiles.length > 1)
+  if (failedFiles.length > 0)
     console.log(DATAPACKS_FAILURE_MSG(failedFiles.length, outDir));
 };
 
