@@ -35,7 +35,7 @@ const datapacksListFromCategories = (categories: DatapacksCategory[]) =>
     .reduce((arr, { packs }) => [...arr, ...packs], [] as Datapack[])
     .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
-const logDatapacksList = async (
+const listDatapacks = async (
   version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
 ) => {
   const packs = datapacksListFromCategories(
@@ -184,7 +184,7 @@ const datapacks = async () => {
 
   switch (action) {
     case 'list':
-      await logDatapacksList(args.version);
+      await listDatapacks(args.version);
       break;
     case 'download':
       await downloadDatapacks(args.version, datapackIds);
