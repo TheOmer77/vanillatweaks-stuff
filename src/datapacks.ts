@@ -68,7 +68,21 @@ const downloadDatapacks = async (
   const categories = await fetchDatapacksCategories(version),
     packList = datapacksListFromCategories(categories);
 
-  const incompatiblePackIds = datapackIds.filter((id) => {
+  const validPackIds = datapackIds.filter((id) =>
+      packList.some(({ name }) => id === datapackNameToId(name))
+    ),
+    invalidPackIds = datapackIds.filter((id) => !validPackIds.includes(id));
+
+  if (invalidPackIds.length > 0)
+    console.warn(
+      `${chalk.bold.yellow(
+        `The following datapack${
+          invalidPackIds.length === 1 ? ' does' : 's do'
+        } not exist: `
+      )}${invalidPackIds.join(', ')}`
+    );
+
+  const incompatiblePackIds = validPackIds.filter((id) => {
     const pack = packList.find(({ name }) => id === datapackNameToId(name));
     if (!pack) return false;
     return datapackIds.some((dpId) =>
@@ -84,12 +98,12 @@ const downloadDatapacks = async (
 
   const packsByCategory: Record<string, string[]> = categories.reduce(
     (obj, { category, packs }) =>
-      packs.some(({ name }) => datapackIds.includes(datapackNameToId(name)))
+      packs.some(({ name }) => validPackIds.includes(datapackNameToId(name)))
         ? {
             ...obj,
             [category.toLowerCase()]: packs
               .filter(({ name }) =>
-                datapackIds.includes(datapackNameToId(name))
+                validPackIds.includes(datapackNameToId(name))
               )
               .map(({ name }) => name),
           }
@@ -102,8 +116,8 @@ const downloadDatapacks = async (
   formData.append('packs', JSON.stringify(packsByCategory));
 
   console.log(
-    `Downloading ${datapackIds.length} datapacks: ${packList
-      .filter(({ name }) => datapackIds.includes(datapackNameToId(name)))
+    `Downloading ${validPackIds.length} datapacks: ${packList
+      .filter(({ name }) => validPackIds.includes(datapackNameToId(name)))
       .map(({ display }) => display)
       .join(', ')}`
   );
@@ -121,7 +135,7 @@ const downloadDatapacks = async (
     await Bun.write(path.join(outDir, DATAPACKS_ZIP_DEFAULT_NAME), zipBuffer);
     return console.log(
       DATAPACKS_SUCCESS_MSG(
-        datapackIds.length,
+        validPackIds.length,
         path.join(path.resolve(outDir), DATAPACKS_ZIP_DEFAULT_NAME)
       )
     );
