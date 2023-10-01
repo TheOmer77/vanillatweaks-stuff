@@ -4,6 +4,11 @@ import type { DatapacksMCVersion } from '@/types';
 
 export interface ArgsOptions {
   /**
+   * Print help message for command/subcommand.
+   */
+  help?: boolean;
+
+  /**
    * Minecraft version for downloaded files.
    * If not given, the latest version will be used.
    */
