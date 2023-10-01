@@ -81,6 +81,8 @@ const downloadDatapacks = async (
         } not exist: `
       )}${invalidPackIds.join(', ')}`
     );
+  if (validPackIds.length < 1)
+    throw new Error('All datapack IDs given are invalid.');
 
   const incompatiblePackIds = validPackIds.filter((id) => {
     const pack = packList.find(({ name }) => id === datapackNameToId(name));
