@@ -35,6 +35,10 @@ const datapacksListFromCategories = (categories: DatapacksCategory[]) =>
     .reduce((arr, { packs }) => [...arr, ...packs], [] as Datapack[])
     .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
+/**
+ * Fetch all available datapacks and list them.
+ * @param version Minecraft version.
+ */
 const listDatapacks = async (
   version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
 ) => {
@@ -59,6 +63,15 @@ const listDatapacks = async (
   );
 };
 
+/**
+ * Download datapack zip files.
+ *
+ * Datapacks will be saved as individual files unless the `--noUnzip` flag is
+ * used, in which case a single zip file will be saved.
+ *
+ * @param version Minecraft version.
+ * @param datapackIds IDs of datapacks to download.
+ */
 const downloadDatapacks = async (
   version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION,
   datapackIds: string[]
@@ -173,6 +186,9 @@ const downloadDatapacks = async (
     console.log(DATAPACKS_FAILURE_MSG(failedFiles.length, outDir));
 };
 
+/**
+ * Main function.
+ */
 const datapacks = async () => {
   const action = args._[1] as DatapacksAction | undefined,
     datapackIds = args._.slice(2);
