@@ -1,14 +1,19 @@
 import path from 'path';
+import fs from 'fs/promises';
 import chalk from 'chalk';
+import AdmZip from 'adm-zip';
 
+import { args, getZipEntryData } from '@/utils';
 import {
   BASE_URL,
   DATAPACKS_ACTIONS,
   DATAPACKS_CATEGORIES_URL,
   DATAPACKS_DEFAULT_MC_VERSION,
+  DATAPACKS_FAILURE_MSG,
+  DATAPACKS_SUCCESS_MSG,
+  DATAPACKS_ZIP_DEFAULT_NAME,
   DATAPACKS_ZIP_URL,
 } from '@/constants';
-import { args } from '@/utils';
 import type {
   Datapack,
   DatapacksAction,
@@ -116,20 +121,50 @@ const downloadDatapacks = async (
     throw new Error(`Download link request failed with status ${res.status}:
 ${JSON.stringify(resBody, undefined, 2)}`);
 
-  const blob = await (await fetch(`${BASE_URL}${resBody.link}`)).blob();
-  const outDir = args.outDir || process.cwd();
+  const zipBuffer = Buffer.from(
+    await (await fetch(`${BASE_URL}${resBody.link}`)).arrayBuffer()
+  );
+
+  const outDir = args.outDir || process.cwd(),
+    outDirExists = await fs.exists(outDir);
+  if (!outDirExists) await fs.mkdir(outDir, { recursive: true });
 
   if (args.noUnzip) {
-    await Bun.write(path.join(outDir, 'datapacks.zip'), blob);
+    await Bun.write(path.join(outDir, DATAPACKS_ZIP_DEFAULT_NAME), zipBuffer);
     return console.log(
-      `Successfully downloaded ${datapackIds.length} datapacks to ${outDir}.`
+      DATAPACKS_SUCCESS_MSG(
+        datapackIds.length,
+        path.join(path.resolve(outDir), DATAPACKS_ZIP_DEFAULT_NAME)
+      )
     );
   }
 
-  // TODO: Unzip downloaded file
-  throw new Error(
-    'Unzipping not implemented yet. Use the --noUnzip option to download without unzipping.'
-  );
+  const zip = new AdmZip(zipBuffer),
+    zipEntries = zip
+      .getEntries()
+      .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
+
+  const files = await Promise.allSettled(
+      zipEntries.map(async (entry) => {
+        const pack = packList.find((pack) => entry.name.includes(pack.name)),
+          fileName = pack ? `${datapackNameToId(pack.name)}.zip` : entry.name;
+        return Bun.write(
+          path.join(outDir, fileName),
+          await getZipEntryData(entry)
+        );
+      })
+    ),
+    successfulFiles = files.filter(
+      ({ status }) => status === 'fulfilled'
+    ) as PromiseFulfilledResult<number>[],
+    failedFiles = files.filter(
+      ({ status }) => status === 'rejected'
+    ) as PromiseRejectedResult[];
+
+  if (successfulFiles.length > 1)
+    console.log(DATAPACKS_SUCCESS_MSG(successfulFiles.length, outDir));
+  if (failedFiles.length > 1)
+    console.log(DATAPACKS_FAILURE_MSG(failedFiles.length, outDir));
 };
 
 const datapacks = async () => {
