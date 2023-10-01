@@ -21,7 +21,14 @@ export interface DatapacksCategory {
 export interface DatapacksCategoriesResponse {
   categories: DatapacksCategory[];
 }
-export interface DatapacksZipResponse {
-  status: 'success' | 'error';
+export interface DatapacksZipSuccessResponse {
+  status: 'success';
   link: string;
 }
+export interface DatapacksZipErrorResponse {
+  status: 'error';
+  message: string;
+}
+export type DatapacksZipResponse =
+  | DatapacksZipSuccessResponse
+  | DatapacksZipErrorResponse;

@@ -3,24 +3,24 @@ import fs from 'fs/promises';
 import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
+import {
+  downloadFile,
+  fetchDatapacksCategories,
+  getDatapacksZipLink,
+} from '@/api';
 import { args, getZipEntryData } from '@/utils';
 import {
-  BASE_URL,
   DATAPACKS_ACTIONS,
-  DATAPACKS_CATEGORIES_URL,
   DATAPACKS_DEFAULT_MC_VERSION,
   DATAPACKS_FAILURE_MSG,
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
-  DATAPACKS_ZIP_URL,
 } from '@/constants';
 import type {
   Datapack,
   DatapacksAction,
-  DatapacksCategoriesResponse,
   DatapacksCategory,
   DatapacksMCVersion,
-  DatapacksZipResponse,
 } from '@/types';
 
 const POSSIBLE_ACTIONS_MSG = `${chalk.bold('Possible actions for datapacks:')}
@@ -29,22 +29,6 @@ ${DATAPACKS_ACTIONS.map(
 ).join('\n')}`;
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
-
-const fetchDatapacksCategories = async (
-  version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
-) => {
-  const res = await fetch(DATAPACKS_CATEGORIES_URL(version));
-  const resBody: DatapacksCategoriesResponse = await res.json().catch(() => {
-    throw new Error("Couldn't parse response from server.");
-  });
-  if (!res.ok)
-    throw new Error(`Datapack categories request failed with status ${
-      res.status
-    }:
-${JSON.stringify(resBody, undefined, 2)}`);
-
-  return resBody.categories;
-};
 
 const datapacksListFromCategories = (categories: DatapacksCategory[]) =>
   categories
@@ -110,20 +94,10 @@ const downloadDatapacks = async (
       .join(', ')}`
   );
 
-  const res = await fetch(DATAPACKS_ZIP_URL, {
-    method: 'POST',
-    body: formData,
-  });
-  const resBody: DatapacksZipResponse = await res.json().catch(() => {
-    throw new Error("Couldn't parse response from server.");
-  });
-  if (!res.ok)
-    throw new Error(`Download link request failed with status ${res.status}:
-${JSON.stringify(resBody, undefined, 2)}`);
-
-  const zipBuffer = Buffer.from(
-    await (await fetch(`${BASE_URL}${resBody.link}`)).arrayBuffer()
-  );
+  const zipFilename = (await getDatapacksZipLink(version, packsByCategory))
+      .split('/')
+      .at(-1) as string,
+    zipBuffer = await downloadFile(zipFilename);
 
   const outDir = args.outDir || process.cwd(),
     outDirExists = await fs.exists(outDir);
