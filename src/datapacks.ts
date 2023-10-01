@@ -25,7 +25,7 @@ import type {
 
 const POSSIBLE_ACTIONS_MSG = `${chalk.bold('Possible actions for datapacks:')}
 ${DATAPACKS_ACTIONS.map(
-  ({ id, description }) => `${chalk.bold(chalk.yellow(id))} - ${description}`
+  ({ id, description }) => `${chalk.bold.yellow(id)} - ${description}`
 ).join('\n')}`;
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');

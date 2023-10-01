@@ -7,7 +7,7 @@ import chalk from 'chalk';
 export const api = axios.create({ baseURL: BASE_URL });
 
 api.interceptors.request.use((req) => {
-  const reqDebugLog = `${chalk.bold(chalk.yellow(req.method?.toUpperCase()))} ${
+  const reqDebugLog = `${chalk.bold.yellow(req.method?.toUpperCase())} ${
     req.baseURL
   }${req.url}`;
   if (args.debug) console.log(reqDebugLog, req.data || '');
