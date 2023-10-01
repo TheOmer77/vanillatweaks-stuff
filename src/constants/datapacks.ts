@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { resolve } from 'path';
 
 export const DATAPACKS_MC_VERSIONS = [
@@ -26,6 +27,13 @@ export const DATAPACKS_ACTIONS = [
 
 export const DATAPACKS_ZIP_DEFAULT_NAME = 'datapacks.zip';
 
+export const DATAPACKS_HELP_MSG = `${chalk.bold(
+  'Possible actions for datapacks:'
+)}
+${DATAPACKS_ACTIONS.map(
+  ({ id, description }) => `${chalk.bold.yellow(id)} - ${description}`
+).join('\n')}`;
+export const DATAPACKS_INVALID_ACTION_MSG = `Action %action is not a valid action for datapacks.`;
 export const DATAPACKS_SUCCESS_MSG = (datapacksCount: number, path: string) =>
   `Successfully downloaded ${datapacksCount} datapack${
     datapacksCount === 1 ? '' : 's'

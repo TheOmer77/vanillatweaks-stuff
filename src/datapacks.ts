@@ -10,11 +10,13 @@ import {
 } from '@/api';
 import { args, getZipEntryData } from '@/utils';
 import {
-  DATAPACKS_ACTIONS,
   DATAPACKS_DEFAULT_MC_VERSION,
   DATAPACKS_FAILURE_MSG,
+  DATAPACKS_HELP_MSG,
+  DATAPACKS_INVALID_ACTION_MSG,
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
+  INCORRECT_USAGE_MSG,
 } from '@/constants';
 import type {
   Datapack,
@@ -22,11 +24,6 @@ import type {
   DatapacksCategory,
   DatapacksMCVersion,
 } from '@/types';
-
-const POSSIBLE_ACTIONS_MSG = `${chalk.bold('Possible actions for datapacks:')}
-${DATAPACKS_ACTIONS.map(
-  ({ id, description }) => `${chalk.bold.yellow(id)} - ${description}`
-).join('\n')}`;
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
 
@@ -193,11 +190,6 @@ const datapacks = async () => {
   const action = args._[1] as DatapacksAction | undefined,
     datapackIds = args._.slice(2);
 
-  if (!action) {
-    console.log(POSSIBLE_ACTIONS_MSG);
-    throw new Error('Action missing!');
-  }
-
   switch (action) {
     case 'list':
       await listDatapacks(args.version);
@@ -206,9 +198,12 @@ const datapacks = async () => {
       await downloadDatapacks(args.version, datapackIds);
       break;
     default:
-      console.log(POSSIBLE_ACTIONS_MSG);
+      console.log(DATAPACKS_HELP_MSG);
+      if (args.help && !action) return;
       throw new Error(
-        `Action '${action}' is not a valid action for datapacks.`
+        action
+          ? DATAPACKS_INVALID_ACTION_MSG.replace('%action', action)
+          : INCORRECT_USAGE_MSG
       );
   }
 };
