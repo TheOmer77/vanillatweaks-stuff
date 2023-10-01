@@ -27,6 +27,10 @@ export const DATAPACKS_ACTIONS = [
 export const DATAPACKS_ZIP_DEFAULT_NAME = 'datapacks.zip';
 
 export const DATAPACKS_SUCCESS_MSG = (datapacksCount: number, path: string) =>
-  `Successfully downloaded ${datapacksCount} datapacks to ${resolve(path)}.`;
+  `Successfully downloaded ${datapacksCount} datapack${
+    datapacksCount === 1 ? '' : 's'
+  } to ${resolve(path)}.`;
 export const DATAPACKS_FAILURE_MSG = (datapacksCount: number, path: string) =>
-  `Failed to downloaded ${datapacksCount} datapacks to ${resolve(path)}.`;
+  `Failed to downloaded ${datapacksCount} datapack${
+    datapacksCount === 1 ? '' : 's'
+  } to ${resolve(path)}.`;

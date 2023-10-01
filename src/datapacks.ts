@@ -118,7 +118,9 @@ const downloadDatapacks = async (
   formData.append('packs', JSON.stringify(packsByCategory));
 
   console.log(
-    `Downloading ${validPackIds.length} datapacks: ${packList
+    `Downloading ${validPackIds.length} datapack${
+      validPackIds.length === 1 ? '' : 's'
+    }: ${packList
       .filter(({ name }) => validPackIds.includes(datapackNameToId(name)))
       .map(({ display }) => display)
       .join(', ')}`
