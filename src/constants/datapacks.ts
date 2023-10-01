@@ -1,5 +1,16 @@
-import chalk from 'chalk';
 import { resolve } from 'path';
+import chalk from 'chalk';
+
+import { EXEC_NAME } from './general';
+
+//#region Defaults
+
+export const DATAPACKS_ZIP_DEFAULT_NAME = 'datapacks.zip';
+
+//#endregion
+
+//#region Minecraft version
+// TODO: Move to its own file, not specific to datapacks
 
 export const DATAPACKS_MC_VERSIONS = [
   '1.13',
@@ -14,25 +25,76 @@ export const DATAPACKS_MC_VERSIONS = [
 export const DATAPACKS_DEFAULT_MC_VERSION =
   '1.20' as const satisfies (typeof DATAPACKS_MC_VERSIONS)[number];
 
+//#endregion
+
+//#region Actions & usage
+
 export const DATAPACKS_ACTIONS = [
   {
     id: 'list',
-    description: `List all available datapacks for the selected Minecraft version. (Default version: ${DATAPACKS_DEFAULT_MC_VERSION})`,
+    description: `List all available datapacks.`,
+    usage: `${EXEC_NAME} datapacks list [OPTIONS]`,
+    options: [
+      {
+        args: ['version', 'v'],
+        description: `Minecraft version for downloaded files. (Default: ${DATAPACKS_DEFAULT_MC_VERSION})`,
+      },
+    ],
   },
   {
     id: 'download',
-    description: `Download datapacks for the selected Minecraft version. (Default version: ${DATAPACKS_DEFAULT_MC_VERSION})`,
+    description: `Download datapacks.`,
+    usage: `${EXEC_NAME} datapacks download [OPTIONS] DATAPACK_IDS...`,
+    options: [
+      {
+        args: ['version', 'v'],
+        description: `Minecraft version for downloaded files. (Default: ${DATAPACKS_DEFAULT_MC_VERSION})`,
+      },
+      {
+        args: ['outDir', 'o'],
+        description:
+          'Directory where file(s) will be downloaded. (Default: current directory)',
+      },
+      {
+        args: ['noUnzip'],
+        description:
+          'Save a single zip file containing all datapacks, instead of multiple files.',
+      },
+    ],
   },
 ] as const;
 
-export const DATAPACKS_ZIP_DEFAULT_NAME = 'datapacks.zip';
+//#endregion
+
+//#region Messages
+
+const getActionHelpMsg = ({
+  id,
+  description,
+  usage,
+  options,
+}: (typeof DATAPACKS_ACTIONS)[number]) => `${chalk.bold.yellow(
+  id
+)} - ${description}
+Usage: ${usage}
+Options:
+${options
+  .map(({ args, description }) =>
+    [
+      `  ${args
+        .map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`)
+        .join(', ')}`,
+      description,
+    ].join('\t\t')
+  )
+  .join('\n')}`;
 
 export const DATAPACKS_HELP_MSG = `${chalk.bold(
   'Possible actions for datapacks:'
 )}
-${DATAPACKS_ACTIONS.map(
-  ({ id, description }) => `${chalk.bold.yellow(id)} - ${description}`
-).join('\n')}`;
+${DATAPACKS_ACTIONS.map(getActionHelpMsg).join('\n\n')}`;
+export const DATAPACKS_LIST_HELP_MSG = getActionHelpMsg(DATAPACKS_ACTIONS[0]),
+  DATAPACKS_DOWNLOAD_HELP_MSG = getActionHelpMsg(DATAPACKS_ACTIONS[1]);
 export const DATAPACKS_INVALID_ACTION_MSG = `Action %action is not a valid action for datapacks.`;
 export const DATAPACKS_SUCCESS_MSG = (datapacksCount: number, path: string) =>
   `Successfully downloaded ${datapacksCount} datapack${
@@ -42,3 +104,5 @@ export const DATAPACKS_FAILURE_MSG = (datapacksCount: number, path: string) =>
   `Failed to downloaded ${datapacksCount} datapack${
     datapacksCount === 1 ? '' : 's'
   } to ${resolve(path)}.`;
+
+//#endregion

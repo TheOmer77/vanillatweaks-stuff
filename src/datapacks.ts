@@ -11,9 +11,11 @@ import {
 import { args, getZipEntryData } from '@/utils';
 import {
   DATAPACKS_DEFAULT_MC_VERSION,
+  DATAPACKS_DOWNLOAD_HELP_MSG,
   DATAPACKS_FAILURE_MSG,
   DATAPACKS_HELP_MSG,
   DATAPACKS_INVALID_ACTION_MSG,
+  DATAPACKS_LIST_HELP_MSG,
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
   INCORRECT_USAGE_MSG,
@@ -39,6 +41,16 @@ const datapacksListFromCategories = (categories: DatapacksCategory[]) =>
 const listDatapacks = async (
   version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
 ) => {
+  const showHelp = args.help || args.h;
+  const incorrectUsage = typeof version !== 'string';
+  if (showHelp || incorrectUsage) {
+    console.log(DATAPACKS_LIST_HELP_MSG);
+
+    if (showHelp) return;
+    console.log();
+    throw new Error(INCORRECT_USAGE_MSG);
+  }
+
   const packs = datapacksListFromCategories(
     await fetchDatapacksCategories(version)
   );
@@ -73,7 +85,19 @@ const downloadDatapacks = async (
   version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION,
   datapackIds: string[]
 ) => {
-  if (datapackIds.length < 1) throw new Error('No datapack IDs were given.');
+  const showHelp = args.help || args.h,
+    outDir = args.outDir || args.o || process.cwd();
+  const incorrectUsage =
+    typeof version !== 'string' ||
+    typeof outDir !== 'string' ||
+    datapackIds.length < 1;
+  if (showHelp || incorrectUsage) {
+    console.log(DATAPACKS_DOWNLOAD_HELP_MSG);
+
+    if (showHelp) return;
+    console.log();
+    throw new Error(INCORRECT_USAGE_MSG);
+  }
 
   const categories = await fetchDatapacksCategories(version),
     packList = datapacksListFromCategories(categories);
@@ -141,8 +165,7 @@ const downloadDatapacks = async (
       .at(-1) as string,
     zipBuffer = await downloadFile(zipFilename);
 
-  const outDir = args.outDir || process.cwd(),
-    outDirExists = await fs.exists(outDir);
+  const outDirExists = await fs.exists(outDir);
   if (!outDirExists) await fs.mkdir(outDir, { recursive: true });
 
   if (args.noUnzip) {
@@ -188,18 +211,20 @@ const downloadDatapacks = async (
  */
 const datapacks = async () => {
   const action = args._[1] as DatapacksAction | undefined,
+    version = args.version || args.v,
     datapackIds = args._.slice(2);
 
   switch (action) {
     case 'list':
-      await listDatapacks(args.version);
+      await listDatapacks(version);
       break;
     case 'download':
-      await downloadDatapacks(args.version, datapackIds);
+      await downloadDatapacks(version, datapackIds);
       break;
     default:
       console.log(DATAPACKS_HELP_MSG);
-      if (args.help && !action) return;
+      if ((args.help || args.h) && !action) return;
+      console.log();
       throw new Error(
         action
           ? DATAPACKS_INVALID_ACTION_MSG.replace('%action', action)
