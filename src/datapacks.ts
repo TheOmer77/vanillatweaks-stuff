@@ -22,9 +22,9 @@ import {
 } from '@/constants';
 import type {
   Datapack,
-  DatapacksSubcommand,
   DatapacksCategory,
   DatapacksMCVersion,
+  DatapacksSubcommand,
 } from '@/types';
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
