@@ -3,11 +3,8 @@ import fs from 'fs/promises';
 import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
-import {
-  downloadFile,
-  fetchDatapacksCategories,
-  getDatapacksZipLink,
-} from '@/api';
+import { downloadFile } from '@/api/general';
+import { fetchDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { getZipEntryData } from '@/utils/zip';
 import { INCORRECT_USAGE_MSG } from '@/constants/general';
