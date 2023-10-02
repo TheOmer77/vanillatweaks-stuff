@@ -7,4 +7,7 @@ export const POSSIBLE_SUBCOMMANDS_MSG = `${chalk.bold(
 )}
 `;
 export const INCORRECT_USAGE_MSG = 'Incorrect usage.';
-export const INVALID_SUBCOMMAND_MSG = `'%subcommand' is not a valid subcommand for %command.`;
+export const INVALID_SUBCOMMAND_MSG =
+  "'%subcommand' is not a valid subcommand for %command.";
+export const INVALID_VERSION_MSG =
+  '%resources are not available for Minecraft %version.';

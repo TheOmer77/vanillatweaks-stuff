@@ -7,7 +7,7 @@ import { downloadFile } from '@/api/general';
 import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { getZipEntryData } from '@/utils/zip';
-import { INCORRECT_USAGE_MSG } from '@/constants/general';
+import { INCORRECT_USAGE_MSG, INVALID_VERSION_MSG } from '@/constants/general';
 import {
   DATAPACKS_DEFAULT_MC_VERSION,
   DATAPACKS_DOWNLOAD_HELP_MSG,
@@ -24,6 +24,7 @@ import type {
   DatapacksMCVersion,
   DatapacksSubcommand,
 } from '@/types/datapacks';
+import { isAxiosError } from 'axios';
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
 
@@ -49,25 +50,38 @@ const listDatapacks = async (
     throw new Error(INCORRECT_USAGE_MSG);
   }
 
-  const packs = datapacksListFromCategories(
-    await getDatapacksCategories(version)
-  );
-  console.log(
-    packs
-      .map(
-        ({ name, display, version, description, incompatible }) =>
-          `${chalk.bold(
-            `${chalk.yellow(datapackNameToId(name))}: ${display} v${version}`
-          )}\n${description}${
-            incompatible.length > 0
-              ? `\n${chalk.red('Incompatible with:')} ${incompatible
-                  .map((incompatibleName) => datapackNameToId(incompatibleName))
-                  .join(', ')}`
-              : ''
-          }`
-      )
-      .join('\n\n')
-  );
+  try {
+    const packs = datapacksListFromCategories(
+      await getDatapacksCategories(version)
+    );
+    console.log(
+      packs
+        .map(
+          ({ name, display, version, description, incompatible }) =>
+            `${chalk.bold(
+              `${chalk.yellow(datapackNameToId(name))}: ${display} v${version}`
+            )}\n${description}${
+              incompatible.length > 0
+                ? `\n${chalk.red('Incompatible with:')} ${incompatible
+                    .map((incompatibleName) =>
+                      datapackNameToId(incompatibleName)
+                    )
+                    .join(', ')}`
+                : ''
+            }`
+        )
+        .join('\n\n')
+    );
+  } catch (err) {
+    if (isAxiosError(err) && err.response?.status === 404)
+      throw new Error(
+        INVALID_VERSION_MSG.replace('%resources', 'Datapacks').replace(
+          '%version',
+          version
+        )
+      );
+    throw err;
+  }
 };
 
 /**
