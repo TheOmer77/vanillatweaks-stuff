@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import chalk from 'chalk';
 
 import { EXEC_NAME } from './general';
+import type { ReadonlyCliSubcommand } from '@/types';
 
 //#region Defaults
 
@@ -63,7 +64,7 @@ export const DATAPACKS_SUBCOMMANDS = [
       },
     ],
   },
-] as const;
+] as const satisfies readonly ReadonlyCliSubcommand[];
 
 //#endregion
 
