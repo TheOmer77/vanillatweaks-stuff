@@ -1,11 +1,8 @@
 import { resolve } from 'path';
 import chalk from 'chalk';
 
-import {
-  EXEC_NAME,
-  INVALID_SUBCOMMAND_MSG,
-  POSSIBLE_SUBCOMMANDS_MSG,
-} from './general';
+import { getCommandHelpMsg } from '@/utils/cli';
+import { EXEC_NAME, INVALID_SUBCOMMAND_MSG } from './general';
 import type { ReadonlyCliSubcommand } from '@/types';
 
 //#region Defaults
@@ -95,11 +92,10 @@ ${options
   )
   .join('\n')}`;
 
-export const DATAPACKS_HELP_MSG = `${POSSIBLE_SUBCOMMANDS_MSG.replace(
-  '%command',
-  DATAPACKS_COMMAND
-)}
-${DATAPACKS_SUBCOMMANDS.map(getSubcommandHelpMsg).join('\n\n')}`;
+export const DATAPACKS_HELP_MSG = getCommandHelpMsg(
+  DATAPACKS_COMMAND,
+  DATAPACKS_SUBCOMMANDS
+);
 export const DATAPACKS_LIST_HELP_MSG = getSubcommandHelpMsg(
     DATAPACKS_SUBCOMMANDS[0]
   ),
