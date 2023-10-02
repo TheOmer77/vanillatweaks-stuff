@@ -1,6 +1,6 @@
 import minimist from 'minimist';
 
-import type { DatapacksMCVersion } from '@/types';
+import type { DatapacksMCVersion } from '@/types/datapacks';
 
 export interface ArgsOptions {
   /**

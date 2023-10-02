@@ -25,7 +25,7 @@ import type {
   DatapacksCategory,
   DatapacksMCVersion,
   DatapacksSubcommand,
-} from '@/types';
+} from '@/types/datapacks';
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
 

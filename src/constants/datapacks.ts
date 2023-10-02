@@ -1,9 +1,9 @@
 import { resolve } from 'path';
 import chalk from 'chalk';
 
-import { getCommandHelpMsg } from '@/utils/cli';
 import { EXEC_NAME, INVALID_SUBCOMMAND_MSG } from './general';
-import type { ReadonlyCliSubcommand } from '@/types';
+import { getCommandHelpMsg } from '@/utils/cli';
+import type { ReadonlyCliSubcommand } from '@/types/cli';
 
 //#region Defaults
 

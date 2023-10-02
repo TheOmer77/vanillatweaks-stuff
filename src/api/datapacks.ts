@@ -1,14 +1,14 @@
-import {
-  DatapacksCategoriesResponse,
-  DatapacksMCVersion,
-  DatapacksZipSuccessResponse,
-} from '@/types';
 import { api } from './instance';
 import {
   DATAPACKS_CATEGORIES_URL,
   DATAPACKS_DEFAULT_MC_VERSION,
   DATAPACKS_ZIP_URL,
 } from '@/constants';
+import type {
+  DatapacksCategoriesResponse,
+  DatapacksMCVersion,
+  DatapacksZipSuccessResponse,
+} from '@/types/datapacks';
 
 export const fetchDatapacksCategories = async (
   version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
