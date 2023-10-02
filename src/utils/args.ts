@@ -17,6 +17,13 @@ export interface ArgsOptions {
   version?: MinecraftVersion;
   /** Shorthand for `--version`. */
   v?: ArgsOptions['version'];
+
+  /**
+   * Print list with additional details, such as descriptions and
+   * incompatible packs.
+   */
+  detailed?: boolean;
+
   /**
    * Directory where file(s) will be downloaded.
    * If not given, the current working directory will be used.
@@ -36,6 +43,6 @@ export interface ArgsOptions {
 }
 
 export const args = minimist<ArgsOptions>(process.argv.slice(2), {
-  boolean: ['help', 'h', 'noUnzip', 'debug'],
+  boolean: ['help', 'h', 'detailed', 'noUnzip', 'debug'],
   string: ['version', 'v', 'outDir', 'o'],
 });

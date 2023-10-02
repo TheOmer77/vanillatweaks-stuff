@@ -25,6 +25,11 @@ export const DATAPACKS_SUBCOMMANDS = [
         args: ['version', 'v'],
         description: `Minecraft version for downloaded files. (Default: ${DEFAULT_MC_VERSION})`,
       },
+      {
+        args: ['detailed'],
+        description:
+          'Print list with additional details, such as descriptions and incompatible packs.',
+      },
     ],
   },
   {

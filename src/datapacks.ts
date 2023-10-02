@@ -54,23 +54,28 @@ const listDatapacks = async (
     const packs = datapacksListFromCategories(
       await getDatapacksCategories(version)
     );
+
     console.log(
-      packs
-        .map(
-          ({ name, display, version, description, incompatible }) =>
-            `${chalk.bold(
-              `${chalk.yellow(datapackNameToId(name))}: ${display} v${version}`
-            )}\n${description}${
-              incompatible.length > 0
-                ? `\n${chalk.red('Incompatible with:')} ${incompatible
-                    .map((incompatibleName) =>
-                      datapackNameToId(incompatibleName)
-                    )
-                    .join(', ')}`
-                : ''
-            }`
-        )
-        .join('\n\n')
+      args.detailed
+        ? packs
+            .map(
+              ({ name, display, version, description, incompatible }) =>
+                `${chalk.bold(
+                  `${chalk.yellow(
+                    datapackNameToId(name)
+                  )}: ${display} v${version}`
+                )}\n${description}${
+                  incompatible.length > 0
+                    ? `\n${chalk.red('Incompatible with:')} ${incompatible
+                        .map((incompatibleName) =>
+                          datapackNameToId(incompatibleName)
+                        )
+                        .join(', ')}`
+                    : ''
+                }`
+            )
+            .join('\n\n')
+        : packs.map(({ name }) => datapackNameToId(name)).join('\n')
     );
   } catch (err) {
     if (isAxiosError(err) && err.response?.status === 404)
