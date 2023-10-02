@@ -35,4 +35,7 @@ export interface ArgsOptions {
   debug?: boolean;
 }
 
-export const args = minimist<ArgsOptions>(process.argv.slice(2));
+export const args = minimist<ArgsOptions>(process.argv.slice(2), {
+  boolean: ['help', 'h', 'noUnzip', 'debug'],
+  string: ['version', 'v', 'outDir', 'o'],
+});
