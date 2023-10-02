@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { args } from '@/utils';
+import { args } from '@/utils/args';
 
 import { BASE_URL } from '@/constants';
 import chalk from 'chalk';

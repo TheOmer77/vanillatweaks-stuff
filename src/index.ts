@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import datapacks from '@/datapacks';
-import { args } from '@/utils';
+import { args } from '@/utils/args';
 
 try {
   switch (args._[0]) {

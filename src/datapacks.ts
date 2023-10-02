@@ -8,7 +8,8 @@ import {
   fetchDatapacksCategories,
   getDatapacksZipLink,
 } from '@/api';
-import { args, getZipEntryData } from '@/utils';
+import { args } from '@/utils/args';
+import { getZipEntryData } from '@/utils/zip';
 import {
   DATAPACKS_DEFAULT_MC_VERSION,
   DATAPACKS_DOWNLOAD_HELP_MSG,
