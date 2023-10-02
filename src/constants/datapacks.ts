@@ -29,11 +29,12 @@ export const DATAPACKS_DEFAULT_MC_VERSION =
 
 //#region Subcommands & usage
 
+export const DATAPACKS_COMMAND = 'datapacks';
 export const DATAPACKS_SUBCOMMANDS = [
   {
     id: 'list',
     description: `List all available datapacks.`,
-    usage: `${EXEC_NAME} datapacks list [OPTIONS]`,
+    usage: `${EXEC_NAME} ${DATAPACKS_COMMAND} list [OPTIONS]`,
     options: [
       {
         args: ['version', 'v'],
@@ -44,7 +45,7 @@ export const DATAPACKS_SUBCOMMANDS = [
   {
     id: 'download',
     description: `Download datapacks.`,
-    usage: `${EXEC_NAME} datapacks download [OPTIONS] DATAPACK_IDS...`,
+    usage: `${EXEC_NAME} ${DATAPACKS_COMMAND} download [OPTIONS] DATAPACK_IDS...`,
     options: [
       {
         args: ['version', 'v'],
