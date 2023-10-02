@@ -1,6 +1,6 @@
-import { DATAPACKS_ACTIONS, DATAPACKS_MC_VERSIONS } from '@/constants';
+import { DATAPACKS_SUBCOMMANDS, DATAPACKS_MC_VERSIONS } from '@/constants';
 
-export type DatapacksAction = (typeof DATAPACKS_ACTIONS)[number]['id'];
+export type DatapacksSubcommand = (typeof DATAPACKS_SUBCOMMANDS)[number]['id'];
 export type DatapacksMCVersion = (typeof DATAPACKS_MC_VERSIONS)[number];
 
 export interface Datapack {

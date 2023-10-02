@@ -14,7 +14,7 @@ import {
   DATAPACKS_DOWNLOAD_HELP_MSG,
   DATAPACKS_FAILURE_MSG,
   DATAPACKS_HELP_MSG,
-  DATAPACKS_INVALID_ACTION_MSG,
+  DATAPACKS_INVALID_SUBCOMMAND_MSG,
   DATAPACKS_LIST_HELP_MSG,
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
@@ -22,7 +22,7 @@ import {
 } from '@/constants';
 import type {
   Datapack,
-  DatapacksAction,
+  DatapacksSubcommand,
   DatapacksCategory,
   DatapacksMCVersion,
 } from '@/types';
@@ -210,11 +210,11 @@ const downloadDatapacks = async (
  * Main function.
  */
 const datapacks = async () => {
-  const action = args._[1] as DatapacksAction | undefined,
+  const subcommand = args._[1] as DatapacksSubcommand | undefined,
     version = args.version || args.v,
     datapackIds = args._.slice(2);
 
-  switch (action) {
+  switch (subcommand) {
     case 'list':
       await listDatapacks(version);
       break;
@@ -223,11 +223,11 @@ const datapacks = async () => {
       break;
     default:
       console.log(DATAPACKS_HELP_MSG);
-      if ((args.help || args.h) && !action) return;
+      if ((args.help || args.h) && !subcommand) return;
       console.log();
       throw new Error(
-        action
-          ? DATAPACKS_INVALID_ACTION_MSG.replace('%action', action)
+        subcommand
+          ? DATAPACKS_INVALID_SUBCOMMAND_MSG.replace('%subcommand', subcommand)
           : INCORRECT_USAGE_MSG
       );
   }

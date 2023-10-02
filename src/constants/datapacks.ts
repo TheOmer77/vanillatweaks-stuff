@@ -27,9 +27,9 @@ export const DATAPACKS_DEFAULT_MC_VERSION =
 
 //#endregion
 
-//#region Actions & usage
+//#region Subcommands & usage
 
-export const DATAPACKS_ACTIONS = [
+export const DATAPACKS_SUBCOMMANDS = [
   {
     id: 'list',
     description: `List all available datapacks.`,
@@ -68,12 +68,12 @@ export const DATAPACKS_ACTIONS = [
 
 //#region Messages
 
-const getActionHelpMsg = ({
+const getSubcommandHelpMsg = ({
   id,
   description,
   usage,
   options,
-}: (typeof DATAPACKS_ACTIONS)[number]) => `${chalk.bold.yellow(
+}: (typeof DATAPACKS_SUBCOMMANDS)[number]) => `${chalk.bold.yellow(
   id
 )} - ${description}
 Usage: ${usage}
@@ -90,12 +90,14 @@ ${options
   .join('\n')}`;
 
 export const DATAPACKS_HELP_MSG = `${chalk.bold(
-  'Possible actions for datapacks:'
+  'Possible subcommands for datapacks:'
 )}
-${DATAPACKS_ACTIONS.map(getActionHelpMsg).join('\n\n')}`;
-export const DATAPACKS_LIST_HELP_MSG = getActionHelpMsg(DATAPACKS_ACTIONS[0]),
-  DATAPACKS_DOWNLOAD_HELP_MSG = getActionHelpMsg(DATAPACKS_ACTIONS[1]);
-export const DATAPACKS_INVALID_ACTION_MSG = `Action %action is not a valid action for datapacks.`;
+${DATAPACKS_SUBCOMMANDS.map(getSubcommandHelpMsg).join('\n\n')}`;
+export const DATAPACKS_LIST_HELP_MSG = getSubcommandHelpMsg(
+    DATAPACKS_SUBCOMMANDS[0]
+  ),
+  DATAPACKS_DOWNLOAD_HELP_MSG = getSubcommandHelpMsg(DATAPACKS_SUBCOMMANDS[1]);
+export const DATAPACKS_INVALID_SUBCOMMAND_MSG = `Subcommand %subcommand is not a valid subcommand for datapacks.`;
 export const DATAPACKS_SUCCESS_MSG = (datapacksCount: number, path: string) =>
   `Successfully downloaded ${datapacksCount} datapack${
     datapacksCount === 1 ? '' : 's'
