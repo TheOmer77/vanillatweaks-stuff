@@ -7,7 +7,7 @@ import type {
   DatapacksZipSuccessResponse,
 } from '@/types/datapacks';
 
-export const fetchDatapacksCategories = async (
+export const getDatapacksCategories = async (
   version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
 ) =>
   (

@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
 import { downloadFile } from '@/api/general';
-import { fetchDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
+import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { getZipEntryData } from '@/utils/zip';
 import { INCORRECT_USAGE_MSG } from '@/constants/general';
@@ -50,7 +50,7 @@ const listDatapacks = async (
   }
 
   const packs = datapacksListFromCategories(
-    await fetchDatapacksCategories(version)
+    await getDatapacksCategories(version)
   );
   console.log(
     packs
@@ -97,7 +97,7 @@ const downloadDatapacks = async (
     throw new Error(INCORRECT_USAGE_MSG);
   }
 
-  const categories = await fetchDatapacksCategories(version),
+  const categories = await getDatapacksCategories(version),
     packList = datapacksListFromCategories(categories);
 
   const validPackIds = datapackIds.filter((id) =>
