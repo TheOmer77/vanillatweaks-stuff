@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { POSSIBLE_SUBCOMMANDS_MSG } from '@/constants';
+import { POSSIBLE_SUBCOMMANDS_MSG } from '@/constants/general';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
 
 export const getSubcommandHelpMsg = ({

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { args } from '@/utils/args';
-
-import { BASE_URL } from '@/constants';
 import chalk from 'chalk';
+
+import { args } from '@/utils/args';
+import { BASE_URL } from '@/constants/api';
 
 export const api = axios.create({ baseURL: BASE_URL });
 

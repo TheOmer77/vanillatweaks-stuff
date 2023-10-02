@@ -10,6 +10,7 @@ import {
 } from '@/api';
 import { args } from '@/utils/args';
 import { getZipEntryData } from '@/utils/zip';
+import { INCORRECT_USAGE_MSG } from '@/constants/general';
 import {
   DATAPACKS_DEFAULT_MC_VERSION,
   DATAPACKS_DOWNLOAD_HELP_MSG,
@@ -19,8 +20,7 @@ import {
   DATAPACKS_LIST_HELP_MSG,
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
-  INCORRECT_USAGE_MSG,
-} from '@/constants';
+} from '@/constants/datapacks';
 import type {
   Datapack,
   DatapacksCategory,

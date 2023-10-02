@@ -1,9 +1,6 @@
 import { api } from './instance';
-import {
-  DATAPACKS_CATEGORIES_URL,
-  DATAPACKS_DEFAULT_MC_VERSION,
-  DATAPACKS_ZIP_URL,
-} from '@/constants';
+import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '@/constants/api';
+import { DATAPACKS_DEFAULT_MC_VERSION } from '@/constants/datapacks';
 import type {
   DatapacksCategoriesResponse,
   DatapacksMCVersion,

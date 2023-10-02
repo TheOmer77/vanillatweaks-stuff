@@ -1,4 +1,7 @@
-import { DATAPACKS_MC_VERSIONS, DATAPACKS_SUBCOMMANDS } from '@/constants';
+import {
+  DATAPACKS_MC_VERSIONS,
+  DATAPACKS_SUBCOMMANDS,
+} from '@/constants/datapacks';
 
 export type DatapacksSubcommand = (typeof DATAPACKS_SUBCOMMANDS)[number]['id'];
 export type DatapacksMCVersion = (typeof DATAPACKS_MC_VERSIONS)[number];
