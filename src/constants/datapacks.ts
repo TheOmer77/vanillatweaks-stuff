@@ -4,28 +4,11 @@ import chalk from 'chalk';
 import { EXEC_NAME, INVALID_SUBCOMMAND_MSG } from './general';
 import { getCommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
+import { DEFAULT_MC_VERSION } from './versions';
 
 //#region Defaults
 
 export const DATAPACKS_ZIP_DEFAULT_NAME = 'datapacks.zip';
-
-//#endregion
-
-//#region Minecraft version
-// TODO: Move to its own file, not specific to datapacks
-
-export const DATAPACKS_MC_VERSIONS = [
-  '1.13',
-  '1.14',
-  '1.15',
-  '1.16',
-  '1.17',
-  '1.18',
-  '1.19',
-  '1.20',
-] as const;
-export const DATAPACKS_DEFAULT_MC_VERSION =
-  '1.20' as const satisfies (typeof DATAPACKS_MC_VERSIONS)[number];
 
 //#endregion
 
@@ -40,7 +23,7 @@ export const DATAPACKS_SUBCOMMANDS = [
     options: [
       {
         args: ['version', 'v'],
-        description: `Minecraft version for downloaded files. (Default: ${DATAPACKS_DEFAULT_MC_VERSION})`,
+        description: `Minecraft version for downloaded files. (Default: ${DEFAULT_MC_VERSION})`,
       },
     ],
   },
@@ -51,7 +34,7 @@ export const DATAPACKS_SUBCOMMANDS = [
     options: [
       {
         args: ['version', 'v'],
-        description: `Minecraft version for downloaded files. (Default: ${DATAPACKS_DEFAULT_MC_VERSION})`,
+        description: `Minecraft version for downloaded files. (Default: ${DEFAULT_MC_VERSION})`,
       },
       {
         args: ['outDir', 'o'],

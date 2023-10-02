@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
+import { isAxiosError } from 'axios';
 import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
@@ -8,8 +9,8 @@ import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { getZipEntryData } from '@/utils/zip';
 import { INCORRECT_USAGE_MSG, INVALID_VERSION_MSG } from '@/constants/general';
+import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
-  DATAPACKS_DEFAULT_MC_VERSION,
   DATAPACKS_DOWNLOAD_HELP_MSG,
   DATAPACKS_FAILURE_MSG,
   DATAPACKS_HELP_MSG,
@@ -18,13 +19,12 @@ import {
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
 } from '@/constants/datapacks';
+import type { MinecraftVersion } from '@/types/versions';
 import type {
   Datapack,
   DatapacksCategory,
-  DatapacksMCVersion,
   DatapacksSubcommand,
 } from '@/types/datapacks';
-import { isAxiosError } from 'axios';
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
 
@@ -38,7 +38,7 @@ const datapacksListFromCategories = (categories: DatapacksCategory[]) =>
  * @param version Minecraft version.
  */
 const listDatapacks = async (
-  version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
+  version: MinecraftVersion = DEFAULT_MC_VERSION
 ) => {
   const showHelp = args.help || args.h;
   const incorrectUsage = typeof version !== 'string';
@@ -94,7 +94,7 @@ const listDatapacks = async (
  * @param datapackIds IDs of datapacks to download.
  */
 const downloadDatapacks = async (
-  version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION,
+  version: MinecraftVersion = DEFAULT_MC_VERSION,
   datapackIds: string[]
 ) => {
   const showHelp = args.help || args.h,

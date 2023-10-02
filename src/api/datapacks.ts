@@ -1,14 +1,14 @@
 import { api } from './instance';
+import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '@/constants/api';
-import { DATAPACKS_DEFAULT_MC_VERSION } from '@/constants/datapacks';
+import type { MinecraftVersion } from '@/types/versions';
 import type {
   DatapacksCategoriesResponse,
-  DatapacksMCVersion,
   DatapacksZipSuccessResponse,
 } from '@/types/datapacks';
 
 export const getDatapacksCategories = async (
-  version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION
+  version: MinecraftVersion = DEFAULT_MC_VERSION
 ) =>
   (
     await api.get<DatapacksCategoriesResponse>(
@@ -17,7 +17,7 @@ export const getDatapacksCategories = async (
   ).data.categories;
 
 export const getDatapacksZipLink = async (
-  version: DatapacksMCVersion = DATAPACKS_DEFAULT_MC_VERSION,
+  version: MinecraftVersion = DEFAULT_MC_VERSION,
   packs: Record<string, string[]>
 ) => {
   const formData = new FormData();

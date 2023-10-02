@@ -1,6 +1,6 @@
 import minimist from 'minimist';
 
-import type { DatapacksMCVersion } from '@/types/datapacks';
+import type { MinecraftVersion } from '@/types/versions';
 
 export interface ArgsOptions {
   /**
@@ -14,7 +14,7 @@ export interface ArgsOptions {
    * Minecraft version for downloaded files.
    * If not given, the latest version will be used.
    */
-  version?: DatapacksMCVersion;
+  version?: MinecraftVersion;
   /** Shorthand for `--version`. */
   v?: ArgsOptions['version'];
   /**
