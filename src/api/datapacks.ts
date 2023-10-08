@@ -4,9 +4,8 @@ import { api } from './instance';
 import { INVALID_RESOURCE_VERSION_MSG } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '@/constants/api';
-import type { CategoriesResponse } from '@/types/api';
+import type { CategoriesResponse, ZipSuccessResponse } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
-import type { DatapacksZipSuccessResponse } from '@/types/datapacks';
 
 export const getDatapacksCategories = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION
@@ -37,7 +36,6 @@ export const getDatapacksZipLink = async (
   formData.append('version', version);
   formData.append('packs', JSON.stringify(packs));
 
-  return (
-    await api.post<DatapacksZipSuccessResponse>(DATAPACKS_ZIP_URL, formData)
-  ).data.link;
+  return (await api.post<ZipSuccessResponse>(DATAPACKS_ZIP_URL, formData)).data
+    .link;
 };

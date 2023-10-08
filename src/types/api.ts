@@ -16,3 +16,13 @@ export interface PacksCategory {
 export interface CategoriesResponse {
   categories: PacksCategory[];
 }
+
+export interface ZipSuccessResponse {
+  status: 'success';
+  link: string;
+}
+export interface ZipErrorResponse {
+  status: 'error';
+  message: string;
+}
+export type ZipResponse = ZipSuccessResponse | ZipErrorResponse;

@@ -7,7 +7,9 @@ import { downloadFile } from '@/api/general';
 import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
+import { packListFromCategories } from '@/utils/packs';
 import { toKebabCase } from '@/utils/string';
+import { checkValidVersion } from '@/utils/versions';
 import { getZipEntryData } from '@/utils/zip';
 import { INCORRECT_USAGE_MSG } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
@@ -22,8 +24,6 @@ import {
 } from '@/constants/datapacks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { DatapacksSubcommand } from '@/types/datapacks';
-import { checkValidVersion } from './utils/versions';
-import { packListFromCategories } from './utils/packs';
 
 /**
  * Fetch all available datapacks and list them.
