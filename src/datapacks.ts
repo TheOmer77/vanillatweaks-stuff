@@ -19,18 +19,15 @@ import {
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
 } from '@/constants/datapacks';
+import type { Pack, PacksCategory } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
-import type {
-  Datapack,
-  DatapacksCategory,
-  DatapacksSubcommand,
-} from '@/types/datapacks';
+import type { DatapacksSubcommand } from '@/types/datapacks';
 
 const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
 
-const datapacksListFromCategories = (categories: DatapacksCategory[]) =>
+const datapacksListFromCategories = (categories: PacksCategory[]) =>
   categories
-    .reduce((arr, { packs }) => [...arr, ...packs], [] as Datapack[])
+    .reduce((arr, { packs }) => [...arr, ...packs], [] as Pack[])
     .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
 /**
