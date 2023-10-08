@@ -1,9 +1,9 @@
 import { resolve } from 'path';
 
 import { EXEC_NAME, INVALID_SUBCOMMAND_MSG } from './general';
+import { DEFAULT_MC_VERSION } from './versions';
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
-import { DEFAULT_MC_VERSION } from './versions';
 
 //#region Defaults
 
