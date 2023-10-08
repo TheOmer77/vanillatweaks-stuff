@@ -45,11 +45,6 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
         description:
           'Directory where file(s) will be downloaded. (Default: current directory)',
       },
-      {
-        args: ['noUnzip'],
-        description:
-          'Save a single zip file containing all datapacks, instead of multiple files.',
-      },
     ],
   },
 ] as const satisfies readonly ReadonlyCliSubcommand[];
