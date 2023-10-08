@@ -8,6 +8,7 @@ import { downloadFile } from '@/api/general';
 import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
+import { toKebabCase } from '@/utils/string';
 import { getZipEntryData } from '@/utils/zip';
 import { INCORRECT_USAGE_MSG, INVALID_VERSION_MSG } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
@@ -23,8 +24,6 @@ import {
 import type { Pack, PacksCategory } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
 import type { DatapacksSubcommand } from '@/types/datapacks';
-
-const datapackNameToId = (name: string) => name.replaceAll(' ', '-');
 
 const datapacksListFromCategories = (categories: PacksCategory[]) =>
   categories
@@ -97,7 +96,7 @@ const downloadDatapacks = async (
     packList = datapacksListFromCategories(categories);
 
   const validPackIds = packIds.filter((id) =>
-      packList.some(({ name }) => id === datapackNameToId(name))
+      packList.some(({ name }) => id === toKebabCase(name))
     ),
     invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
 
@@ -113,10 +112,10 @@ const downloadDatapacks = async (
     throw new Error('All datapack IDs given are invalid.');
 
   const incompatiblePackIds = validPackIds.filter((id) => {
-    const pack = packList.find(({ name }) => id === datapackNameToId(name));
+    const pack = packList.find(({ name }) => id === toKebabCase(name));
     if (!pack) return false;
     return packIds.some((dpId) =>
-      pack.incompatible.map(datapackNameToId).includes(dpId)
+      pack.incompatible.map(toKebabCase).includes(dpId)
     );
   });
   if (incompatiblePackIds.length > 0)
@@ -128,13 +127,11 @@ const downloadDatapacks = async (
 
   const packsByCategory: Record<string, string[]> = categories.reduce(
     (obj, { category, packs }) =>
-      packs.some(({ name }) => validPackIds.includes(datapackNameToId(name)))
+      packs.some(({ name }) => validPackIds.includes(toKebabCase(name)))
         ? {
             ...obj,
             [category.toLowerCase()]: packs
-              .filter(({ name }) =>
-                validPackIds.includes(datapackNameToId(name))
-              )
+              .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
               .map(({ name }) => name),
           }
         : obj,
@@ -149,7 +146,7 @@ const downloadDatapacks = async (
     `Downloading ${validPackIds.length} datapack${
       validPackIds.length === 1 ? '' : 's'
     }: ${packList
-      .filter(({ name }) => validPackIds.includes(datapackNameToId(name)))
+      .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
       .map(({ display }) => display)
       .join(', ')}`
   );
@@ -180,7 +177,7 @@ const downloadDatapacks = async (
   const files = await Promise.allSettled(
       zipEntries.map(async (entry) => {
         const pack = packList.find((pack) => entry.name.includes(pack.name)),
-          fileName = pack ? `${datapackNameToId(pack.name)}.zip` : entry.name;
+          fileName = pack ? `${toKebabCase(pack.name)}.zip` : entry.name;
         return Bun.write(
           path.join(outDir, fileName),
           await getZipEntryData(entry)
