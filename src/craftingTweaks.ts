@@ -1,13 +1,17 @@
+import { getCraftingTweaksCategories } from '@/api/craftingTweaks';
 import { args } from '@/utils/args';
+import { printPackList } from '@/utils/cli';
 import { checkValidVersion } from '@/utils/versions';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import { INCORRECT_USAGE_MSG } from '@/constants/general';
 import {
   CRAFTINGTWEAKS_HELP_MSG,
   CRAFTINGTWEAKS_INVALID_SUBCOMMAND_MSG,
+  CRAFTINGTWEAKS_LIST_HELP_MSG,
 } from '@/constants/craftingTweaks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
+import { packListFromCategories } from './utils/packs';
 
 /**
  * Fetch all available datapacks and list them.
@@ -16,7 +20,21 @@ import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
 const listCraftingTweaks = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION
 ) => {
-  throw new Error('TBD');
+  const showHelp = args.help || args.h;
+  const incorrectUsage = typeof version !== 'string';
+  if (showHelp || incorrectUsage) {
+    console.log(CRAFTINGTWEAKS_LIST_HELP_MSG);
+
+    if (showHelp) return;
+    console.log();
+    throw new Error(INCORRECT_USAGE_MSG);
+  }
+
+  const packs = packListFromCategories(
+    await getCraftingTweaksCategories(version)
+  );
+
+  printPackList(packs);
 };
 
 /**
