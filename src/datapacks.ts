@@ -96,18 +96,18 @@ const listDatapacks = async (
  * used, in which case a single zip file will be saved.
  *
  * @param version Minecraft version.
- * @param datapackIds IDs of datapacks to download.
+ * @param packIds IDs of datapacks to download.
  */
 const downloadDatapacks = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION,
-  datapackIds: string[]
+  packIds: string[]
 ) => {
   const showHelp = args.help || args.h,
     outDir = args.outDir || args.o || process.cwd();
   const incorrectUsage =
     typeof version !== 'string' ||
     typeof outDir !== 'string' ||
-    datapackIds.length < 1;
+    packIds.length < 1;
   if (showHelp || incorrectUsage) {
     console.log(DATAPACKS_DOWNLOAD_HELP_MSG);
 
@@ -119,10 +119,10 @@ const downloadDatapacks = async (
   const categories = await getDatapacksCategories(version),
     packList = datapacksListFromCategories(categories);
 
-  const validPackIds = datapackIds.filter((id) =>
+  const validPackIds = packIds.filter((id) =>
       packList.some(({ name }) => id === datapackNameToId(name))
     ),
-    invalidPackIds = datapackIds.filter((id) => !validPackIds.includes(id));
+    invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
 
   if (invalidPackIds.length > 0)
     console.warn(
@@ -138,7 +138,7 @@ const downloadDatapacks = async (
   const incompatiblePackIds = validPackIds.filter((id) => {
     const pack = packList.find(({ name }) => id === datapackNameToId(name));
     if (!pack) return false;
-    return datapackIds.some((dpId) =>
+    return packIds.some((dpId) =>
       pack.incompatible.map(datapackNameToId).includes(dpId)
     );
   });
@@ -229,14 +229,14 @@ const downloadDatapacks = async (
 const datapacks = async () => {
   const subcommand = args._[1] as DatapacksSubcommand | undefined,
     version = args.version || args.v,
-    datapackIds = args._.slice(2);
+    packIds = args._.slice(2);
 
   switch (subcommand) {
     case 'list':
       await listDatapacks(version);
       break;
     case 'download':
-      await downloadDatapacks(version, datapackIds);
+      await downloadDatapacks(version, packIds);
       break;
     default:
       console.log(DATAPACKS_HELP_MSG);
