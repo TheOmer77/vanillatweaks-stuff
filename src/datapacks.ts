@@ -20,15 +20,10 @@ import {
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
 } from '@/constants/datapacks';
-import type { Pack, PacksCategory } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
 import type { DatapacksSubcommand } from '@/types/datapacks';
 import { checkValidVersion } from './utils/versions';
-
-const datapacksListFromCategories = (categories: PacksCategory[]) =>
-  categories
-    .reduce((arr, { packs }) => [...arr, ...packs], [] as Pack[])
-    .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
+import { packListFromCategories } from './utils/packs';
 
 /**
  * Fetch all available datapacks and list them.
@@ -47,9 +42,7 @@ const listDatapacks = async (
     throw new Error(INCORRECT_USAGE_MSG);
   }
 
-  const packs = datapacksListFromCategories(
-    await getDatapacksCategories(version)
-  );
+  const packs = packListFromCategories(await getDatapacksCategories(version));
 
   printPackList(packs);
 };
@@ -82,7 +75,7 @@ const downloadDatapacks = async (
   }
 
   const categories = await getDatapacksCategories(version),
-    packList = datapacksListFromCategories(categories);
+    packList = packListFromCategories(categories);
 
   const validPackIds = packIds.filter((id) =>
       packList.some(({ name }) => id === toKebabCase(name))
