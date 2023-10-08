@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 
+import craftingTweaks from '@/craftingTweaks';
 import datapacks from '@/datapacks';
 import resourcePacks from '@/resourcePacks';
 import { args } from '@/utils/args';
@@ -11,6 +12,9 @@ try {
       break;
     case 'datapacks':
       await datapacks();
+      break;
+    case 'craftingtweaks':
+      await craftingTweaks();
       break;
     default:
       throw new Error('Invalid usage! Usage TBD');
