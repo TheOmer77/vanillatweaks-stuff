@@ -1,8 +1,7 @@
 import { resolve } from 'path';
-import chalk from 'chalk';
 
 import { EXEC_NAME, INVALID_SUBCOMMAND_MSG } from './general';
-import { getCommandHelpMsg } from '@/utils/cli';
+import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
 import { DEFAULT_MC_VERSION } from './versions';
 
@@ -58,27 +57,6 @@ export const DATAPACKS_SUBCOMMANDS = [
 //#endregion
 
 //#region Messages
-
-const getSubcommandHelpMsg = ({
-  id,
-  description,
-  usage,
-  options,
-}: (typeof DATAPACKS_SUBCOMMANDS)[number]) => `${chalk.bold.yellow(
-  id
-)} - ${description}
-Usage: ${usage}
-Options:
-${options
-  .map(({ args, description }) =>
-    [
-      `  ${args
-        .map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`)
-        .join(', ')}`,
-      description,
-    ].join('\t\t')
-  )
-  .join('\n')}`;
 
 export const DATAPACKS_HELP_MSG = getCommandHelpMsg(
   DATAPACKS_COMMAND,
