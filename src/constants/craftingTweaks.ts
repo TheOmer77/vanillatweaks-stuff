@@ -5,6 +5,12 @@ import { DEFAULT_MC_VERSION } from './versions';
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
 
+//#region Defaults
+
+export const CRAFTINGTWEAKS_ZIP_DEFAULT_NAME = 'crafting-tweaks.zip';
+
+//#endregion
+
 //#region Subcommands & usage
 
 export const CRAFTINGTWEAKS_COMMAND = 'craftingtweaks';

@@ -1,17 +1,29 @@
-import { getCraftingTweaksCategories } from '@/api/craftingTweaks';
+import path from 'path';
+import fs from 'fs/promises';
+import chalk from 'chalk';
+
+import { downloadFile } from '@/api/general';
+import {
+  getCraftingTweaksCategories,
+  getCraftingTweaksZipLink,
+} from '@/api/craftingTweaks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
+import { packListFromCategories } from '@/utils/packs';
+import { toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
-import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import { INCORRECT_USAGE_MSG } from '@/constants/general';
+import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
+  CRAFTINGTWEAKS_DOWNLOAD_HELP_MSG,
   CRAFTINGTWEAKS_HELP_MSG,
   CRAFTINGTWEAKS_INVALID_SUBCOMMAND_MSG,
   CRAFTINGTWEAKS_LIST_HELP_MSG,
+  CRAFTINGTWEAKS_SUCCESS_MSG,
+  CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
 } from '@/constants/craftingTweaks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
-import { packListFromCategories } from './utils/packs';
 
 /**
  * Fetch all available datapacks and list them.
@@ -50,7 +62,97 @@ const downloadCraftingTweaks = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION,
   packIds: string[]
 ) => {
-  throw new Error('TBD');
+  const showHelp = args.help || args.h,
+    outDir = args.outDir || args.o || process.cwd();
+  const incorrectUsage =
+    typeof version !== 'string' ||
+    typeof outDir !== 'string' ||
+    packIds.length < 1;
+  if (showHelp || incorrectUsage) {
+    console.log(CRAFTINGTWEAKS_DOWNLOAD_HELP_MSG);
+
+    if (showHelp) return;
+    console.log();
+    throw new Error(INCORRECT_USAGE_MSG);
+  }
+
+  const categories = await getCraftingTweaksCategories(version),
+    packList = packListFromCategories(categories);
+
+  const validPackIds = packIds.filter((id) =>
+      packList.some(({ name }) => id === toKebabCase(name))
+    ),
+    invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
+
+  if (invalidPackIds.length > 0)
+    console.warn(
+      `${chalk.bold.yellow(
+        `The following crafting tweaks${
+          invalidPackIds.length === 1 ? ' does' : 's do'
+        } not exist: `
+      )}${invalidPackIds.join(', ')}`
+    );
+  if (validPackIds.length < 1)
+    throw new Error('All datapack IDs given are invalid.');
+
+  const incompatiblePackIds = validPackIds.filter((id) => {
+    const pack = packList.find(({ name }) => id === toKebabCase(name));
+    if (!pack) return false;
+    return packIds.some((dpId) =>
+      pack.incompatible.map(toKebabCase).includes(dpId)
+    );
+  });
+  if (incompatiblePackIds.length > 0)
+    throw new Error(
+      `The following crafting tweaks are incompatible with each other: ${incompatiblePackIds.join(
+        ', '
+      )}`
+    );
+
+  const packsByCategory: Record<string, string[]> = categories.reduce(
+    (obj, { category, packs }) =>
+      packs.some(({ name }) => validPackIds.includes(toKebabCase(name)))
+        ? {
+            ...obj,
+            [category.toLowerCase()]: packs
+              .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
+              .map(({ name }) => name),
+          }
+        : obj,
+    {}
+  );
+
+  const formData = new FormData();
+  formData.append('version', version);
+  formData.append('packs', JSON.stringify(packsByCategory));
+
+  console.log(
+    `Downloading ${validPackIds.length} datapack${
+      validPackIds.length === 1 ? '' : 's'
+    }: ${packList
+      .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
+      .map(({ display }) => display)
+      .join(', ')}`
+  );
+
+  const zipFilename = (await getCraftingTweaksZipLink(version, packsByCategory))
+      .split('/')
+      .at(-1) as string,
+    zipBuffer = await downloadFile(zipFilename);
+
+  const outDirExists = await fs.exists(outDir);
+  if (!outDirExists) await fs.mkdir(outDir, { recursive: true });
+
+  await Bun.write(
+    path.join(outDir, CRAFTINGTWEAKS_ZIP_DEFAULT_NAME),
+    zipBuffer
+  );
+  return console.log(
+    CRAFTINGTWEAKS_SUCCESS_MSG(
+      validPackIds.length,
+      path.join(path.resolve(outDir), CRAFTINGTWEAKS_ZIP_DEFAULT_NAME)
+    )
+  );
 };
 
 /**
