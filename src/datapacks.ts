@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs/promises';
-import { isAxiosError } from 'axios';
 import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
@@ -10,7 +9,7 @@ import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import { toKebabCase } from '@/utils/string';
 import { getZipEntryData } from '@/utils/zip';
-import { INCORRECT_USAGE_MSG, INVALID_VERSION_MSG } from '@/constants/general';
+import { INCORRECT_USAGE_MSG } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
   DATAPACKS_DOWNLOAD_HELP_MSG,
@@ -24,6 +23,7 @@ import {
 import type { Pack, PacksCategory } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
 import type { DatapacksSubcommand } from '@/types/datapacks';
+import { checkValidVersion } from './utils/versions';
 
 const datapacksListFromCategories = (categories: PacksCategory[]) =>
   categories
@@ -47,22 +47,11 @@ const listDatapacks = async (
     throw new Error(INCORRECT_USAGE_MSG);
   }
 
-  try {
-    const packs = datapacksListFromCategories(
-      await getDatapacksCategories(version)
-    );
+  const packs = datapacksListFromCategories(
+    await getDatapacksCategories(version)
+  );
 
-    printPackList(packs);
-  } catch (err) {
-    if (isAxiosError(err) && err.response?.status === 404)
-      throw new Error(
-        INVALID_VERSION_MSG.replace('%resources', 'Datapacks').replace(
-          '%version',
-          version
-        )
-      );
-    throw err;
-  }
+  printPackList(packs);
 };
 
 /**
@@ -204,6 +193,8 @@ const datapacks = async () => {
   const subcommand = args._[1] as DatapacksSubcommand | undefined,
     version = args.version || args.v,
     packIds = args._.slice(2);
+
+  version && checkValidVersion(version);
 
   switch (subcommand) {
     case 'list':
