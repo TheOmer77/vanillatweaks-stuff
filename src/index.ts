@@ -1,10 +1,14 @@
 import chalk from 'chalk';
 
 import datapacks from '@/datapacks';
+import resourcePacks from '@/resourcePacks';
 import { args } from '@/utils/args';
 
 try {
   switch (args._[0]) {
+    case 'resourcepacks':
+      await resourcePacks();
+      break;
     case 'datapacks':
       await datapacks();
       break;
