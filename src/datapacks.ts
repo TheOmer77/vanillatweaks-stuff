@@ -7,6 +7,7 @@ import AdmZip from 'adm-zip';
 import { downloadFile } from '@/api/general';
 import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
+import { printPackList } from '@/utils/cli';
 import { getZipEntryData } from '@/utils/zip';
 import { INCORRECT_USAGE_MSG, INVALID_VERSION_MSG } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
@@ -52,28 +53,7 @@ const listDatapacks = async (
       await getDatapacksCategories(version)
     );
 
-    console.log(
-      args.detailed
-        ? packs
-            .map(
-              ({ name, display, version, description, incompatible }) =>
-                `${chalk.bold(
-                  `${chalk.yellow(
-                    datapackNameToId(name)
-                  )}: ${display} v${version}`
-                )}\n${description}${
-                  incompatible.length > 0
-                    ? `\n${chalk.red('Incompatible with:')} ${incompatible
-                        .map((incompatibleName) =>
-                          datapackNameToId(incompatibleName)
-                        )
-                        .join(', ')}`
-                    : ''
-                }`
-            )
-            .join('\n\n')
-        : packs.map(({ name }) => datapackNameToId(name)).join('\n')
-    );
+    printPackList(packs);
   } catch (err) {
     if (isAxiosError(err) && err.response?.status === 404)
       throw new Error(
