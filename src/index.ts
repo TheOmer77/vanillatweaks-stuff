@@ -3,17 +3,21 @@ import chalk from 'chalk';
 import craftingTweaks from '@/craftingTweaks';
 import datapacks from '@/datapacks';
 import resourcePacks from '@/resourcePacks';
+
 import { args } from '@/utils/args';
+import { RESOURCEPACKS_COMMAND } from '@/constants/resourcePacks';
+import { DATAPACKS_COMMAND } from '@/constants/datapacks';
+import { CRAFTINGTWEAKS_COMMAND } from '@/constants/craftingTweaks';
 
 try {
   switch (args._[0]) {
-    case 'resourcepacks':
+    case RESOURCEPACKS_COMMAND:
       await resourcePacks();
       break;
-    case 'datapacks':
+    case DATAPACKS_COMMAND:
       await datapacks();
       break;
-    case 'craftingtweaks':
+    case CRAFTINGTWEAKS_COMMAND:
       await craftingTweaks();
       break;
     default:
