@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import { args } from './args';
-import { stringSubst, toKebabCase } from './string';
+import { removeHtmlTags, stringSubst, toKebabCase } from './string';
 import { POSSIBLE_SUBCOMMANDS_MSG } from '@/constants/general';
 import type { Pack } from '@/types/api';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
@@ -48,7 +48,7 @@ export const printPackList = (packs: Pack[]) =>
                 `${chalk.yellow(toKebabCase(name))}: ${display}${
                   typeof version === 'string' ? ` v${version}` : ''
                 }`
-              )}\n${description}${
+              )}\n${removeHtmlTags(description.replaceAll('<br>', '\n'))}${
                 incompatible.length > 0
                   ? `\n${chalk.red('Incompatible with:')} ${incompatible
                       .map((incompatibleName) => toKebabCase(incompatibleName))

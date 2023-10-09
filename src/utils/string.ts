@@ -11,6 +11,13 @@ export const toKebabCase = (str: string) =>
     ?.join('-') || str;
 
 /**
+ * Strip out HTML tags from a string.
+ * @param str The original string.
+ */
+export const removeHtmlTags = (str: string) =>
+  typeof str === 'string' ? str.replace(/(<([^>]+)>)/gi, '') : str;
+
+/**
  * Modify a given string with variable placeholders (`%variable`s), replacing
  * the placeholders with values.
  *
