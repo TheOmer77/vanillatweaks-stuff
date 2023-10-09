@@ -13,7 +13,7 @@ export const NONEXISTENT_SINGLE_MSG = "The %resource '%packs' does not exist.",
   NONEXISTENT_MULTIPLE_MSG = 'The following %resources do not exist: ';
 export const INVALID_PACK_IDS_MSG = 'All pack IDs given are invalid.';
 export const INCOMPATIBLE_PACKS_MSG =
-  'The following crafting tweaks are incompatible with each other: %packs';
+  'The following %resources are incompatible with each other: %packs';
 export const DOWNLOADING_SINGLE_MSG = 'Downloading %resource: %packs',
   DOWNLOADING_MULTIPLE_MSG = 'Downloading %count %resources: %packs';
 export const DOWNLOAD_SUCCESS_SINGLE_MSG =

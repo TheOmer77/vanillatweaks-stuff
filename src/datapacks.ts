@@ -118,6 +118,7 @@ const downloadDatapacks = async (
   if (incompatiblePackIds.length > 0)
     throw new Error(
       stringSubst(INCOMPATIBLE_PACKS_MSG, {
+        resource: DATAPACKS_RESOURCE_NAME,
         packs: incompatiblePackIds.join(', '),
       })
     );

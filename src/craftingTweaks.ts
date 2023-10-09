@@ -116,6 +116,7 @@ const downloadCraftingTweaks = async (
   if (incompatiblePackIds.length > 0)
     throw new Error(
       stringSubst(INCOMPATIBLE_PACKS_MSG, {
+        resource: CRAFTINGTWEAKS_RESOURCE_NAME,
         packs: incompatiblePackIds.join(', '),
       })
     );
