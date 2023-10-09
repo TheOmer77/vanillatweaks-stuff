@@ -33,7 +33,7 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
   {
     id: 'download',
     description: `Download crafting tweaks.`,
-    usage: `${EXEC_NAME} ${CRAFTINGTWEAKS_COMMAND} download [OPTIONS] DATAPACK_IDS...`,
+    usage: `${EXEC_NAME} ${CRAFTINGTWEAKS_COMMAND} download [OPTIONS] PACK_IDS...`,
     options: [
       {
         args: ['version', 'v'],

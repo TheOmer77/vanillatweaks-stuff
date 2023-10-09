@@ -32,7 +32,7 @@ export const DATAPACKS_SUBCOMMANDS = [
   {
     id: 'download',
     description: `Download datapacks.`,
-    usage: `${EXEC_NAME} ${DATAPACKS_COMMAND} download [OPTIONS] DATAPACK_IDS...`,
+    usage: `${EXEC_NAME} ${DATAPACKS_COMMAND} download [OPTIONS] PACK_IDS...`,
     options: [
       {
         args: ['version', 'v'],
