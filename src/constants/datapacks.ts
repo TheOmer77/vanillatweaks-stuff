@@ -58,6 +58,7 @@ export const DATAPACKS_SUBCOMMANDS = [
 
 //#region Messages
 
+export const DATAPACKS_RESOURCE_NAME = 'datapack';
 export const DATAPACKS_HELP_MSG = getCommandHelpMsg(
   DATAPACKS_COMMAND,
   DATAPACKS_SUBCOMMANDS

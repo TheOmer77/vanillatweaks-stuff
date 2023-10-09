@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs/promises';
-import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
 import { downloadFile } from '@/api/general';
@@ -11,7 +10,15 @@ import { packListFromCategories } from '@/utils/packs';
 import { toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
 import { getZipEntryData } from '@/utils/zip';
-import { INCORRECT_USAGE_MSG } from '@/constants/general';
+import {
+  DOWNLOADING_PACK,
+  DOWNLOADING_PACKS,
+  INCOMPATIBLE_PACKS_MSG,
+  INCORRECT_USAGE_MSG,
+  INVALID_PACK_IDS,
+  PACKS_DONT_EXIST,
+  PACK_DOESNT_EXIST,
+} from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
   DATAPACKS_DOWNLOAD_HELP_MSG,
@@ -19,6 +26,7 @@ import {
   DATAPACKS_HELP_MSG,
   DATAPACKS_INVALID_SUBCOMMAND_MSG,
   DATAPACKS_LIST_HELP_MSG,
+  DATAPACKS_RESOURCE_NAME,
   DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
 } from '@/constants/datapacks';
@@ -84,14 +92,11 @@ const downloadDatapacks = async (
 
   if (invalidPackIds.length > 0)
     console.warn(
-      `${chalk.bold.yellow(
-        `The following datapack${
-          invalidPackIds.length === 1 ? ' does' : 's do'
-        } not exist: `
-      )}${invalidPackIds.join(', ')}`
+      (invalidPackIds.length === 1 ? PACK_DOESNT_EXIST : PACKS_DONT_EXIST)
+        .replace('%resource', DATAPACKS_RESOURCE_NAME)
+        .replace('%packs', invalidPackIds.join(', '))
     );
-  if (validPackIds.length < 1)
-    throw new Error('All datapack IDs given are invalid.');
+  if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS);
 
   const incompatiblePackIds = validPackIds.filter((id) => {
     const pack = packList.find(({ name }) => id === toKebabCase(name));
@@ -102,9 +107,7 @@ const downloadDatapacks = async (
   });
   if (incompatiblePackIds.length > 0)
     throw new Error(
-      `The following datapacks are incompatible with each other: ${incompatiblePackIds.join(
-        ', '
-      )}`
+      INCOMPATIBLE_PACKS_MSG.replace('%packs', incompatiblePackIds.join(', '))
     );
 
   const packsByCategory: Record<string, string[]> = categories.reduce(
@@ -125,12 +128,16 @@ const downloadDatapacks = async (
   formData.append('packs', JSON.stringify(packsByCategory));
 
   console.log(
-    `Downloading ${validPackIds.length} datapack${
-      validPackIds.length === 1 ? '' : 's'
-    }: ${packList
-      .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
-      .map(({ display }) => display)
-      .join(', ')}`
+    (validPackIds.length === 1 ? DOWNLOADING_PACK : DOWNLOADING_PACKS)
+      .replace('%count', validPackIds.length.toString())
+      .replace('%resource', DATAPACKS_RESOURCE_NAME)
+      .replace(
+        '%packs',
+        packList
+          .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
+          .map(({ display }) => display)
+          .join(', ')
+      )
   );
 
   const zipFilename = (await getDatapacksZipLink(version, packsByCategory))

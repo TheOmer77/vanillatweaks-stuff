@@ -53,6 +53,7 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
 
 //#region Messages
 
+export const CRAFTINGTWEAKS_RESOURCE_NAME = 'crafing tweak';
 export const CRAFTINGTWEAKS_HELP_MSG = getCommandHelpMsg(
   CRAFTINGTWEAKS_COMMAND,
   CRAFTINGTWEAKS_SUBCOMMANDS

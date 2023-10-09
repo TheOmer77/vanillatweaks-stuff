@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs/promises';
-import chalk from 'chalk';
 
 import { downloadFile } from '@/api/general';
 import {
@@ -12,13 +11,22 @@ import { printPackList } from '@/utils/cli';
 import { packListFromCategories } from '@/utils/packs';
 import { toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
-import { INCORRECT_USAGE_MSG } from '@/constants/general';
+import {
+  DOWNLOADING_PACK,
+  DOWNLOADING_PACKS,
+  INCOMPATIBLE_PACKS_MSG,
+  INCORRECT_USAGE_MSG,
+  INVALID_PACK_IDS,
+  PACKS_DONT_EXIST,
+  PACK_DOESNT_EXIST,
+} from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
   CRAFTINGTWEAKS_DOWNLOAD_HELP_MSG,
   CRAFTINGTWEAKS_HELP_MSG,
   CRAFTINGTWEAKS_INVALID_SUBCOMMAND_MSG,
   CRAFTINGTWEAKS_LIST_HELP_MSG,
+  CRAFTINGTWEAKS_RESOURCE_NAME,
   CRAFTINGTWEAKS_SUCCESS_MSG,
   CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
 } from '@/constants/craftingTweaks';
@@ -86,14 +94,11 @@ const downloadCraftingTweaks = async (
 
   if (invalidPackIds.length > 0)
     console.warn(
-      `${chalk.bold.yellow(
-        `The following crafting tweaks${
-          invalidPackIds.length === 1 ? ' does' : 's do'
-        } not exist: `
-      )}${invalidPackIds.join(', ')}`
+      (invalidPackIds.length === 1 ? PACK_DOESNT_EXIST : PACKS_DONT_EXIST)
+        .replace('%resource', CRAFTINGTWEAKS_RESOURCE_NAME)
+        .replace('%packs', invalidPackIds.join(', '))
     );
-  if (validPackIds.length < 1)
-    throw new Error('All datapack IDs given are invalid.');
+  if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS);
 
   const incompatiblePackIds = validPackIds.filter((id) => {
     const pack = packList.find(({ name }) => id === toKebabCase(name));
@@ -104,9 +109,7 @@ const downloadCraftingTweaks = async (
   });
   if (incompatiblePackIds.length > 0)
     throw new Error(
-      `The following crafting tweaks are incompatible with each other: ${incompatiblePackIds.join(
-        ', '
-      )}`
+      INCOMPATIBLE_PACKS_MSG.replace('%packs', incompatiblePackIds.join(', '))
     );
 
   const packsByCategory: Record<string, string[]> = categories.reduce(
@@ -127,12 +130,16 @@ const downloadCraftingTweaks = async (
   formData.append('packs', JSON.stringify(packsByCategory));
 
   console.log(
-    `Downloading ${validPackIds.length} datapack${
-      validPackIds.length === 1 ? '' : 's'
-    }: ${packList
-      .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
-      .map(({ display }) => display)
-      .join(', ')}`
+    (validPackIds.length === 1 ? DOWNLOADING_PACK : DOWNLOADING_PACKS)
+      .replace('%count', validPackIds.length.toString())
+      .replace('%resource', CRAFTINGTWEAKS_RESOURCE_NAME)
+      .replace(
+        '%packs',
+        packList
+          .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
+          .map(({ display }) => display)
+          .join(', ')
+      )
   );
 
   const zipFilename = (await getCraftingTweaksZipLink(version, packsByCategory))
