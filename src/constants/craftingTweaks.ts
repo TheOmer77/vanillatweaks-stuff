@@ -5,7 +5,8 @@ import type { ReadonlyCliSubcommand } from '@/types/cli';
 
 //#region Defaults
 
-export const CRAFTINGTWEAKS_ZIP_DEFAULT_NAME = 'crafting-tweaks.zip';
+export const CRAFTINGTWEAKS_ZIP_DEFAULT_NAME =
+  'vanillatweaks-craftingtweaks.zip';
 
 //#endregion
 

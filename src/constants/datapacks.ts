@@ -5,7 +5,7 @@ import type { ReadonlyCliSubcommand } from '@/types/cli';
 
 //#region Defaults
 
-export const DATAPACKS_ZIP_DEFAULT_NAME = 'datapacks.zip';
+export const DATAPACKS_ZIP_DEFAULT_NAME = 'vanillatweaks-datapacks.zip';
 
 //#endregion
 
