@@ -1,17 +1,40 @@
-import { getResourcePacksCategories } from '@/api/resourcePacks';
+import path from 'path';
+import fs from 'fs/promises';
+import chalk from 'chalk';
+
+import {
+  getResourcePacksCategories,
+  getResourcePacksZipLink,
+} from '@/api/resourcePacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
-import { packListFromCategories } from '@/utils/packs';
-import { stringSubst } from '@/utils/string';
+import { getPacksByCategory, packListFromCategories } from '@/utils/packs';
+import { stringSubst, toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
 import {
+  DOWNLOADING_MULTIPLE_MSG,
+  DOWNLOADING_SINGLE_MSG,
+  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+  DOWNLOAD_SUCCESS_SINGLE_MSG,
+  INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
+  INVALID_PACK_IDS_MSG,
   INVALID_SUBCOMMAND_MSG,
+  NONEXISTENT_MULTIPLE_MSG,
+  NONEXISTENT_SINGLE_MSG,
 } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
-import { RESOURCEPACKS_COMMAND } from '@/constants/resourcePacks';
+import {
+  RESOURCEPACKS_COMMAND,
+  RESOURCEPACKS_DOWNLOAD_HELP_MSG,
+  RESOURCEPACKS_HELP_MSG,
+  RESOURCEPACKS_LIST_HELP_MSG,
+  RESOURCEPACKS_RESOURCE_NAME,
+  RESOURCEPACKS_ZIP_DEFAULT_NAME,
+} from '@/constants/resourcePacks';
 import type { MinecraftVersion } from '@/types/versions';
-import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
+import type { ResourcePacksSubcommand } from '@/types/resourcePacks';
+import { downloadFile } from './api/general';
 
 /**
  * Fetch all available resource packs and list them.
@@ -24,8 +47,7 @@ const listResourcePacks = async (
   const showHelp = args.help || args.h;
   const incorrectUsage = typeof version !== 'string';
   if (showHelp || incorrectUsage) {
-    // TODO: Replace with actual message
-    console.log('TBD: RESOURCEPACKS_LIST_HELP_MSG');
+    console.log(RESOURCEPACKS_LIST_HELP_MSG);
 
     if (showHelp) return;
     console.log();
@@ -49,15 +71,106 @@ const downloadResourcePacks = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION,
   packIds: string[]
 ) => {
-  // TODO: Implement download
-  throw new Error('Not implemented yet');
+  const showHelp = args.help || args.h,
+    outDir = args.outDir || args.o || process.cwd();
+  const incorrectUsage =
+    typeof version !== 'string' ||
+    typeof outDir !== 'string' ||
+    packIds.length < 1;
+  if (showHelp || incorrectUsage) {
+    console.log(RESOURCEPACKS_DOWNLOAD_HELP_MSG);
+
+    if (showHelp) return;
+    console.log();
+    throw new Error(INCORRECT_USAGE_MSG);
+  }
+
+  const categories = await getResourcePacksCategories(version),
+    packList = packListFromCategories(categories);
+
+  const validPackIds = packIds.filter((id) =>
+      packList.some(({ name }) => id === toKebabCase(name))
+    ),
+    invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
+
+  if (invalidPackIds.length > 0)
+    console.warn(
+      invalidPackIds.length === 1
+        ? chalk.bold.yellow(NONEXISTENT_SINGLE_MSG)
+        : stringSubst(
+            `${chalk.yellow.bold(
+              NONEXISTENT_MULTIPLE_MSG
+            )}${invalidPackIds.join(', ')}`,
+            { resource: RESOURCEPACKS_RESOURCE_NAME }
+          )
+    );
+  if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
+
+  const incompatiblePackIds = validPackIds.filter((id) => {
+    const pack = packList.find(({ name }) => id === toKebabCase(name));
+    if (!pack) return false;
+    return packIds.some((dpId) =>
+      pack.incompatible.map(toKebabCase).includes(dpId)
+    );
+  });
+  if (incompatiblePackIds.length > 0)
+    throw new Error(
+      stringSubst(INCOMPATIBLE_PACKS_MSG, {
+        resource: RESOURCEPACKS_RESOURCE_NAME,
+        packs: incompatiblePackIds.join(', '),
+      })
+    );
+
+  const packsByCategory = getPacksByCategory(validPackIds, categories);
+
+  const formData = new FormData();
+  formData.append('version', version);
+  formData.append('packs', JSON.stringify(packsByCategory));
+
+  console.log(
+    stringSubst(
+      validPackIds.length === 1
+        ? DOWNLOADING_SINGLE_MSG
+        : DOWNLOADING_MULTIPLE_MSG,
+      {
+        count: validPackIds.length.toString(),
+        resource: RESOURCEPACKS_RESOURCE_NAME,
+        packs: packList
+          .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
+          .map(({ display }) => display)
+          .join(', '),
+      }
+    )
+  );
+
+  const zipFilename = (await getResourcePacksZipLink(version, packsByCategory))
+      .split('/')
+      .at(-1) as string,
+    zipBuffer = await downloadFile(zipFilename);
+
+  const outDirExists = await fs.exists(outDir);
+  if (!outDirExists) await fs.mkdir(outDir, { recursive: true });
+
+  await Bun.write(path.join(outDir, RESOURCEPACKS_ZIP_DEFAULT_NAME), zipBuffer);
+  return console.log(
+    stringSubst(
+      validPackIds.length === 1
+        ? DOWNLOAD_SUCCESS_SINGLE_MSG
+        : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+      {
+        count: validPackIds.length.toString(),
+        resource: RESOURCEPACKS_RESOURCE_NAME,
+        path: path.join(path.resolve(outDir), RESOURCEPACKS_ZIP_DEFAULT_NAME),
+      }
+    )
+  );
 };
 
 /**
  * Main function.
  */
 const resourcePacks = async () => {
-  const subcommand = args._[1] as CraftingTweaksSubcommand | undefined,
+  const subcommand = args._[1] as ResourcePacksSubcommand | undefined,
     version = args.version || args.v,
     packIds = args._.slice(2);
 
@@ -71,8 +184,7 @@ const resourcePacks = async () => {
       await downloadResourcePacks(version, packIds);
       break;
     default:
-      // TODO: Replace with actual message
-      console.log('TBD: RESOURCEPACKS_HELP_MSG');
+      console.log(RESOURCEPACKS_HELP_MSG);
       if ((args.help || args.h) && !subcommand) return;
       console.log();
       throw new Error(

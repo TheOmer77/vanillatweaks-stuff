@@ -4,6 +4,7 @@ export const DOWNLOAD_URL = '/download/%filename';
 
 export const RESOURCEPACKS_CATEGORIES_URL =
   '/assets/resources/json/%version/rpcategories.json';
+export const RESOURCEPACKS_ZIP_URL = '/assets/server/zipresourcepacks.php';
 
 export const DATAPACKS_CATEGORIES_URL =
   '/assets/resources/json/%version/dpcategories.json';
