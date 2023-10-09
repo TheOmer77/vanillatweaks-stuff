@@ -9,3 +9,9 @@ export const toKebabCase = (str: string) =>
     )
     ?.map((x) => x.toLowerCase())
     ?.join('-') || str;
+
+export const stringSubst = (str: string, vars: Record<string, string>) =>
+  Object.keys(vars).reduce(
+    (newStr, key) => newStr.replace(`%${key}`, vars[key]),
+    str
+  );
