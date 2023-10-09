@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
+import chalk from 'chalk';
 
 import { downloadFile } from '@/api/general';
 import {
@@ -34,7 +35,6 @@ import {
 } from '@/constants/craftingTweaks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
-import chalk from 'chalk';
 
 /**
  * Fetch all available crafting tweaks and list them.
