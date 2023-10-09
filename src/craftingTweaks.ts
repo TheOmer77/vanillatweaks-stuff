@@ -37,7 +37,8 @@ import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
 import chalk from 'chalk';
 
 /**
- * Fetch all available datapacks and list them.
+ * Fetch all available crafting tweaks and list them.
+ *
  * @param version Minecraft version.
  */
 const listCraftingTweaks = async (
@@ -61,10 +62,7 @@ const listCraftingTweaks = async (
 };
 
 /**
- * Download crafting tweaks zip files.
- *
- * Datapacks will be saved as individual files unless the `--noUnzip` flag is
- * used, in which case a single zip file will be saved.
+ * Download crafting tweaks zip file.
  *
  * @param version Minecraft version.
  * @param packIds IDs of datapacks to download.

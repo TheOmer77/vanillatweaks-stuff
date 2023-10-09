@@ -39,6 +39,7 @@ import type { DatapacksSubcommand } from '@/types/datapacks';
 
 /**
  * Fetch all available datapacks and list them.
+ *
  * @param version Minecraft version.
  */
 const listDatapacks = async (
