@@ -14,7 +14,7 @@ const reqInterceptor = (req: InternalAxiosRequestConfig) => {
   const reqDebugLog = `${chalk.bold.yellow(req.method?.toUpperCase())} ${
     req.baseURL
   }${req.url}`;
-  if (args.debug) console.log(reqDebugLog, req.data || '');
+  if (args.debug) console.debug(reqDebugLog, req.data || '');
 
   return req;
 };
@@ -23,7 +23,7 @@ const resSuccessInterceptor = (res: AxiosResponse) => {
   const resStatusLog = chalk.green(
     `${chalk.bold(res.status)} ${res.statusText}`
   );
-  if (args.debug) console.log(resStatusLog, res.data || '');
+  if (args.debug) console.debug(resStatusLog, res.data || '');
 
   return res;
 };
@@ -33,7 +33,7 @@ const resErrorInterceptor = (err: unknown) => {
   const resStatusLog = chalk.red(
     `${chalk.bold(err.response.status)} ${err.response.statusText}`
   );
-  if (args.debug) console.log(resStatusLog, err.response.data || '');
+  if (args.debug) console.debug(resStatusLog, err.response.data || '');
 
   throw err;
 };
