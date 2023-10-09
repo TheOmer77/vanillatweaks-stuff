@@ -26,3 +26,11 @@ export const INCOMPATIBLE_PACKS_MSG =
 export const DOWNLOADING_PACKS_SINGLE_MSG = 'Downloading %resource: %packs';
 export const DOWNLOADING_PACKS_MULTIPLE_MSG =
   'Downloading %count %resources: %packs';
+export const DOWNLOAD_SUCCESS_SINGLE_MSG =
+  'Successfully downloaded %count %resource to %path.';
+export const DOWNLOAD_SUCCESS_MULTIPLE_MSG =
+  'Successfully downloaded %count %resources to %path.';
+export const DOWNLOAD_FAIL_SINGLE_MSG =
+  'Failed to download %count %resource to %path.';
+export const DOWNLOAD_FAIL_MULTIPLE_MSG =
+  'Failed to download %count %resources to %path.';

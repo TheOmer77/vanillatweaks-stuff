@@ -14,6 +14,8 @@ import { checkValidVersion } from '@/utils/versions';
 import {
   DOWNLOADING_PACKS_MULTIPLE_MSG,
   DOWNLOADING_PACKS_SINGLE_MSG,
+  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+  DOWNLOAD_SUCCESS_SINGLE_MSG,
   INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
   INVALID_PACK_IDS_MSG,
@@ -28,7 +30,6 @@ import {
   CRAFTINGTWEAKS_HELP_MSG,
   CRAFTINGTWEAKS_LIST_HELP_MSG,
   CRAFTINGTWEAKS_RESOURCE_NAME,
-  CRAFTINGTWEAKS_SUCCESS_MSG,
   CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
 } from '@/constants/craftingTweaks';
 import type { MinecraftVersion } from '@/types/versions';
@@ -167,9 +168,15 @@ const downloadCraftingTweaks = async (
     zipBuffer
   );
   return console.log(
-    CRAFTINGTWEAKS_SUCCESS_MSG(
-      validPackIds.length,
-      path.join(path.resolve(outDir), CRAFTINGTWEAKS_ZIP_DEFAULT_NAME)
+    stringSubst(
+      validPackIds.length === 1
+        ? DOWNLOAD_SUCCESS_SINGLE_MSG
+        : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+      {
+        count: validPackIds.length.toString(),
+        resource: CRAFTINGTWEAKS_RESOURCE_NAME,
+        path: path.join(path.resolve(outDir), CRAFTINGTWEAKS_ZIP_DEFAULT_NAME),
+      }
     )
   );
 };

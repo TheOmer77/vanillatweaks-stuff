@@ -13,6 +13,10 @@ import { getZipEntryData } from '@/utils/zip';
 import {
   DOWNLOADING_PACKS_MULTIPLE_MSG,
   DOWNLOADING_PACKS_SINGLE_MSG,
+  DOWNLOAD_FAIL_MULTIPLE_MSG,
+  DOWNLOAD_FAIL_SINGLE_MSG,
+  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+  DOWNLOAD_SUCCESS_SINGLE_MSG,
   INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
   INVALID_PACK_IDS_MSG,
@@ -24,11 +28,9 @@ import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
   DATAPACKS_COMMAND,
   DATAPACKS_DOWNLOAD_HELP_MSG,
-  DATAPACKS_FAILURE_MSG,
   DATAPACKS_HELP_MSG,
   DATAPACKS_LIST_HELP_MSG,
   DATAPACKS_RESOURCE_NAME,
-  DATAPACKS_SUCCESS_MSG,
   DATAPACKS_ZIP_DEFAULT_NAME,
 } from '@/constants/datapacks';
 import type { MinecraftVersion } from '@/types/versions';
@@ -160,9 +162,15 @@ const downloadDatapacks = async (
   if (args.noUnzip) {
     await Bun.write(path.join(outDir, DATAPACKS_ZIP_DEFAULT_NAME), zipBuffer);
     return console.log(
-      DATAPACKS_SUCCESS_MSG(
-        validPackIds.length,
-        path.join(path.resolve(outDir), DATAPACKS_ZIP_DEFAULT_NAME)
+      stringSubst(
+        validPackIds.length === 1
+          ? DOWNLOAD_SUCCESS_SINGLE_MSG
+          : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+        {
+          count: validPackIds.length.toString(),
+          resource: DATAPACKS_RESOURCE_NAME,
+          path: path.join(path.resolve(outDir), DATAPACKS_ZIP_DEFAULT_NAME),
+        }
       )
     );
   }
@@ -190,9 +198,32 @@ const downloadDatapacks = async (
     ) as PromiseRejectedResult[];
 
   if (successfulFiles.length > 0)
-    console.log(DATAPACKS_SUCCESS_MSG(successfulFiles.length, outDir));
+    console.log(
+      stringSubst(
+        successfulFiles.length === 1
+          ? DOWNLOAD_SUCCESS_SINGLE_MSG
+          : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+        {
+          count: successfulFiles.length.toString(),
+          resource: DATAPACKS_RESOURCE_NAME,
+          path: outDir,
+        }
+      )
+    );
+
   if (failedFiles.length > 0)
-    console.log(DATAPACKS_FAILURE_MSG(failedFiles.length, outDir));
+    console.log(
+      stringSubst(
+        successfulFiles.length === 1
+          ? DOWNLOAD_FAIL_SINGLE_MSG
+          : DOWNLOAD_FAIL_MULTIPLE_MSG,
+        {
+          count: failedFiles.length.toString(),
+          resource: DATAPACKS_RESOURCE_NAME,
+          path: outDir,
+        }
+      )
+    );
 };
 
 /**

@@ -1,5 +1,3 @@
-import { resolve } from 'path';
-
 import { EXEC_NAME } from './general';
 import { DEFAULT_MC_VERSION } from './versions';
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
@@ -64,19 +62,5 @@ export const CRAFTINGTWEAKS_LIST_HELP_MSG = getSubcommandHelpMsg(
   CRAFTINGTWEAKS_DOWNLOAD_HELP_MSG = getSubcommandHelpMsg(
     CRAFTINGTWEAKS_SUBCOMMANDS[1]
   );
-export const CRAFTINGTWEAKS_SUCCESS_MSG = (
-  datapacksCount: number,
-  path: string
-) =>
-  `Successfully downloaded ${datapacksCount} datapack${
-    datapacksCount === 1 ? '' : 's'
-  } to ${resolve(path)}.`;
-export const CRAFTINGTWEAKS_FAILURE_MSG = (
-  datapacksCount: number,
-  path: string
-) =>
-  `Failed to downloaded ${datapacksCount} datapack${
-    datapacksCount === 1 ? '' : 's'
-  } to ${resolve(path)}.`;
 
 //#endregion
