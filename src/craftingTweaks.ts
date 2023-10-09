@@ -12,14 +12,14 @@ import { packListFromCategories } from '@/utils/packs';
 import { stringSubst, toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
 import {
-  DOWNLOADING_PACK,
-  DOWNLOADING_PACKS,
+  DOWNLOADING_PACKS_MULTIPLE_MSG,
+  DOWNLOADING_PACKS_SINGLE_MSG,
   INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
-  INVALID_PACK_IDS,
+  INVALID_PACK_IDS_MSG,
   INVALID_SUBCOMMAND_MSG,
-  PACKS_DONT_EXIST,
-  PACK_DOESNT_EXIST,
+  NONEXISTENT_PACKS_MULTIPLE_MSG,
+  NONEXISTENT_PACKS_SINGLE_MSG,
 } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
@@ -96,14 +96,16 @@ const downloadCraftingTweaks = async (
   if (invalidPackIds.length > 0)
     console.warn(
       stringSubst(
-        invalidPackIds.length === 1 ? PACK_DOESNT_EXIST : PACKS_DONT_EXIST,
+        invalidPackIds.length === 1
+          ? NONEXISTENT_PACKS_SINGLE_MSG
+          : NONEXISTENT_PACKS_MULTIPLE_MSG,
         {
           resource: CRAFTINGTWEAKS_RESOURCE_NAME,
           packs: invalidPackIds.join(', '),
         }
       )
     );
-  if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS);
+  if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
 
   const incompatiblePackIds = validPackIds.filter((id) => {
     const pack = packList.find(({ name }) => id === toKebabCase(name));
@@ -138,7 +140,9 @@ const downloadCraftingTweaks = async (
 
   console.log(
     stringSubst(
-      validPackIds.length === 1 ? DOWNLOADING_PACK : DOWNLOADING_PACKS,
+      validPackIds.length === 1
+        ? DOWNLOADING_PACKS_SINGLE_MSG
+        : DOWNLOADING_PACKS_MULTIPLE_MSG,
       {
         count: validPackIds.length.toString(),
         resource: CRAFTINGTWEAKS_RESOURCE_NAME,

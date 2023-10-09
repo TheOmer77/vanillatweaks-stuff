@@ -14,14 +14,15 @@ export const INVALID_VERSION_MSG =
 export const INVALID_RESOURCE_VERSION_MSG =
   '%resources are not available for Minecraft %version.';
 
-export const PACK_DOESNT_EXIST = chalk.bold.yellow(
+export const NONEXISTENT_PACKS_SINGLE_MSG = chalk.bold.yellow(
   "The %resource '%packs' does not exist."
 );
-export const PACKS_DONT_EXIST = `${chalk.bold.yellow(
+export const NONEXISTENT_PACKS_MULTIPLE_MSG = `${chalk.bold.yellow(
   'The following %resources do not exist: '
 )}%packs`;
-export const INVALID_PACK_IDS = 'All pack IDs given are invalid.';
+export const INVALID_PACK_IDS_MSG = 'All pack IDs given are invalid.';
 export const INCOMPATIBLE_PACKS_MSG =
   'The following crafting tweaks are incompatible with each other: %packs';
-export const DOWNLOADING_PACK = 'Downloading %resource: %packs';
-export const DOWNLOADING_PACKS = 'Downloading %count %resources: %packs';
+export const DOWNLOADING_PACKS_SINGLE_MSG = 'Downloading %resource: %packs';
+export const DOWNLOADING_PACKS_MULTIPLE_MSG =
+  'Downloading %count %resources: %packs';
