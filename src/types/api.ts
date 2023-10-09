@@ -1,7 +1,7 @@
 export interface Pack {
   name: string;
   display: string;
-  version: string;
+  version?: string;
   description: string;
   incompatible: string[];
   lastupdated: number;

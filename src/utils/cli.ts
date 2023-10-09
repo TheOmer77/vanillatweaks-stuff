@@ -45,7 +45,9 @@ export const printPackList = (packs: Pack[]) =>
           .map(
             ({ name, display, version, description, incompatible }) =>
               `${chalk.bold(
-                `${chalk.yellow(toKebabCase(name))}: ${display} v${version}`
+                `${chalk.yellow(toKebabCase(name))}: ${display}${
+                  typeof version === 'string' ? ` v${version}` : ''
+                }`
               )}\n${description}${
                 incompatible.length > 0
                   ? `\n${chalk.red('Incompatible with:')} ${incompatible
