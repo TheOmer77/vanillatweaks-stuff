@@ -11,8 +11,8 @@ import { stringSubst, toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
 import { getZipEntryData } from '@/utils/zip';
 import {
-  DOWNLOADING_PACKS_MULTIPLE_MSG,
-  DOWNLOADING_PACKS_SINGLE_MSG,
+  DOWNLOADING_MULTIPLE_MSG,
+  DOWNLOADING_SINGLE_MSG,
   DOWNLOAD_FAIL_MULTIPLE_MSG,
   DOWNLOAD_FAIL_SINGLE_MSG,
   DOWNLOAD_SUCCESS_MULTIPLE_MSG,
@@ -21,8 +21,8 @@ import {
   INCORRECT_USAGE_MSG,
   INVALID_PACK_IDS_MSG,
   INVALID_SUBCOMMAND_MSG,
-  NONEXISTENT_PACKS_MULTIPLE_MSG,
-  NONEXISTENT_PACKS_SINGLE_MSG,
+  NONEXISTENT_MULTIPLE_MSG,
+  NONEXISTENT_SINGLE_MSG,
 } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
@@ -97,8 +97,8 @@ const downloadDatapacks = async (
     console.warn(
       stringSubst(
         invalidPackIds.length === 1
-          ? NONEXISTENT_PACKS_SINGLE_MSG
-          : NONEXISTENT_PACKS_MULTIPLE_MSG,
+          ? NONEXISTENT_SINGLE_MSG
+          : NONEXISTENT_MULTIPLE_MSG,
         { resource: DATAPACKS_RESOURCE_NAME, packs: invalidPackIds.join(', ') }
       )
     );
@@ -138,8 +138,8 @@ const downloadDatapacks = async (
   console.log(
     stringSubst(
       validPackIds.length === 1
-        ? DOWNLOADING_PACKS_SINGLE_MSG
-        : DOWNLOADING_PACKS_MULTIPLE_MSG,
+        ? DOWNLOADING_SINGLE_MSG
+        : DOWNLOADING_MULTIPLE_MSG,
       {
         count: validPackIds.length.toString(),
         resource: DATAPACKS_RESOURCE_NAME,

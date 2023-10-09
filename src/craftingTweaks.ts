@@ -12,16 +12,16 @@ import { packListFromCategories } from '@/utils/packs';
 import { stringSubst, toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
 import {
-  DOWNLOADING_PACKS_MULTIPLE_MSG,
-  DOWNLOADING_PACKS_SINGLE_MSG,
+  DOWNLOADING_MULTIPLE_MSG,
+  DOWNLOADING_SINGLE_MSG,
   DOWNLOAD_SUCCESS_MULTIPLE_MSG,
   DOWNLOAD_SUCCESS_SINGLE_MSG,
   INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
   INVALID_PACK_IDS_MSG,
   INVALID_SUBCOMMAND_MSG,
-  NONEXISTENT_PACKS_MULTIPLE_MSG,
-  NONEXISTENT_PACKS_SINGLE_MSG,
+  NONEXISTENT_MULTIPLE_MSG,
+  NONEXISTENT_SINGLE_MSG,
 } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
@@ -98,8 +98,8 @@ const downloadCraftingTweaks = async (
     console.warn(
       stringSubst(
         invalidPackIds.length === 1
-          ? NONEXISTENT_PACKS_SINGLE_MSG
-          : NONEXISTENT_PACKS_MULTIPLE_MSG,
+          ? NONEXISTENT_SINGLE_MSG
+          : NONEXISTENT_MULTIPLE_MSG,
         {
           resource: CRAFTINGTWEAKS_RESOURCE_NAME,
           packs: invalidPackIds.join(', '),
@@ -142,8 +142,8 @@ const downloadCraftingTweaks = async (
   console.log(
     stringSubst(
       validPackIds.length === 1
-        ? DOWNLOADING_PACKS_SINGLE_MSG
-        : DOWNLOADING_PACKS_MULTIPLE_MSG,
+        ? DOWNLOADING_SINGLE_MSG
+        : DOWNLOADING_MULTIPLE_MSG,
       {
         count: validPackIds.length.toString(),
         resource: CRAFTINGTWEAKS_RESOURCE_NAME,
