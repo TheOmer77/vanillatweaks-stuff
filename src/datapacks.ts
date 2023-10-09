@@ -98,7 +98,12 @@ const downloadDatapacks = async (
   if (invalidPackIds.length > 0)
     console.warn(
       invalidPackIds.length === 1
-        ? chalk.bold.yellow(NONEXISTENT_SINGLE_MSG)
+        ? chalk.bold.yellow(
+            stringSubst(NONEXISTENT_SINGLE_MSG, {
+              resource: DATAPACKS_RESOURCE_NAME,
+              packs: invalidPackIds.join(', '),
+            })
+          )
         : stringSubst(
             `${chalk.yellow.bold(
               NONEXISTENT_MULTIPLE_MSG
