@@ -1,12 +1,14 @@
 import { isAxiosError } from 'axios';
 
 import { api } from './instance';
-import { INVALID_RESOURCE_VERSION_MSG } from '@/constants/general';
-import { DEFAULT_MC_VERSION } from '@/constants/versions';
+import { stringSubst } from '@/utils/string';
 import {
   CRAFTINGTWEAKS_CATEGORIES_URL,
   CRAFTINGTWEAKS_ZIP_URL,
 } from '@/constants/api';
+import { INVALID_RESOURCE_VERSION_MSG } from '@/constants/general';
+import { DEFAULT_MC_VERSION } from '@/constants/versions';
+import { CRAFTINGTWEAKS_RESOURCE_NAME } from '@/constants/craftingTweaks';
 import type { CategoriesResponse, ZipSuccessResponse } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
 
@@ -16,16 +18,16 @@ export const getCraftingTweaksCategories = async (
   try {
     return (
       await api.get<CategoriesResponse>(
-        CRAFTINGTWEAKS_CATEGORIES_URL.replace('%version', version)
+        stringSubst(CRAFTINGTWEAKS_CATEGORIES_URL, { version })
       )
     ).data.categories;
   } catch (err) {
     if (isAxiosError(err) && err.response?.status === 404)
       throw new Error(
-        INVALID_RESOURCE_VERSION_MSG.replace(
-          '%resources',
-          'Crafting tweaks'
-        ).replace('%version', version)
+        stringSubst(INVALID_RESOURCE_VERSION_MSG, {
+          resource: CRAFTINGTWEAKS_RESOURCE_NAME,
+          version,
+        })
       );
     throw err;
   }

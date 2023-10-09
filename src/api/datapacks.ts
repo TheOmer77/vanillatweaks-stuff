@@ -1,9 +1,11 @@
 import { isAxiosError } from 'axios';
 
 import { api } from './instance';
+import { stringSubst } from '@/utils/string';
+import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '@/constants/api';
 import { INVALID_RESOURCE_VERSION_MSG } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
-import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '@/constants/api';
+import { DATAPACKS_RESOURCE_NAME } from '@/constants/datapacks';
 import type { CategoriesResponse, ZipSuccessResponse } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
 
@@ -13,16 +15,16 @@ export const getDatapacksCategories = async (
   try {
     return (
       await api.get<CategoriesResponse>(
-        DATAPACKS_CATEGORIES_URL.replace('%version', version)
+        stringSubst(DATAPACKS_CATEGORIES_URL, { version })
       )
     ).data.categories;
   } catch (err) {
     if (isAxiosError(err) && err.response?.status === 404)
       throw new Error(
-        INVALID_RESOURCE_VERSION_MSG.replace('%resources', 'Datapacks').replace(
-          '%version',
-          version
-        )
+        stringSubst(INVALID_RESOURCE_VERSION_MSG, {
+          resource: DATAPACKS_RESOURCE_NAME,
+          version,
+        })
       );
     throw err;
   }
