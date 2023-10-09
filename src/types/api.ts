@@ -10,6 +10,7 @@ export interface Pack {
 
 export interface PacksCategory {
   category: string;
+  categories?: PacksCategory[];
   packs: Pack[];
 }
 
