@@ -9,7 +9,7 @@ import {
 } from '@/api/craftingTweaks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
-import { packListFromCategories } from '@/utils/packs';
+import { getPacksByCategory, packListFromCategories } from '@/utils/packs';
 import { stringSubst, toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
 import {
@@ -120,18 +120,7 @@ const downloadCraftingTweaks = async (
       })
     );
 
-  const packsByCategory: Record<string, string[]> = categories.reduce(
-    (obj, { category, packs }) =>
-      packs.some(({ name }) => validPackIds.includes(toKebabCase(name)))
-        ? {
-            ...obj,
-            [category.toLowerCase()]: packs
-              .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
-              .map(({ name }) => name),
-          }
-        : obj,
-    {}
-  );
+  const packsByCategory = getPacksByCategory(validPackIds, categories);
 
   const formData = new FormData();
   formData.append('version', version);
