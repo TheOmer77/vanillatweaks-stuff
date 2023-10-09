@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 
-import { EXEC_NAME, INVALID_SUBCOMMAND_MSG } from './general';
+import { EXEC_NAME } from './general';
 import { DEFAULT_MC_VERSION } from './versions';
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
@@ -64,8 +64,6 @@ export const CRAFTINGTWEAKS_LIST_HELP_MSG = getSubcommandHelpMsg(
   CRAFTINGTWEAKS_DOWNLOAD_HELP_MSG = getSubcommandHelpMsg(
     CRAFTINGTWEAKS_SUBCOMMANDS[1]
   );
-export const CRAFTINGTWEAKS_INVALID_SUBCOMMAND_MSG =
-  INVALID_SUBCOMMAND_MSG.replace('%command', CRAFTINGTWEAKS_COMMAND);
 export const CRAFTINGTWEAKS_SUCCESS_MSG = (
   datapacksCount: number,
   path: string

@@ -7,7 +7,7 @@ import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import { packListFromCategories } from '@/utils/packs';
-import { toKebabCase } from '@/utils/string';
+import { stringSubst, toKebabCase } from '@/utils/string';
 import { checkValidVersion } from '@/utils/versions';
 import { getZipEntryData } from '@/utils/zip';
 import {
@@ -16,15 +16,16 @@ import {
   INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
   INVALID_PACK_IDS,
+  INVALID_SUBCOMMAND_MSG,
   PACKS_DONT_EXIST,
   PACK_DOESNT_EXIST,
 } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
+  DATAPACKS_COMMAND,
   DATAPACKS_DOWNLOAD_HELP_MSG,
   DATAPACKS_FAILURE_MSG,
   DATAPACKS_HELP_MSG,
-  DATAPACKS_INVALID_SUBCOMMAND_MSG,
   DATAPACKS_LIST_HELP_MSG,
   DATAPACKS_RESOURCE_NAME,
   DATAPACKS_SUCCESS_MSG,
@@ -92,9 +93,10 @@ const downloadDatapacks = async (
 
   if (invalidPackIds.length > 0)
     console.warn(
-      (invalidPackIds.length === 1 ? PACK_DOESNT_EXIST : PACKS_DONT_EXIST)
-        .replace('%resource', DATAPACKS_RESOURCE_NAME)
-        .replace('%packs', invalidPackIds.join(', '))
+      stringSubst(
+        invalidPackIds.length === 1 ? PACK_DOESNT_EXIST : PACKS_DONT_EXIST,
+        { resource: DATAPACKS_RESOURCE_NAME, packs: invalidPackIds.join(', ') }
+      )
     );
   if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS);
 
@@ -107,7 +109,9 @@ const downloadDatapacks = async (
   });
   if (incompatiblePackIds.length > 0)
     throw new Error(
-      INCOMPATIBLE_PACKS_MSG.replace('%packs', incompatiblePackIds.join(', '))
+      stringSubst(INCOMPATIBLE_PACKS_MSG, {
+        packs: incompatiblePackIds.join(', '),
+      })
     );
 
   const packsByCategory: Record<string, string[]> = categories.reduce(
@@ -128,16 +132,17 @@ const downloadDatapacks = async (
   formData.append('packs', JSON.stringify(packsByCategory));
 
   console.log(
-    (validPackIds.length === 1 ? DOWNLOADING_PACK : DOWNLOADING_PACKS)
-      .replace('%count', validPackIds.length.toString())
-      .replace('%resource', DATAPACKS_RESOURCE_NAME)
-      .replace(
-        '%packs',
-        packList
+    stringSubst(
+      validPackIds.length === 1 ? DOWNLOADING_PACK : DOWNLOADING_PACKS,
+      {
+        count: validPackIds.length.toString(),
+        resource: DATAPACKS_RESOURCE_NAME,
+        packs: packList
           .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
           .map(({ display }) => display)
-          .join(', ')
-      )
+          .join(', '),
+      }
+    )
   );
 
   const zipFilename = (await getDatapacksZipLink(version, packsByCategory))
@@ -209,7 +214,10 @@ const datapacks = async () => {
       console.log();
       throw new Error(
         subcommand
-          ? DATAPACKS_INVALID_SUBCOMMAND_MSG.replace('%subcommand', subcommand)
+          ? stringSubst(INVALID_SUBCOMMAND_MSG, {
+              command: DATAPACKS_COMMAND,
+              subcommand,
+            })
           : INCORRECT_USAGE_MSG
       );
   }

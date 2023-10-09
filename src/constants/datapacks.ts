@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 
-import { EXEC_NAME, INVALID_SUBCOMMAND_MSG } from './general';
+import { EXEC_NAME } from './general';
 import { DEFAULT_MC_VERSION } from './versions';
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
@@ -67,10 +67,6 @@ export const DATAPACKS_LIST_HELP_MSG = getSubcommandHelpMsg(
     DATAPACKS_SUBCOMMANDS[0]
   ),
   DATAPACKS_DOWNLOAD_HELP_MSG = getSubcommandHelpMsg(DATAPACKS_SUBCOMMANDS[1]);
-export const DATAPACKS_INVALID_SUBCOMMAND_MSG = INVALID_SUBCOMMAND_MSG.replace(
-  '%command',
-  DATAPACKS_COMMAND
-);
 export const DATAPACKS_SUCCESS_MSG = (datapacksCount: number, path: string) =>
   `Successfully downloaded ${datapacksCount} datapack${
     datapacksCount === 1 ? '' : 's'
