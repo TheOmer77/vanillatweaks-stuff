@@ -17,16 +17,25 @@ export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
 
 export const getPacksByCategory = (
   packIds: string[],
-  categories: PacksCategory[]
+  categories: PacksCategory[],
+  parentCategory?: string
 ): Record<string, string[]> =>
   categories.reduce(
-    (obj, { category, packs }) =>
+    (obj, { category, packs, categories: subCategories }) =>
       packs.some(({ name }) => packIds.includes(toKebabCase(name)))
         ? {
             ...obj,
-            [toKebabCase(category)]: packs
+            [[
+              parentCategory && toKebabCase(parentCategory),
+              toKebabCase(category),
+            ]
+              .filter(Boolean)
+              .join('.')]: packs
               .filter(({ name }) => packIds.includes(toKebabCase(name)))
               .map(({ name }) => name),
+            ...(subCategories
+              ? getPacksByCategory(packIds, subCategories, category)
+              : {}),
           }
         : obj,
     {}
