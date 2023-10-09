@@ -1,11 +1,6 @@
-import chalk from 'chalk';
-
 export const EXEC_NAME = 'vanillatweaks';
 
-export const POSSIBLE_SUBCOMMANDS_MSG = `${chalk.bold(
-  'Possible subcommands for %command:'
-)}
-`;
+export const POSSIBLE_SUBCOMMANDS_MSG = 'Possible subcommands for %command:\n';
 export const INCORRECT_USAGE_MSG = 'Incorrect usage.';
 export const INVALID_SUBCOMMAND_MSG =
   "'%subcommand' is not a valid subcommand for %command.";
@@ -14,12 +9,8 @@ export const INVALID_VERSION_MSG =
 export const INVALID_RESOURCE_VERSION_MSG =
   '%resources are not available for Minecraft %version.';
 
-export const NONEXISTENT_SINGLE_MSG = chalk.bold.yellow(
-    "The %resource '%packs' does not exist."
-  ),
-  NONEXISTENT_MULTIPLE_MSG = `${chalk.bold.yellow(
-    'The following %resources do not exist: '
-  )}%packs`;
+export const NONEXISTENT_SINGLE_MSG = "The %resource '%packs' does not exist.",
+  NONEXISTENT_MULTIPLE_MSG = 'The following %resources do not exist: ';
 export const INVALID_PACK_IDS_MSG = 'All pack IDs given are invalid.';
 export const INCOMPATIBLE_PACKS_MSG =
   'The following crafting tweaks are incompatible with each other: %packs';

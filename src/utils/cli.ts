@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import { args } from './args';
-import { toKebabCase } from './string';
+import { stringSubst, toKebabCase } from './string';
 import { POSSIBLE_SUBCOMMANDS_MSG } from '@/constants/general';
 import type { Pack } from '@/types/api';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
@@ -35,7 +35,7 @@ export const getCommandHelpMsg = (
   command: string,
   subcommands: CliSubcommand[] | readonly ReadonlyCliSubcommand[]
 ) =>
-  `${POSSIBLE_SUBCOMMANDS_MSG.replace('%command', command)}
+  `${chalk.bold(stringSubst(POSSIBLE_SUBCOMMANDS_MSG, { command }))}
 ${subcommands.map(getSubcommandHelpMsg).join('\n\n')}`;
 
 export const printPackList = (packs: Pack[]) =>

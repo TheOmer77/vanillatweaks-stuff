@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
+import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
 import { downloadFile } from '@/api/general';
@@ -95,12 +96,14 @@ const downloadDatapacks = async (
 
   if (invalidPackIds.length > 0)
     console.warn(
-      stringSubst(
-        invalidPackIds.length === 1
-          ? NONEXISTENT_SINGLE_MSG
-          : NONEXISTENT_MULTIPLE_MSG,
-        { resource: DATAPACKS_RESOURCE_NAME, packs: invalidPackIds.join(', ') }
-      )
+      invalidPackIds.length === 1
+        ? chalk.bold.yellow(NONEXISTENT_SINGLE_MSG)
+        : stringSubst(
+            `${chalk.yellow.bold(
+              NONEXISTENT_MULTIPLE_MSG
+            )}${invalidPackIds.join(', ')}`,
+            { resource: DATAPACKS_RESOURCE_NAME }
+          )
     );
   if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
 

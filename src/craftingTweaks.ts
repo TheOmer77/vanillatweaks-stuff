@@ -34,6 +34,7 @@ import {
 } from '@/constants/craftingTweaks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
+import chalk from 'chalk';
 
 /**
  * Fetch all available datapacks and list them.
@@ -96,15 +97,14 @@ const downloadCraftingTweaks = async (
 
   if (invalidPackIds.length > 0)
     console.warn(
-      stringSubst(
-        invalidPackIds.length === 1
-          ? NONEXISTENT_SINGLE_MSG
-          : NONEXISTENT_MULTIPLE_MSG,
-        {
-          resource: CRAFTINGTWEAKS_RESOURCE_NAME,
-          packs: invalidPackIds.join(', '),
-        }
-      )
+      invalidPackIds.length === 1
+        ? chalk.bold.yellow(NONEXISTENT_SINGLE_MSG)
+        : stringSubst(
+            `${chalk.yellow.bold(
+              NONEXISTENT_MULTIPLE_MSG
+            )}${invalidPackIds.join(', ')}`,
+            { resource: CRAFTINGTWEAKS_RESOURCE_NAME }
+          )
     );
   if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
 
