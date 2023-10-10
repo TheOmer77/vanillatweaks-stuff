@@ -9,8 +9,10 @@ import {
 } from './string';
 import {
   GENERAL_OPTIONS,
+  MAIN_COMMANDS,
   USAGE_COMMANDS_PREFIX_MSG,
   USAGE_COMMAND_MSG,
+  USAGE_MAIN_MSG,
   USAGE_OPTIONS_PREFIX_MSG,
   USAGE_PREFIX_MSG,
   USAGE_SUBCOMMAND_MSG,
@@ -18,30 +20,26 @@ import {
 import type { Pack } from '@/types/api';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
 
-export const getSubcommandHelpMsg = (
-  command: string,
-  { id, description, usage, options }: CliSubcommand | ReadonlyCliSubcommand
-) => {
-  const allOptions = [...(options || []), ...GENERAL_OPTIONS];
-  const formattedOptionsArgs = equalLengthStrings(
-    allOptions.map(({ args }) =>
-      args.map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`).join(', ')
-    )
-  );
-  return `${description}
+export const getMainHelpMsg = () => {
+  const formattedCommandIds = equalLengthStrings(
+      MAIN_COMMANDS.map(({ id }) => id)
+    ),
+    formattedOptionsArgs = equalLengthStrings(
+      GENERAL_OPTIONS.map(({ args }) =>
+        args.map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`).join(', ')
+      )
+    );
+  return `${chalk.bold(USAGE_PREFIX_MSG)}${USAGE_MAIN_MSG}
 
-${chalk.bold(USAGE_PREFIX_MSG)}${stringSubst(USAGE_SUBCOMMAND_MSG, {
-    command,
-    subcommand: id,
-    usage,
-  })}
+${chalk.bold(USAGE_COMMANDS_PREFIX_MSG)}
+${MAIN_COMMANDS.map(({ description }, index) =>
+  [`  ${formattedCommandIds[index]}`, description].join('    ')
+).join('\n')}
   
 ${chalk.bold(USAGE_OPTIONS_PREFIX_MSG)}
-${allOptions
-  .map(({ description }, index) =>
-    [`  ${formattedOptionsArgs[index]}`, description].join('    ')
-  )
-  .join('\n')}`;
+${GENERAL_OPTIONS.map(({ description }, index) =>
+  [`  ${formattedOptionsArgs[index]}`, description].join('    ')
+).join('\n')}`;
 };
 
 export const getCommandHelpMsg = (
@@ -71,6 +69,32 @@ ${chalk.bold(USAGE_OPTIONS_PREFIX_MSG)}
 ${GENERAL_OPTIONS.map(({ description }, index) =>
   [`  ${formattedOptionsArgs[index]}`, description].join('    ')
 ).join('\n')}`;
+};
+
+export const getSubcommandHelpMsg = (
+  command: string,
+  { id, description, usage, options }: CliSubcommand | ReadonlyCliSubcommand
+) => {
+  const allOptions = [...(options || []), ...GENERAL_OPTIONS];
+  const formattedOptionsArgs = equalLengthStrings(
+    allOptions.map(({ args }) =>
+      args.map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`).join(', ')
+    )
+  );
+  return `${description}
+
+${chalk.bold(USAGE_PREFIX_MSG)}${stringSubst(USAGE_SUBCOMMAND_MSG, {
+    command,
+    subcommand: id,
+    usage,
+  })}
+  
+${chalk.bold(USAGE_OPTIONS_PREFIX_MSG)}
+${allOptions
+  .map(({ description }, index) =>
+    [`  ${formattedOptionsArgs[index]}`, description].join('    ')
+  )
+  .join('\n')}`;
 };
 
 export const printPackList = (packs: Pack[]) =>

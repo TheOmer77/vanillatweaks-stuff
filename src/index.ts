@@ -5,6 +5,8 @@ import datapacks from '@/datapacks';
 import resourcePacks from '@/resourcePacks';
 
 import { args } from '@/utils/args';
+import { getMainHelpMsg } from '@/utils/cli';
+import { INCORRECT_USAGE_MSG } from '@/constants/general';
 import { RESOURCEPACKS_COMMAND } from '@/constants/resourcePacks';
 import { DATAPACKS_COMMAND } from '@/constants/datapacks';
 import { CRAFTINGTWEAKS_COMMAND } from '@/constants/craftingTweaks';
@@ -21,7 +23,11 @@ try {
       await craftingTweaks();
       break;
     default:
-      throw new Error('Invalid usage! Usage TBD');
+      console.log(getMainHelpMsg());
+      if (!(args.help || args.h)) {
+        console.log();
+        throw new Error(INCORRECT_USAGE_MSG);
+      }
   }
 } catch (err) {
   const errMsg = err instanceof Error ? err.message : 'Unknown error!',

@@ -1,19 +1,23 @@
-export interface CliSubcommandOption {
+export interface CliOption {
   args: string[];
   description: string;
 }
-export interface ReadonlyCliSubcommandOption
-  extends Omit<Readonly<CliSubcommandOption>, 'args'> {
-  args: Readonly<CliSubcommandOption['args']>;
+export interface ReadonlyCliOption extends Omit<Readonly<CliOption>, 'args'> {
+  args: Readonly<CliOption['args']>;
+}
+
+export interface CliCommand {
+  id: string;
+  description: string;
 }
 
 export interface CliSubcommand {
   id: string;
   description: string;
   usage: string;
-  options?: CliSubcommandOption[];
+  options?: CliOption[];
 }
 export interface ReadonlyCliSubcommand
   extends Omit<Readonly<CliSubcommand>, 'options'> {
-  options?: readonly ReadonlyCliSubcommandOption[];
+  options?: readonly ReadonlyCliOption[];
 }
