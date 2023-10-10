@@ -1,4 +1,5 @@
-import { stringSubst } from '@/utils/string';
+import { stringSubst } from 'core';
+
 import { api } from './instance';
 import { DOWNLOAD_URL } from '@/constants/api';
 

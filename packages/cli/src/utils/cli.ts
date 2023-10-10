@@ -1,12 +1,13 @@
 import chalk from 'chalk';
 
-import { args } from './args';
 import {
   equalLengthStrings,
   removeHtmlTags,
   stringSubst,
   toKebabCase,
-} from './string';
+} from 'core';
+
+import { args } from './args';
 import {
   GENERAL_OPTIONS,
   MAIN_COMMANDS,

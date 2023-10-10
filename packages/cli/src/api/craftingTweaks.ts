@@ -1,7 +1,8 @@
 import { isAxiosError } from 'axios';
 
+import { stringSubst } from 'core';
+
 import { api } from './instance';
-import { stringSubst } from '@/utils/string';
 import {
   CRAFTINGTWEAKS_CATEGORIES_URL,
   CRAFTINGTWEAKS_ZIP_URL,

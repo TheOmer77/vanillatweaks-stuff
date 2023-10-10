@@ -3,14 +3,19 @@ import fs from 'fs/promises';
 import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
+import {
+  checkValidVersion,
+  getPacksByCategory,
+  getZipEntryData,
+  packListFromCategories,
+  stringSubst,
+  toKebabCase,
+} from 'core';
+
 import { downloadFile } from '@/api/general';
 import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
-import { getPacksByCategory, packListFromCategories } from '@/utils/packs';
-import { stringSubst, toKebabCase } from '@/utils/string';
-import { checkValidVersion } from '@/utils/versions';
-import { getZipEntryData } from '@/utils/zip';
 import {
   DOWNLOADING_MULTIPLE_MSG,
   DOWNLOADING_SINGLE_MSG,

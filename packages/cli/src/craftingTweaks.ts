@@ -2,6 +2,14 @@ import path from 'path';
 import fs from 'fs/promises';
 import chalk from 'chalk';
 
+import {
+  checkValidVersion,
+  getPacksByCategory,
+  packListFromCategories,
+  stringSubst,
+  toKebabCase,
+} from 'core';
+
 import { downloadFile } from '@/api/general';
 import {
   getCraftingTweaksCategories,
@@ -9,9 +17,6 @@ import {
 } from '@/api/craftingTweaks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
-import { getPacksByCategory, packListFromCategories } from '@/utils/packs';
-import { stringSubst, toKebabCase } from '@/utils/string';
-import { checkValidVersion } from '@/utils/versions';
 import {
   DOWNLOADING_MULTIPLE_MSG,
   DOWNLOADING_SINGLE_MSG,

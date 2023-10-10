@@ -1,7 +1,8 @@
 import { isAxiosError } from 'axios';
 
+import { stringSubst } from 'core';
+
 import { api } from './instance';
-import { stringSubst } from '@/utils/string';
 import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '@/constants/api';
 import { INVALID_RESOURCE_VERSION_MSG } from '@/constants/general';
 import { DEFAULT_MC_VERSION } from '@/constants/versions';

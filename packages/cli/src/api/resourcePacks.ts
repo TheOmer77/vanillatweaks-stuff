@@ -1,7 +1,8 @@
 import { isAxiosError } from 'axios';
 
+import { stringSubst } from 'core';
+
 import { api } from './instance';
-import { stringSubst } from '@/utils/string';
 import {
   RESOURCEPACKS_CATEGORIES_URL,
   RESOURCEPACKS_ZIP_URL,
