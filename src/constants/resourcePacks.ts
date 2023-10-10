@@ -1,9 +1,8 @@
-//#region Defaults
-
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
-import { EXEC_NAME } from './general';
 import { DEFAULT_MC_VERSION } from './versions';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
+
+//#region Defaults
 
 export const RESOURCEPACKS_ZIP_DEFAULT_NAME = 'vanillatweaks-resourcepacks.zip';
 
@@ -16,7 +15,7 @@ export const RESOURCEPACKS_SUBCOMMANDS = [
   {
     id: 'list',
     description: `List all available resource packs.`,
-    usage: `${EXEC_NAME} ${RESOURCEPACKS_COMMAND} list [OPTIONS]`,
+    usage: `[OPTIONS]`,
     options: [
       {
         args: ['version', 'v'],
@@ -32,7 +31,7 @@ export const RESOURCEPACKS_SUBCOMMANDS = [
   {
     id: 'download',
     description: `Download resource packs.`,
-    usage: `${EXEC_NAME} ${RESOURCEPACKS_COMMAND} download [OPTIONS] PACK_IDS...`,
+    usage: `[OPTIONS] PACK_IDS...`,
     options: [
       {
         args: ['version', 'v'],
@@ -57,9 +56,11 @@ export const RESOURCEPACKS_HELP_MSG = getCommandHelpMsg(
   RESOURCEPACKS_SUBCOMMANDS
 );
 export const RESOURCEPACKS_LIST_HELP_MSG = getSubcommandHelpMsg(
+    RESOURCEPACKS_COMMAND,
     RESOURCEPACKS_SUBCOMMANDS[0]
   ),
   RESOURCEPACKS_DOWNLOAD_HELP_MSG = getSubcommandHelpMsg(
+    RESOURCEPACKS_COMMAND,
     RESOURCEPACKS_SUBCOMMANDS[1]
   );
 

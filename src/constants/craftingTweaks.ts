@@ -1,4 +1,3 @@
-import { EXEC_NAME } from './general';
 import { DEFAULT_MC_VERSION } from './versions';
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
@@ -17,7 +16,7 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
   {
     id: 'list',
     description: `List all available crafting tweaks.`,
-    usage: `${EXEC_NAME} ${CRAFTINGTWEAKS_COMMAND} list [OPTIONS]`,
+    usage: `[OPTIONS]`,
     options: [
       {
         args: ['version', 'v'],
@@ -33,7 +32,7 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
   {
     id: 'download',
     description: `Download crafting tweaks.`,
-    usage: `${EXEC_NAME} ${CRAFTINGTWEAKS_COMMAND} download [OPTIONS] PACK_IDS...`,
+    usage: `[OPTIONS] PACK_IDS...`,
     options: [
       {
         args: ['version', 'v'],
@@ -58,9 +57,11 @@ export const CRAFTINGTWEAKS_HELP_MSG = getCommandHelpMsg(
   CRAFTINGTWEAKS_SUBCOMMANDS
 );
 export const CRAFTINGTWEAKS_LIST_HELP_MSG = getSubcommandHelpMsg(
+    CRAFTINGTWEAKS_COMMAND,
     CRAFTINGTWEAKS_SUBCOMMANDS[0]
   ),
   CRAFTINGTWEAKS_DOWNLOAD_HELP_MSG = getSubcommandHelpMsg(
+    CRAFTINGTWEAKS_COMMAND,
     CRAFTINGTWEAKS_SUBCOMMANDS[1]
   );
 

@@ -1,42 +1,71 @@
 import chalk from 'chalk';
 
 import { args } from './args';
-import { removeHtmlTags, stringSubst, toKebabCase } from './string';
-import { POSSIBLE_SUBCOMMANDS_MSG } from '@/constants/general';
+import {
+  equalLengthStrings,
+  removeHtmlTags,
+  stringSubst,
+  toKebabCase,
+} from './string';
+import {
+  USAGE_COMMANDS_PREFIX_MSG,
+  USAGE_COMMAND_MSG,
+  USAGE_OPTIONS_PREFIX_MSG,
+  USAGE_PREFIX_MSG,
+  USAGE_SUBCOMMAND_MSG,
+} from '@/constants/general';
 import type { Pack } from '@/types/api';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
 
-export const getSubcommandHelpMsg = ({
-  id,
-  description,
-  usage,
-  options,
-}: CliSubcommand | ReadonlyCliSubcommand) => `${chalk.bold.yellow(
-  id
-)} - ${description}
-Usage: ${usage}
+export const getSubcommandHelpMsg = (
+  command: string,
+  { id, description, usage, options }: CliSubcommand | ReadonlyCliSubcommand
+) => {
+  const formattedOptionsArgs = options
+    ? equalLengthStrings(
+        options.map(({ args }) =>
+          args.map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`).join(', ')
+        )
+      )
+    : [];
+  return `${description}
+
+${chalk.bold(USAGE_PREFIX_MSG)}${stringSubst(USAGE_SUBCOMMAND_MSG, {
+    command,
+    subcommand: id,
+    usage,
+  })}
+  
 ${
   options
-    ? `Options:
+    ? `${chalk.bold(USAGE_OPTIONS_PREFIX_MSG)}
 ${options
-  .map(({ args, description }) =>
-    [
-      `  ${args
-        .map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`)
-        .join(', ')}`,
-      description,
-    ].join('\t\t')
+  .map(({ description }, index) =>
+    [`  ${formattedOptionsArgs[index]}`, description].join('    ')
   )
   .join('\n')}`
     : ''
 }`;
+};
 
 export const getCommandHelpMsg = (
   command: string,
   subcommands: CliSubcommand[] | readonly ReadonlyCliSubcommand[]
-) =>
-  `${chalk.bold(stringSubst(POSSIBLE_SUBCOMMANDS_MSG, { command }))}
-${subcommands.map(getSubcommandHelpMsg).join('\n\n')}`;
+) => {
+  const formattedSubcommandIds = equalLengthStrings(
+    subcommands.map(({ id }) => id)
+  );
+  return `${chalk.bold(USAGE_PREFIX_MSG)}${stringSubst(USAGE_COMMAND_MSG, {
+    command,
+  })}
+
+${chalk.bold(USAGE_COMMANDS_PREFIX_MSG)}
+${subcommands
+  .map(({ description }, index) =>
+    [`  ${formattedSubcommandIds[index]}`, description].join('    ')
+  )
+  .join('\n')}`;
+};
 
 export const printPackList = (packs: Pack[]) =>
   console.log(
