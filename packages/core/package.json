@@ -1,6 +1,7 @@
 {
   "name": "core",
   "module": "src/index.ts",
+  "types": "src/index.ts",
   "type": "module",
   "dependencies": {
     "adm-zip": "^0.5.10",
