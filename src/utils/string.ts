@@ -30,3 +30,18 @@ export const stringSubst = (str: string, vars: Record<string, string>) =>
     (newStr, key) => newStr.replace(`%${key}`, vars[key]),
     str
   );
+
+/**
+ * Modify an array of strings to be the same length as the longest string in
+ * the array, by padding them.
+ * @param strings The original strings
+ * @param padChar Character used for padding strings.
+ */
+export const equalLengthStrings = (strings: string[], padChar = ' ') => {
+  const longestLength = strings.toSorted((a, b) =>
+    a.length < b.length ? 1 : a.length > b.length ? -1 : 0
+  )[0].length;
+  return strings.map((str) =>
+    [str, ...[...Array(longestLength - str.length)].map(() => padChar)].join('')
+  );
+};
