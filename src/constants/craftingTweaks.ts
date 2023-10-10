@@ -1,4 +1,3 @@
-import { DEFAULT_MC_VERSION } from './versions';
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
 
@@ -19,10 +18,6 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
     usage: `[OPTIONS]`,
     options: [
       {
-        args: ['version', 'v'],
-        description: `Minecraft version for downloaded files. (Default: ${DEFAULT_MC_VERSION})`,
-      },
-      {
         args: ['detailed'],
         description:
           'Print list with additional details, such as descriptions and incompatible packs.',
@@ -34,10 +29,6 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
     description: `Download crafting tweaks.`,
     usage: `[OPTIONS] PACK_IDS...`,
     options: [
-      {
-        args: ['version', 'v'],
-        description: `Minecraft version for downloaded files. (Default: ${DEFAULT_MC_VERSION})`,
-      },
       {
         args: ['outDir', 'o'],
         description:

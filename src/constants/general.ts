@@ -1,6 +1,19 @@
-//#region Exec name
+import { DEFAULT_MC_VERSION } from './versions';
+import type { ReadonlyCliSubcommandOption } from '@/types/cli';
+
+//#region General constants
 
 export const EXEC_NAME = 'vanillatweaks';
+export const GENERAL_OPTIONS = [
+  {
+    args: ['version', 'v'],
+    description: `Minecraft version. (Default: ${DEFAULT_MC_VERSION})`,
+  },
+  {
+    args: ['help', 'h'],
+    description: 'Print this help message.',
+  },
+] as const satisfies readonly ReadonlyCliSubcommandOption[];
 
 //#endregion
 
@@ -8,7 +21,7 @@ export const EXEC_NAME = 'vanillatweaks';
 
 export const USAGE_PREFIX_MSG = `Usage: `;
 export const USAGE_MAIN_MSG = `${EXEC_NAME} %command <COMMAND>`;
-export const USAGE_COMMAND_MSG = `${EXEC_NAME} %command <COMMAND>`;
+export const USAGE_COMMAND_MSG = `${EXEC_NAME} %command <COMMAND> [OPTIONS]`;
 export const USAGE_SUBCOMMAND_MSG = `${EXEC_NAME} %command %subcommand %usage`;
 export const USAGE_COMMANDS_PREFIX_MSG = `Commands: `;
 export const USAGE_OPTIONS_PREFIX_MSG = `Options: `;

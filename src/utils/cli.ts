@@ -8,6 +8,7 @@ import {
   toKebabCase,
 } from './string';
 import {
+  GENERAL_OPTIONS,
   USAGE_COMMANDS_PREFIX_MSG,
   USAGE_COMMAND_MSG,
   USAGE_OPTIONS_PREFIX_MSG,
@@ -21,13 +22,12 @@ export const getSubcommandHelpMsg = (
   command: string,
   { id, description, usage, options }: CliSubcommand | ReadonlyCliSubcommand
 ) => {
-  const formattedOptionsArgs = options
-    ? equalLengthStrings(
-        options.map(({ args }) =>
-          args.map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`).join(', ')
-        )
-      )
-    : [];
+  const allOptions = [...(options || []), ...GENERAL_OPTIONS];
+  const formattedOptionsArgs = equalLengthStrings(
+    allOptions.map(({ args }) =>
+      args.map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`).join(', ')
+    )
+  );
   return `${description}
 
 ${chalk.bold(USAGE_PREFIX_MSG)}${stringSubst(USAGE_SUBCOMMAND_MSG, {
@@ -36,16 +36,12 @@ ${chalk.bold(USAGE_PREFIX_MSG)}${stringSubst(USAGE_SUBCOMMAND_MSG, {
     usage,
   })}
   
-${
-  options
-    ? `${chalk.bold(USAGE_OPTIONS_PREFIX_MSG)}
-${options
+${chalk.bold(USAGE_OPTIONS_PREFIX_MSG)}
+${allOptions
   .map(({ description }, index) =>
     [`  ${formattedOptionsArgs[index]}`, description].join('    ')
   )
-  .join('\n')}`
-    : ''
-}`;
+  .join('\n')}`;
 };
 
 export const getCommandHelpMsg = (
@@ -53,8 +49,13 @@ export const getCommandHelpMsg = (
   subcommands: CliSubcommand[] | readonly ReadonlyCliSubcommand[]
 ) => {
   const formattedSubcommandIds = equalLengthStrings(
-    subcommands.map(({ id }) => id)
-  );
+      subcommands.map(({ id }) => id)
+    ),
+    formattedOptionsArgs = equalLengthStrings(
+      GENERAL_OPTIONS.map(({ args }) =>
+        args.map((arg) => `-${arg.length === 1 ? '' : '-'}${arg}`).join(', ')
+      )
+    );
   return `${chalk.bold(USAGE_PREFIX_MSG)}${stringSubst(USAGE_COMMAND_MSG, {
     command,
   })}
@@ -64,7 +65,12 @@ ${subcommands
   .map(({ description }, index) =>
     [`  ${formattedSubcommandIds[index]}`, description].join('    ')
   )
-  .join('\n')}`;
+  .join('\n')}
+  
+${chalk.bold(USAGE_OPTIONS_PREFIX_MSG)}
+${GENERAL_OPTIONS.map(({ description }, index) =>
+  [`  ${formattedOptionsArgs[index]}`, description].join('    ')
+).join('\n')}`;
 };
 
 export const printPackList = (packs: Pack[]) =>

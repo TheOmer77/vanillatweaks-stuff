@@ -1,5 +1,4 @@
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
-import { DEFAULT_MC_VERSION } from './versions';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
 
 //#region Defaults
@@ -18,10 +17,6 @@ export const RESOURCEPACKS_SUBCOMMANDS = [
     usage: `[OPTIONS]`,
     options: [
       {
-        args: ['version', 'v'],
-        description: `Minecraft version for downloaded files. (Default: ${DEFAULT_MC_VERSION})`,
-      },
-      {
         args: ['detailed'],
         description:
           'Print list with additional details, such as descriptions and incompatible packs.',
@@ -33,10 +28,6 @@ export const RESOURCEPACKS_SUBCOMMANDS = [
     description: `Download resource packs.`,
     usage: `[OPTIONS] PACK_IDS...`,
     options: [
-      {
-        args: ['version', 'v'],
-        description: `Minecraft version for downloaded files. (Default: ${DEFAULT_MC_VERSION})`,
-      },
       {
         args: ['outDir', 'o'],
         description:
