@@ -5,7 +5,7 @@ import axios, {
 } from 'axios';
 import chalk from 'chalk';
 
-import { BASE_URL } from 'core';
+import { BASE_URL } from '../constants/api';
 
 const debug = process.argv.includes('--debug');
 

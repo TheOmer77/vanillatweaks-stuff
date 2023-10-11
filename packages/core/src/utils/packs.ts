@@ -1,5 +1,5 @@
 import { toKebabCase } from './string';
-import type { Pack, PacksCategory } from '@/types/api';
+import type { Pack, PacksCategory } from '../types/api';
 
 export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
   categories

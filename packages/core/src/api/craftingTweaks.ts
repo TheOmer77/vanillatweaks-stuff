@@ -1,19 +1,19 @@
 import { isAxiosError } from 'axios';
 
 import { api } from './instance';
-import { stringSubst } from '@/utils';
+import { stringSubst } from '../utils';
 import {
   CRAFTINGTWEAKS_CATEGORIES_URL,
-  CRAFTINGTWEAKS_RESOURCE_NAME,
   CRAFTINGTWEAKS_ZIP_URL,
-  DEFAULT_MC_VERSION,
-  INVALID_RESOURCE_VERSION_MSG,
-} from '@/constants';
+} from '../constants/api';
+import { INVALID_RESOURCE_VERSION_MSG } from '../constants/general';
+import { DEFAULT_MC_VERSION } from '../constants/versions';
+import { CRAFTINGTWEAKS_RESOURCE_NAME } from '../constants/craftingTweaks';
 import type {
   CategoriesResponse,
   MinecraftVersion,
   ZipSuccessResponse,
-} from '@/types';
+} from '../types';
 
 export const getCraftingTweaksCategories = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION
