@@ -1,13 +1,6 @@
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
 
-//#region Defaults
-
-export const CRAFTINGTWEAKS_ZIP_DEFAULT_NAME =
-  'vanillatweaks-craftingtweaks.zip';
-
-//#endregion
-
 //#region Subcommands & usage
 
 export const CRAFTINGTWEAKS_COMMAND = 'craftingtweaks';
@@ -42,7 +35,6 @@ export const CRAFTINGTWEAKS_SUBCOMMANDS = [
 
 //#region Messages
 
-export const CRAFTINGTWEAKS_RESOURCE_NAME = 'crafing tweak';
 export const CRAFTINGTWEAKS_HELP_MSG = getCommandHelpMsg(
   CRAFTINGTWEAKS_COMMAND,
   CRAFTINGTWEAKS_SUBCOMMANDS

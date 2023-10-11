@@ -3,6 +3,17 @@ import fs from 'fs/promises';
 import chalk from 'chalk';
 
 import {
+  CRAFTINGTWEAKS_RESOURCE_NAME,
+  CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
+  DEFAULT_MC_VERSION,
+  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+  DOWNLOAD_SUCCESS_SINGLE_MSG,
+  DOWNLOADING_MULTIPLE_MSG,
+  DOWNLOADING_SINGLE_MSG,
+  INCOMPATIBLE_PACKS_MSG,
+  INVALID_PACK_IDS_MSG,
+  NONEXISTENT_MULTIPLE_MSG,
+  NONEXISTENT_SINGLE_MSG,
   checkValidVersion,
   getPacksByCategory,
   packListFromCategories,
@@ -18,25 +29,14 @@ import {
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import {
-  DOWNLOADING_MULTIPLE_MSG,
-  DOWNLOADING_SINGLE_MSG,
-  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
-  DOWNLOAD_SUCCESS_SINGLE_MSG,
-  INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
-  INVALID_PACK_IDS_MSG,
   INVALID_SUBCOMMAND_MSG,
-  NONEXISTENT_MULTIPLE_MSG,
-  NONEXISTENT_SINGLE_MSG,
 } from '@/constants/general';
-import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
   CRAFTINGTWEAKS_COMMAND,
   CRAFTINGTWEAKS_DOWNLOAD_HELP_MSG,
   CRAFTINGTWEAKS_HELP_MSG,
   CRAFTINGTWEAKS_LIST_HELP_MSG,
-  CRAFTINGTWEAKS_RESOURCE_NAME,
-  CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
 } from '@/constants/craftingTweaks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';

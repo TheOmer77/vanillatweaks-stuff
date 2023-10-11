@@ -1,12 +1,15 @@
 import { isAxiosError } from 'axios';
 
-import { stringSubst } from 'core';
+import {
+  DATAPACKS_CATEGORIES_URL,
+  DATAPACKS_RESOURCE_NAME,
+  DATAPACKS_ZIP_URL,
+  DEFAULT_MC_VERSION,
+  INVALID_RESOURCE_VERSION_MSG,
+  stringSubst,
+} from 'core';
 
 import { api } from './instance';
-import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '@/constants/api';
-import { INVALID_RESOURCE_VERSION_MSG } from '@/constants/general';
-import { DEFAULT_MC_VERSION } from '@/constants/versions';
-import { DATAPACKS_RESOURCE_NAME } from '@/constants/datapacks';
 import type { CategoriesResponse, ZipSuccessResponse } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
 

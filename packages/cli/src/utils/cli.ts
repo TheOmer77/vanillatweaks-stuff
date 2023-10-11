@@ -1,6 +1,12 @@
 import chalk from 'chalk';
 
 import {
+  USAGE_COMMAND_MSG,
+  USAGE_COMMANDS_PREFIX_MSG,
+  USAGE_MAIN_MSG,
+  USAGE_OPTIONS_PREFIX_MSG,
+  USAGE_PREFIX_MSG,
+  USAGE_SUBCOMMAND_MSG,
   equalLengthStrings,
   removeHtmlTags,
   stringSubst,
@@ -8,16 +14,7 @@ import {
 } from 'core';
 
 import { args } from './args';
-import {
-  GENERAL_OPTIONS,
-  MAIN_COMMANDS,
-  USAGE_COMMANDS_PREFIX_MSG,
-  USAGE_COMMAND_MSG,
-  USAGE_MAIN_MSG,
-  USAGE_OPTIONS_PREFIX_MSG,
-  USAGE_PREFIX_MSG,
-  USAGE_SUBCOMMAND_MSG,
-} from '@/constants/general';
+import { GENERAL_OPTIONS, MAIN_COMMANDS } from '@/constants/general';
 import type { Pack } from '@/types/api';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
 

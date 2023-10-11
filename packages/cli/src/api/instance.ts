@@ -5,8 +5,9 @@ import axios, {
 } from 'axios';
 import chalk from 'chalk';
 
+import { BASE_URL } from 'core';
+
 import { args } from '@/utils/args';
-import { BASE_URL } from '@/constants/api';
 
 export const api = axios.create({ baseURL: BASE_URL });
 

@@ -4,6 +4,19 @@ import chalk from 'chalk';
 import AdmZip from 'adm-zip';
 
 import {
+  DATAPACKS_RESOURCE_NAME,
+  DATAPACKS_ZIP_DEFAULT_NAME,
+  DEFAULT_MC_VERSION,
+  DOWNLOAD_FAIL_MULTIPLE_MSG,
+  DOWNLOAD_FAIL_SINGLE_MSG,
+  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+  DOWNLOAD_SUCCESS_SINGLE_MSG,
+  DOWNLOADING_MULTIPLE_MSG,
+  DOWNLOADING_SINGLE_MSG,
+  INCOMPATIBLE_PACKS_MSG,
+  INVALID_PACK_IDS_MSG,
+  NONEXISTENT_MULTIPLE_MSG,
+  NONEXISTENT_SINGLE_MSG,
   checkValidVersion,
   getPacksByCategory,
   getZipEntryData,
@@ -17,27 +30,14 @@ import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import {
-  DOWNLOADING_MULTIPLE_MSG,
-  DOWNLOADING_SINGLE_MSG,
-  DOWNLOAD_FAIL_MULTIPLE_MSG,
-  DOWNLOAD_FAIL_SINGLE_MSG,
-  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
-  DOWNLOAD_SUCCESS_SINGLE_MSG,
-  INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
-  INVALID_PACK_IDS_MSG,
   INVALID_SUBCOMMAND_MSG,
-  NONEXISTENT_MULTIPLE_MSG,
-  NONEXISTENT_SINGLE_MSG,
 } from '@/constants/general';
-import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
   DATAPACKS_COMMAND,
   DATAPACKS_DOWNLOAD_HELP_MSG,
   DATAPACKS_HELP_MSG,
   DATAPACKS_LIST_HELP_MSG,
-  DATAPACKS_RESOURCE_NAME,
-  DATAPACKS_ZIP_DEFAULT_NAME,
 } from '@/constants/datapacks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { DatapacksSubcommand } from '@/types/datapacks';

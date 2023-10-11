@@ -1,12 +1,6 @@
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
 
-//#region Defaults
-
-export const RESOURCEPACKS_ZIP_DEFAULT_NAME = 'vanillatweaks-resourcepacks.zip';
-
-//#endregion
-
 //#region Subcommands & usage
 
 export const RESOURCEPACKS_COMMAND = 'resourcepacks';
@@ -41,7 +35,6 @@ export const RESOURCEPACKS_SUBCOMMANDS = [
 
 //#region Messages
 
-export const RESOURCEPACKS_RESOURCE_NAME = 'resource pack';
 export const RESOURCEPACKS_HELP_MSG = getCommandHelpMsg(
   RESOURCEPACKS_COMMAND,
   RESOURCEPACKS_SUBCOMMANDS

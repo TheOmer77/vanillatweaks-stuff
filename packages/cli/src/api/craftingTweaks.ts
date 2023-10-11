@@ -1,15 +1,15 @@
 import { isAxiosError } from 'axios';
 
-import { stringSubst } from 'core';
-
-import { api } from './instance';
 import {
   CRAFTINGTWEAKS_CATEGORIES_URL,
+  CRAFTINGTWEAKS_RESOURCE_NAME,
   CRAFTINGTWEAKS_ZIP_URL,
-} from '@/constants/api';
-import { INVALID_RESOURCE_VERSION_MSG } from '@/constants/general';
-import { DEFAULT_MC_VERSION } from '@/constants/versions';
-import { CRAFTINGTWEAKS_RESOURCE_NAME } from '@/constants/craftingTweaks';
+  DEFAULT_MC_VERSION,
+  INVALID_RESOURCE_VERSION_MSG,
+  stringSubst,
+} from 'core';
+
+import { api } from './instance';
 import type { CategoriesResponse, ZipSuccessResponse } from '@/types/api';
 import type { MinecraftVersion } from '@/types/versions';
 

@@ -1,12 +1,6 @@
 import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
 import type { ReadonlyCliSubcommand } from '@/types/cli';
 
-//#region Defaults
-
-export const DATAPACKS_ZIP_DEFAULT_NAME = 'vanillatweaks-datapacks.zip';
-
-//#endregion
-
 //#region Subcommands & usage
 
 export const DATAPACKS_COMMAND = 'datapacks';
@@ -46,7 +40,6 @@ export const DATAPACKS_SUBCOMMANDS = [
 
 //#region Messages
 
-export const DATAPACKS_RESOURCE_NAME = 'datapack';
 export const DATAPACKS_HELP_MSG = getCommandHelpMsg(
   DATAPACKS_COMMAND,
   DATAPACKS_SUBCOMMANDS

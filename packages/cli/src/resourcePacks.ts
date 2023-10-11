@@ -3,6 +3,17 @@ import fs from 'fs/promises';
 import chalk from 'chalk';
 
 import {
+  DEFAULT_MC_VERSION,
+  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+  DOWNLOAD_SUCCESS_SINGLE_MSG,
+  DOWNLOADING_MULTIPLE_MSG,
+  DOWNLOADING_SINGLE_MSG,
+  INCOMPATIBLE_PACKS_MSG,
+  INVALID_PACK_IDS_MSG,
+  NONEXISTENT_MULTIPLE_MSG,
+  NONEXISTENT_SINGLE_MSG,
+  RESOURCEPACKS_RESOURCE_NAME,
+  RESOURCEPACKS_ZIP_DEFAULT_NAME,
   checkValidVersion,
   getPacksByCategory,
   packListFromCategories,
@@ -10,6 +21,7 @@ import {
   toKebabCase,
 } from 'core';
 
+import { downloadFile } from '@/api/general';
 import {
   getResourcePacksCategories,
   getResourcePacksZipLink,
@@ -17,29 +29,17 @@ import {
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import {
-  DOWNLOADING_MULTIPLE_MSG,
-  DOWNLOADING_SINGLE_MSG,
-  DOWNLOAD_SUCCESS_MULTIPLE_MSG,
-  DOWNLOAD_SUCCESS_SINGLE_MSG,
-  INCOMPATIBLE_PACKS_MSG,
   INCORRECT_USAGE_MSG,
-  INVALID_PACK_IDS_MSG,
   INVALID_SUBCOMMAND_MSG,
-  NONEXISTENT_MULTIPLE_MSG,
-  NONEXISTENT_SINGLE_MSG,
 } from '@/constants/general';
-import { DEFAULT_MC_VERSION } from '@/constants/versions';
 import {
   RESOURCEPACKS_COMMAND,
   RESOURCEPACKS_DOWNLOAD_HELP_MSG,
   RESOURCEPACKS_HELP_MSG,
   RESOURCEPACKS_LIST_HELP_MSG,
-  RESOURCEPACKS_RESOURCE_NAME,
-  RESOURCEPACKS_ZIP_DEFAULT_NAME,
 } from '@/constants/resourcePacks';
 import type { MinecraftVersion } from '@/types/versions';
 import type { ResourcePacksSubcommand } from '@/types/resourcePacks';
-import { downloadFile } from './api/general';
 
 /**
  * Fetch all available resource packs and list them.

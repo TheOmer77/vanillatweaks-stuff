@@ -1,5 +1,22 @@
 import { toKebabCase } from './string';
-import type { Pack, PacksCategory } from '@/types/api';
+// import type { Pack, PacksCategory } from '@/types/api';
+
+// TEMPORARILY STORING TYPES HERE
+// TODO: Import these types once moved to core
+export interface Pack {
+  name: string;
+  display: string;
+  version?: string;
+  description: string;
+  incompatible: string[];
+  lastupdated: number;
+  video?: string;
+}
+export interface PacksCategory {
+  category: string;
+  categories?: PacksCategory[];
+  packs: Pack[];
+}
 
 export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
   categories
