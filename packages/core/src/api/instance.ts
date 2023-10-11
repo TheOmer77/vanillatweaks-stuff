@@ -7,7 +7,7 @@ import chalk from 'chalk';
 
 import { BASE_URL } from 'core';
 
-import { args } from '@/utils/args';
+const debug = process.argv.includes('--debug');
 
 export const api = axios.create({ baseURL: BASE_URL });
 
@@ -15,7 +15,7 @@ const reqInterceptor = (req: InternalAxiosRequestConfig) => {
   const reqDebugLog = `${chalk.bold.yellow(req.method?.toUpperCase())} ${
     req.baseURL
   }${req.url}`;
-  if (args.debug) console.debug(reqDebugLog, req.data || '');
+  if (debug) console.debug(reqDebugLog, req.data || '');
 
   return req;
 };
@@ -24,7 +24,7 @@ const resSuccessInterceptor = (res: AxiosResponse) => {
   const resStatusLog = chalk.green(
     `${chalk.bold(res.status)} ${res.statusText}`
   );
-  if (args.debug) console.debug(resStatusLog, res.data || '');
+  if (debug) console.debug(resStatusLog, res.data || '');
 
   return res;
 };
@@ -34,7 +34,7 @@ const resErrorInterceptor = (err: unknown) => {
   const resStatusLog = chalk.red(
     `${chalk.bold(err.response.status)} ${err.response.statusText}`
   );
-  if (args.debug) console.debug(resStatusLog, err.response.data || '');
+  if (debug) console.debug(resStatusLog, err.response.data || '');
 
   throw err;
 };
