@@ -1,5 +1,7 @@
 # Vanilla Tweaks CLI
 
+<!-- TODO: Make this README better lol -->
+
 To install dependencies:
 
 ```bash
@@ -8,8 +10,6 @@ bun install
 
 ## Scripts
 
-### `bun start`
+### `bun start:cli <COMMAND> ...`
 
-Run the script.
-
-**This README is bad, I should probably update it later 🙃**
+Run the CLI. Command and args are passed to the script.
