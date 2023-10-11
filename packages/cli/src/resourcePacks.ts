@@ -19,6 +19,7 @@ import {
   packListFromCategories,
   stringSubst,
   toKebabCase,
+  type MinecraftVersion,
 } from 'core';
 
 import { downloadFile } from '@/api/general';
@@ -38,8 +39,7 @@ import {
   RESOURCEPACKS_HELP_MSG,
   RESOURCEPACKS_LIST_HELP_MSG,
 } from '@/constants/resourcePacks';
-import type { MinecraftVersion } from '@/types/versions';
-import type { ResourcePacksSubcommand } from '@/types/resourcePacks';
+import type { ResourcePacksSubcommand } from '@/types/subcommands';
 
 /**
  * Fetch all available resource packs and list them.

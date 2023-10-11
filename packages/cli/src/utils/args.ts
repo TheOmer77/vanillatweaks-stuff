@@ -1,6 +1,6 @@
 import minimist from 'minimist';
 
-import type { MinecraftVersion } from '@/types/versions';
+import type { MinecraftVersion } from 'core';
 
 export interface ArgsOptions {
   /**

@@ -11,11 +11,11 @@ import {
   removeHtmlTags,
   stringSubst,
   toKebabCase,
+  type Pack,
 } from 'core';
 
 import { args } from './args';
 import { GENERAL_OPTIONS, MAIN_COMMANDS } from '@/constants/general';
-import type { Pack } from '@/types/api';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
 
 export const getMainHelpMsg = () => {

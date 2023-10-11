@@ -23,6 +23,7 @@ import {
   packListFromCategories,
   stringSubst,
   toKebabCase,
+  type MinecraftVersion,
 } from 'core';
 
 import { downloadFile } from '@/api/general';
@@ -39,8 +40,7 @@ import {
   DATAPACKS_HELP_MSG,
   DATAPACKS_LIST_HELP_MSG,
 } from '@/constants/datapacks';
-import type { MinecraftVersion } from '@/types/versions';
-import type { DatapacksSubcommand } from '@/types/datapacks';
+import type { DatapacksSubcommand } from '@/types/subcommands';
 
 /**
  * Fetch all available datapacks and list them.

@@ -7,11 +7,12 @@ import {
   DEFAULT_MC_VERSION,
   INVALID_RESOURCE_VERSION_MSG,
   stringSubst,
+  type CategoriesResponse,
+  type MinecraftVersion,
+  type ZipSuccessResponse,
 } from 'core';
 
 import { api } from './instance';
-import type { CategoriesResponse, ZipSuccessResponse } from '@/types/api';
-import type { MinecraftVersion } from '@/types/versions';
 
 export const getDatapacksCategories = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION

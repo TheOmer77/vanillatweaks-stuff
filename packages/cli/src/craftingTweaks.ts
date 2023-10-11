@@ -19,6 +19,7 @@ import {
   packListFromCategories,
   stringSubst,
   toKebabCase,
+  type MinecraftVersion,
 } from 'core';
 
 import { downloadFile } from '@/api/general';
@@ -38,8 +39,7 @@ import {
   CRAFTINGTWEAKS_HELP_MSG,
   CRAFTINGTWEAKS_LIST_HELP_MSG,
 } from '@/constants/craftingTweaks';
-import type { MinecraftVersion } from '@/types/versions';
-import type { CraftingTweaksSubcommand } from '@/types/craftingTweaks';
+import type { CraftingTweaksSubcommand } from '@/types/subcommands';
 
 /**
  * Fetch all available crafting tweaks and list them.

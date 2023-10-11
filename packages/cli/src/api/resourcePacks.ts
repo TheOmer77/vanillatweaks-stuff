@@ -7,11 +7,12 @@ import {
   RESOURCEPACKS_RESOURCE_NAME,
   RESOURCEPACKS_ZIP_URL,
   stringSubst,
+  type CategoriesResponse,
+  type MinecraftVersion,
+  type ZipSuccessResponse,
 } from 'core';
 
 import { api } from './instance';
-import type { CategoriesResponse, ZipSuccessResponse } from '@/types/api';
-import type { MinecraftVersion } from '@/types/versions';
 
 export const getResourcePacksCategories = async (
   version: MinecraftVersion = DEFAULT_MC_VERSION
