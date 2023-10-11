@@ -29,19 +29,19 @@ import {
   type MinecraftVersion,
 } from 'core';
 
-import { args } from '@/utils/args';
-import { printPackList } from '@/utils/cli';
+import { args } from './utils/args';
+import { printPackList } from './utils/cli';
 import {
   INCORRECT_USAGE_MSG,
   INVALID_SUBCOMMAND_MSG,
-} from '@/constants/general';
+} from './constants/general';
 import {
   DATAPACKS_COMMAND,
   DATAPACKS_DOWNLOAD_HELP_MSG,
   DATAPACKS_HELP_MSG,
   DATAPACKS_LIST_HELP_MSG,
-} from '@/constants/datapacks';
-import type { DatapacksSubcommand } from '@/types/subcommands';
+} from './constants/datapacks';
+import type { DatapacksSubcommand } from './types/subcommands';
 
 /**
  * Fetch all available datapacks and list them.

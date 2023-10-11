@@ -25,19 +25,19 @@ import {
   type MinecraftVersion,
 } from 'core';
 
-import { args } from '@/utils/args';
-import { printPackList } from '@/utils/cli';
+import { args } from './utils/args';
+import { printPackList } from './utils/cli';
 import {
   INCORRECT_USAGE_MSG,
   INVALID_SUBCOMMAND_MSG,
-} from '@/constants/general';
+} from './constants/general';
 import {
   RESOURCEPACKS_COMMAND,
   RESOURCEPACKS_DOWNLOAD_HELP_MSG,
   RESOURCEPACKS_HELP_MSG,
   RESOURCEPACKS_LIST_HELP_MSG,
-} from '@/constants/resourcePacks';
-import type { ResourcePacksSubcommand } from '@/types/subcommands';
+} from './constants/resourcePacks';
+import type { ResourcePacksSubcommand } from './types/subcommands';
 
 /**
  * Fetch all available resource packs and list them.

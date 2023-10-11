@@ -15,8 +15,8 @@ import {
 } from 'core';
 
 import { args } from './args';
-import { GENERAL_OPTIONS, MAIN_COMMANDS } from '@/constants/general';
-import type { CliSubcommand, ReadonlyCliSubcommand } from '@/types/cli';
+import { GENERAL_OPTIONS, MAIN_COMMANDS } from '../constants/general';
+import type { CliSubcommand, ReadonlyCliSubcommand } from '../types/cli';
 
 export const getMainHelpMsg = () => {
   const formattedCommandIds = equalLengthStrings(

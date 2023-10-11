@@ -1,15 +1,15 @@
 import chalk from 'chalk';
 
-import craftingTweaks from '@/craftingTweaks';
-import datapacks from '@/datapacks';
-import resourcePacks from '@/resourcePacks';
+import craftingTweaks from './craftingTweaks';
+import datapacks from './datapacks';
+import resourcePacks from './resourcePacks';
 
-import { args } from '@/utils/args';
-import { getMainHelpMsg } from '@/utils/cli';
-import { INCORRECT_USAGE_MSG } from '@/constants/general';
-import { RESOURCEPACKS_COMMAND } from '@/constants/resourcePacks';
-import { DATAPACKS_COMMAND } from '@/constants/datapacks';
-import { CRAFTINGTWEAKS_COMMAND } from '@/constants/craftingTweaks';
+import { args } from './utils/args';
+import { getMainHelpMsg } from './utils/cli';
+import { INCORRECT_USAGE_MSG } from './constants/general';
+import { RESOURCEPACKS_COMMAND } from './constants/resourcePacks';
+import { DATAPACKS_COMMAND } from './constants/datapacks';
+import { CRAFTINGTWEAKS_COMMAND } from './constants/craftingTweaks';
 
 try {
   switch (args._[0]) {

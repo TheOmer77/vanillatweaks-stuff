@@ -1,6 +1,6 @@
 import { DEFAULT_MC_VERSION } from 'core';
 
-import type { CliCommand, ReadonlyCliOption } from '@/types/cli';
+import type { CliCommand, ReadonlyCliOption } from '../types/cli';
 
 //#region Commands & options
 

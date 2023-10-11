@@ -1,5 +1,5 @@
-import { getCommandHelpMsg, getSubcommandHelpMsg } from '@/utils/cli';
-import type { ReadonlyCliSubcommand } from '@/types/cli';
+import { getCommandHelpMsg, getSubcommandHelpMsg } from '../utils/cli';
+import type { ReadonlyCliSubcommand } from '../types/cli';
 
 //#region Subcommands & usage
 
