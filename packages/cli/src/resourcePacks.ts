@@ -15,18 +15,16 @@ import {
   RESOURCEPACKS_RESOURCE_NAME,
   RESOURCEPACKS_ZIP_DEFAULT_NAME,
   checkValidVersion,
+  downloadFile,
   getPacksByCategory,
+  getResourcePacksCategories,
+  getResourcePacksZipLink,
   packListFromCategories,
   stringSubst,
   toKebabCase,
   type MinecraftVersion,
 } from 'core';
 
-import { downloadFile } from '@/api/general';
-import {
-  getResourcePacksCategories,
-  getResourcePacksZipLink,
-} from '@/api/resourcePacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import {

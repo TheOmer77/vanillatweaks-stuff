@@ -15,6 +15,9 @@ import {
   NONEXISTENT_MULTIPLE_MSG,
   NONEXISTENT_SINGLE_MSG,
   checkValidVersion,
+  downloadFile,
+  getCraftingTweaksCategories,
+  getCraftingTweaksZipLink,
   getPacksByCategory,
   packListFromCategories,
   stringSubst,
@@ -22,11 +25,6 @@ import {
   type MinecraftVersion,
 } from 'core';
 
-import { downloadFile } from '@/api/general';
-import {
-  getCraftingTweaksCategories,
-  getCraftingTweaksZipLink,
-} from '@/api/craftingTweaks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import {

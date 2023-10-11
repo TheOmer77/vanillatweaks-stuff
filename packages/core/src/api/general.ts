@@ -1,6 +1,6 @@
-import { DOWNLOAD_URL, stringSubst } from 'core';
-
 import { api } from './instance';
+import { stringSubst } from '@/utils';
+import { DOWNLOAD_URL } from '@/constants';
 
 export const downloadFile = async (filename: string) =>
   (

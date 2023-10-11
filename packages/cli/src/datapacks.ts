@@ -18,6 +18,9 @@ import {
   NONEXISTENT_MULTIPLE_MSG,
   NONEXISTENT_SINGLE_MSG,
   checkValidVersion,
+  downloadFile,
+  getDatapacksCategories,
+  getDatapacksZipLink,
   getPacksByCategory,
   getZipEntryData,
   packListFromCategories,
@@ -26,8 +29,6 @@ import {
   type MinecraftVersion,
 } from 'core';
 
-import { downloadFile } from '@/api/general';
-import { getDatapacksCategories, getDatapacksZipLink } from '@/api/datapacks';
 import { args } from '@/utils/args';
 import { printPackList } from '@/utils/cli';
 import {
