@@ -1,7 +1,7 @@
 import { isAxiosError } from 'axios';
 
 import { api } from './instance';
-import { stringSubst } from '../utils';
+import { capitalize, stringSubst } from '../utils';
 import {
   CRAFTINGTWEAKS_CATEGORIES_URL,
   CRAFTINGTWEAKS_ZIP_URL,
@@ -28,7 +28,7 @@ export const getCraftingTweaksCategories = async (
     if (isAxiosError(err) && err.response?.status === 404)
       throw new Error(
         stringSubst(INVALID_RESOURCE_VERSION_MSG, {
-          resource: CRAFTINGTWEAKS_RESOURCE_NAME,
+          resource: capitalize(CRAFTINGTWEAKS_RESOURCE_NAME),
           version,
         })
       );

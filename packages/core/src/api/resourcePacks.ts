@@ -1,7 +1,7 @@
 import { isAxiosError } from 'axios';
 
 import { api } from './instance';
-import { stringSubst } from '../utils/string';
+import { capitalize, stringSubst } from '../utils/string';
 import {
   RESOURCEPACKS_CATEGORIES_URL,
   RESOURCEPACKS_ZIP_URL,
@@ -25,7 +25,7 @@ export const getResourcePacksCategories = async (
     if (isAxiosError(err) && err.response?.status === 404)
       throw new Error(
         stringSubst(INVALID_RESOURCE_VERSION_MSG, {
-          resource: RESOURCEPACKS_RESOURCE_NAME,
+          resource: capitalize(RESOURCEPACKS_RESOURCE_NAME),
           version,
         })
       );
