@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia';
 import {
   MinecraftVersion,
+  checkValidVersion,
   formatPacksList,
   getCraftingTweaksCategories,
   packListFromCategories,
@@ -11,12 +12,14 @@ const craftingTweaksRouter = new Elysia();
 
 craftingTweaksRouter.get(
   '/',
-  async ({ query: { version } }) =>
-    formatPacksList(
+  async ({ query: { version } }) => {
+    version && checkValidVersion(version as MinecraftVersion);
+    return formatPacksList(
       packListFromCategories(
         await getCraftingTweaksCategories(version as MinecraftVersion)
       )
-    ),
+    );
+  },
   getResourceHook
 );
 

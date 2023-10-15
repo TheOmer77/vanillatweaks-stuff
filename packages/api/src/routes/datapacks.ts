@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia';
 import {
   MinecraftVersion,
+  checkValidVersion,
   formatPacksList,
   getDatapacksCategories,
   packListFromCategories,
@@ -11,12 +12,14 @@ const datapacksRouter = new Elysia();
 
 datapacksRouter.get(
   '/',
-  async ({ query: { version } }) =>
-    formatPacksList(
+  async ({ query: { version } }) => {
+    version && checkValidVersion(version as MinecraftVersion);
+    return formatPacksList(
       packListFromCategories(
         await getDatapacksCategories(version as MinecraftVersion)
       )
-    ),
+    );
+  },
   getResourceHook
 );
 
