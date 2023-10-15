@@ -5,7 +5,7 @@ import {
   packListFromCategories,
   type MinecraftVersion,
 } from 'core';
-import { getResourceHook } from '../hooks';
+import { getPacksHook } from '../hooks/packs';
 
 const resourcePacksRouter = new Elysia();
 
@@ -17,7 +17,7 @@ resourcePacksRouter.get(
         await getResourcePacksCategories(version as MinecraftVersion)
       )
     ),
-  getResourceHook
+  getPacksHook
 );
 
 export default resourcePacksRouter;

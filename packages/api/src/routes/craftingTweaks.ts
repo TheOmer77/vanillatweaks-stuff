@@ -5,7 +5,7 @@ import {
   packListFromCategories,
   type MinecraftVersion,
 } from 'core';
-import { getResourceHook } from '../hooks';
+import { getPacksHook } from '../hooks/packs';
 
 const craftingTweaksRouter = new Elysia();
 
@@ -17,7 +17,7 @@ craftingTweaksRouter.get(
         await getCraftingTweaksCategories(version as MinecraftVersion)
       )
     ),
-  getResourceHook
+  getPacksHook
 );
 
 export default craftingTweaksRouter;
