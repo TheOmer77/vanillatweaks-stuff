@@ -14,6 +14,10 @@ export interface PacksCategory {
   packs: Pack[];
 }
 
+export interface PackWithId extends Omit<Pack, 'name'> {
+  id: string;
+}
+
 export interface CategoriesResponse {
   categories: PacksCategory[];
 }

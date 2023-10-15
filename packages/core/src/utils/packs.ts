@@ -1,5 +1,5 @@
 import { removeHtmlTags, toKebabCase } from './string';
-import type { Pack, PacksCategory } from '../types/api';
+import type { Pack, PackWithId, PacksCategory } from '../types/api';
 
 export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
   categories
@@ -15,7 +15,7 @@ export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
     )
     .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
-export const formatPacksList = (packs: Pack[]) =>
+export const formatPacksList = (packs: Pack[]): PackWithId[] =>
   packs.map(({ name, display, description, ...rest }) => ({
     id: toKebabCase(name),
     display,
