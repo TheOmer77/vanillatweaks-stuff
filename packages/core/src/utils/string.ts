@@ -1,4 +1,13 @@
 /**
+ * Capitalizes the first letter of a string.
+ * @param str The string to be capitalized.
+ * @param lowerRest Whether or not the rest of the characters should be lowercased
+ */
+export const capitalize = ([first, ...rest]: string, lowerRest = false) =>
+  first.toUpperCase() +
+  (lowerRest ? rest.join('').toLowerCase() : rest.join(''));
+
+/**
  * Convert a given string to kebab-case.
  * @param str - The string to be converted.
  */
