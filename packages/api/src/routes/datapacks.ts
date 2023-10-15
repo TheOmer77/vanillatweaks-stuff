@@ -14,6 +14,7 @@ import {
   stringSubst,
 } from 'core';
 import { getPacksHook } from '../hooks/packs';
+import { DOWNLOAD_FAIL_SINGLE_MSG } from '../constants/general';
 
 const datapacksRouter = new Elysia();
 
@@ -65,8 +66,7 @@ datapacksRouter.get(
 
     if (!packFile)
       throw new Error(
-        // TODO: Move this messaged to consts
-        stringSubst("Failed to download %resource '%packId'.", {
+        stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, {
           resource: DATAPACKS_RESOURCE_NAME,
           packId,
         })
