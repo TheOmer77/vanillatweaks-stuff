@@ -136,10 +136,6 @@ const downloadDatapacks = async (
 
   const packsByCategory = getPacksByCategory(packIds, categories);
 
-  const formData = new FormData();
-  formData.append('version', version);
-  formData.append('packs', JSON.stringify(packsByCategory));
-
   console.log(
     stringSubst(
       validPackIds.length === 1
