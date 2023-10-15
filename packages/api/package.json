@@ -6,6 +6,7 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "core": "workspace:*",
     "elysia": "^0.7.16"
   }
 }
