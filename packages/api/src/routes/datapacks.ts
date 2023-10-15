@@ -1,9 +1,9 @@
 import { Elysia } from 'elysia';
+
 import {
   formatPacksList,
   getDatapacksCategories,
   packListFromCategories,
-  type MinecraftVersion,
 } from 'core';
 import { getPacksHook } from '../hooks/packs';
 
@@ -13,9 +13,7 @@ datapacksRouter.get(
   '/',
   async ({ query: { version } }) =>
     formatPacksList(
-      packListFromCategories(
-        await getDatapacksCategories(version as MinecraftVersion)
-      )
+      packListFromCategories(await getDatapacksCategories(version))
     ),
   getPacksHook
 );

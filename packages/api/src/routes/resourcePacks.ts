@@ -3,7 +3,6 @@ import {
   formatPacksList,
   getResourcePacksCategories,
   packListFromCategories,
-  type MinecraftVersion,
 } from 'core';
 import { getPacksHook } from '../hooks/packs';
 
@@ -13,9 +12,7 @@ resourcePacksRouter.get(
   '/',
   async ({ query: { version } }) =>
     formatPacksList(
-      packListFromCategories(
-        await getResourcePacksCategories(version as MinecraftVersion)
-      )
+      packListFromCategories(await getResourcePacksCategories(version))
     ),
   getPacksHook
 );

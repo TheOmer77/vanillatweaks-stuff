@@ -3,7 +3,6 @@ import {
   formatPacksList,
   getCraftingTweaksCategories,
   packListFromCategories,
-  type MinecraftVersion,
 } from 'core';
 import { getPacksHook } from '../hooks/packs';
 
@@ -13,9 +12,7 @@ craftingTweaksRouter.get(
   '/',
   async ({ query: { version } }) =>
     formatPacksList(
-      packListFromCategories(
-        await getCraftingTweaksCategories(version as MinecraftVersion)
-      )
+      packListFromCategories(await getCraftingTweaksCategories(version))
     ),
   getPacksHook
 );
