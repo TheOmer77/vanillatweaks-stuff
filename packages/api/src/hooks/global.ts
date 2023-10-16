@@ -11,10 +11,10 @@ export const errorHandler: ErrorHandler = ({
   request: { method },
 }) => {
   switch (code) {
+    case 'PARSE':
     case 'VALIDATION':
       set.status = 400;
       break;
-    case 'PARSE':
     case 'INVALID_COOKIE_SIGNATURE':
       set.status = 401;
       break;
