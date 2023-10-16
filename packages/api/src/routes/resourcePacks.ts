@@ -1,4 +1,6 @@
 import { Elysia, NotFoundError } from 'elysia';
+import AdmZip from 'adm-zip';
+
 import {
   NONEXISTENT_SINGLE_MSG,
   RESOURCEPACKS_RESOURCE_NAME,
@@ -48,9 +50,6 @@ resourcePacksRouter.get(
         .at(-1) as string,
       zipBuffer = await downloadFile(zipFilename);
 
-    // TODO: Modify ZIP so it includes the specific pack's pack.png
-    // TODO: Remove "Selected Packs.txt" from zip
-
     if (!zipBuffer)
       throw new Error(
         stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, {
@@ -59,7 +58,13 @@ resourcePacksRouter.get(
         })
       );
 
-    return new Response(zipBuffer, {
+    // TODO: Modify ZIP so it includes the specific pack's pack.png
+
+    const zip = new AdmZip(zipBuffer);
+    zip.deleteFile('Selected Packs.txt');
+    const modifiedZipBuffer = await zip.toBufferPromise();
+
+    return new Response(modifiedZipBuffer, {
       headers: { 'Content-Type': `attachment; filename=${packId}.zip` },
     });
   },
