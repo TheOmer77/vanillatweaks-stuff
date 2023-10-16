@@ -4,6 +4,7 @@ import chalk from 'chalk';
 
 import {
   DEFAULT_MC_VERSION,
+  DOWNLOAD_PACKS_URL,
   INCOMPATIBLE_PACKS_MSG,
   INVALID_PACK_IDS_MSG,
   NONEXISTENT_MULTIPLE_MSG,
@@ -150,7 +151,9 @@ const downloadResourcePacks = async (
   const zipFilename = (await getResourcePacksZipLink(version, packsByCategory))
       .split('/')
       .at(-1) as string,
-    zipBuffer = await downloadFile(zipFilename);
+    zipBuffer = await downloadFile(
+      stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
+    );
 
   const outDirExists = await fs.exists(outDir);
   if (!outDirExists) await fs.mkdir(outDir, { recursive: true });

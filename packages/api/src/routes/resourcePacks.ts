@@ -2,6 +2,7 @@ import { Elysia, NotFoundError } from 'elysia';
 import AdmZip from 'adm-zip';
 
 import {
+  DOWNLOAD_PACKS_URL,
   NONEXISTENT_SINGLE_MSG,
   RESOURCEPACKS_RESOURCE_NAME,
   downloadFile,
@@ -48,7 +49,9 @@ resourcePacksRouter.get(
       )
         .split('/')
         .at(-1) as string,
-      zipBuffer = await downloadFile(zipFilename);
+      zipBuffer = await downloadFile(
+        stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
+      );
 
     if (!zipBuffer)
       throw new Error(

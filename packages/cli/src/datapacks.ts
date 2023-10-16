@@ -7,6 +7,7 @@ import {
   DATAPACKS_RESOURCE_NAME,
   DATAPACKS_ZIP_DEFAULT_NAME,
   DEFAULT_MC_VERSION,
+  DOWNLOAD_PACKS_URL,
   INCOMPATIBLE_PACKS_MSG,
   INVALID_PACK_IDS_MSG,
   NONEXISTENT_MULTIPLE_MSG,
@@ -155,7 +156,9 @@ const downloadDatapacks = async (
   const zipFilename = (await getDatapacksZipLink(version, packsByCategory))
       .split('/')
       .at(-1) as string,
-    zipBuffer = await downloadFile(zipFilename);
+    zipBuffer = await downloadFile(
+      stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
+    );
 
   const outDirExists = await fs.exists(outDir);
   if (!outDirExists) await fs.mkdir(outDir, { recursive: true });

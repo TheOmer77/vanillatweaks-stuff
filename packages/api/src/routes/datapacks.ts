@@ -3,6 +3,7 @@ import AdmZip from 'adm-zip';
 
 import {
   DATAPACKS_RESOURCE_NAME,
+  DOWNLOAD_PACKS_URL,
   NONEXISTENT_SINGLE_MSG,
   downloadFile,
   formatPacksList,
@@ -47,7 +48,9 @@ datapacksRouter.get(
     const zipFilename = (await getDatapacksZipLink(version, packsByCategory))
         .split('/')
         .at(-1) as string,
-      zipBuffer = await downloadFile(zipFilename);
+      zipBuffer = await downloadFile(
+        stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
+      );
 
     const zip = new AdmZip(zipBuffer),
       zipEntries = zip

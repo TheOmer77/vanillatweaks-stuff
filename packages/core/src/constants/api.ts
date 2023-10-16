@@ -1,6 +1,6 @@
 export const BASE_URL = 'https://vanillatweaks.net';
 
-export const DOWNLOAD_URL = '/download/%filename';
+export const DOWNLOAD_PACKS_URL = '/download/%filename';
 
 export const RESOURCEPACKS_CATEGORIES_URL =
   '/assets/resources/json/%version/rpcategories.json';
