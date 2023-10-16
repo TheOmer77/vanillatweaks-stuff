@@ -2,9 +2,11 @@ import { Elysia } from 'elysia';
 
 import {
   DATAPACKS_RESOURCE_NAME,
+  DATAPACKS_ZIP_DEFAULT_NAME,
   DOWNLOAD_PACKS_URL,
   NONEXISTENT_SINGLE_MSG,
   downloadFile,
+  downloadZippedPacks,
   getDatapacksCategories,
   getDatapacksZipLink,
   getPacksByCategory,
@@ -15,7 +17,7 @@ import {
   stringSubst,
   zipFromBuffer,
 } from 'core';
-import { getPacksHook } from '../hooks/packs';
+import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
 import { DOWNLOAD_FAIL_SINGLE_MSG } from '../constants/general';
 
 const datapacksRouter = new Elysia();
@@ -27,6 +29,21 @@ datapacksRouter.get(
       packListFromCategories(await getDatapacksCategories(version))
     ),
   getPacksHook
+);
+
+datapacksRouter.get(
+  '/zip',
+  async ({ query: { packs, version } }) => {
+    const packIds = packs.split(',');
+    const zipBuffer = await downloadZippedPacks('datapack', packIds, version);
+
+    return new Response(zipBuffer, {
+      headers: {
+        'Content-Disposition': `attachment; filename=${DATAPACKS_ZIP_DEFAULT_NAME}`,
+      },
+    });
+  },
+  downloadPacksZipHook
 );
 
 datapacksRouter.get(
