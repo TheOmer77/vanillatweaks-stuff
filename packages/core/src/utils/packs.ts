@@ -35,7 +35,7 @@ export const getPacksByCategory = (
 ): Record<string, string[]> =>
   categories.reduce(
     (obj, { category, packs, categories: subCategories }) =>
-      packs.some(({ name }) => packIds.includes(toKebabCase(name)))
+      packListWithIds(packs).some(({ id }) => packIds.includes(id))
         ? {
             ...obj,
             [[
@@ -43,8 +43,8 @@ export const getPacksByCategory = (
               toKebabCase(category),
             ]
               .filter(Boolean)
-              .join('.')]: packs
-              .filter(({ name }) => packIds.includes(toKebabCase(name)))
+              .join('.')]: packListWithIds(packs)
+              .filter(({ id }) => packIds.includes(id))
               .map(({ name }) => name),
             ...(subCategories
               ? getPacksByCategory(packIds, subCategories, category)

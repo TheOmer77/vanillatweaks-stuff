@@ -18,8 +18,8 @@ import {
   getPacksByCategory,
   getZipFile,
   packListFromCategories,
+  packListWithIds,
   stringSubst,
-  toKebabCase,
   zipFromBuffer,
   type MinecraftVersion,
 } from 'core';
@@ -95,10 +95,10 @@ const downloadDatapacks = async (
   }
 
   const categories = await getDatapacksCategories(version),
-    packList = packListFromCategories(categories);
+    packList = packListWithIds(packListFromCategories(categories));
 
-  const validPackIds = packIds.filter((id) =>
-      packList.some(({ name }) => id === toKebabCase(name))
+  const validPackIds = packIds.filter((packId) =>
+      packList.some(({ id }) => packId === id)
     ),
     invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
 
@@ -120,12 +120,10 @@ const downloadDatapacks = async (
     );
   if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
 
-  const incompatiblePackIds = validPackIds.filter((id) => {
-    const pack = packList.find(({ name }) => id === toKebabCase(name));
+  const incompatiblePackIds = validPackIds.filter((packId) => {
+    const pack = packList.find(({ id }) => packId === id);
     if (!pack) return false;
-    return packIds.some((dpId) =>
-      pack.incompatible.map(toKebabCase).includes(dpId)
-    );
+    return packIds.some((packId) => pack.incompatible.includes(packId));
   });
   if (incompatiblePackIds.length > 0)
     throw new Error(
@@ -146,7 +144,7 @@ const downloadDatapacks = async (
         count: validPackIds.length.toString(),
         resource: DATAPACKS_RESOURCE_NAME,
         packs: packList
-          .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
+          .filter(({ id }) => validPackIds.includes(id))
           .map(({ display }) => display)
           .join(', '),
       }
@@ -187,7 +185,7 @@ const downloadDatapacks = async (
   const files = await Promise.allSettled(
       zipFiles.map(async (zipFile) => {
         const pack = packList.find((pack) => zipFile.name.includes(pack.name)),
-          fileName = pack ? `${toKebabCase(pack.name)}.zip` : zipFile.name;
+          fileName = pack ? `${pack.id}.zip` : zipFile.name;
         return Bun.write(
           path.join(outDir, fileName),
           await getZipFile(zipFile)

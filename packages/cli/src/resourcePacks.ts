@@ -17,8 +17,8 @@ import {
   getResourcePacksCategories,
   getResourcePacksZipLink,
   packListFromCategories,
+  packListWithIds,
   stringSubst,
-  toKebabCase,
   type MinecraftVersion,
 } from 'core';
 
@@ -90,10 +90,10 @@ const downloadResourcePacks = async (
   }
 
   const categories = await getResourcePacksCategories(version),
-    packList = packListFromCategories(categories);
+    packList = packListWithIds(packListFromCategories(categories));
 
-  const validPackIds = packIds.filter((id) =>
-      packList.some(({ name }) => id === toKebabCase(name))
+  const validPackIds = packIds.filter((packId) =>
+      packList.some(({ id }) => packId === id)
     ),
     invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
 
@@ -115,12 +115,10 @@ const downloadResourcePacks = async (
     );
   if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
 
-  const incompatiblePackIds = validPackIds.filter((id) => {
-    const pack = packList.find(({ name }) => id === toKebabCase(name));
+  const incompatiblePackIds = validPackIds.filter((packId) => {
+    const pack = packList.find(({ id }) => packId === id);
     if (!pack) return false;
-    return packIds.some((dpId) =>
-      pack.incompatible.map(toKebabCase).includes(dpId)
-    );
+    return packIds.some((packId) => pack.incompatible.includes(packId));
   });
   if (incompatiblePackIds.length > 0)
     throw new Error(
@@ -141,7 +139,7 @@ const downloadResourcePacks = async (
         count: validPackIds.length.toString(),
         resource: RESOURCEPACKS_RESOURCE_NAME,
         packs: packList
-          .filter(({ name }) => validPackIds.includes(toKebabCase(name)))
+          .filter(({ id }) => validPackIds.includes(id))
           .map(({ display }) => display)
           .join(', '),
       }

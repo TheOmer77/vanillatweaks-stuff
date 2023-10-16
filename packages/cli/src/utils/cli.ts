@@ -10,8 +10,8 @@ import {
   equalLengthStrings,
   removeHtmlTags,
   stringSubst,
-  toKebabCase,
   type Pack,
+  packListWithIds,
 } from 'core';
 
 import { args } from './args';
@@ -95,24 +95,26 @@ ${allOptions
   .join('\n')}`;
 };
 
-export const printPackList = (packs: Pack[]) =>
+export const printPackList = (packs: Pack[]) => {
+  const packsWithIds = packListWithIds(packs);
   console.log(
     args.detailed
-      ? packs
+      ? packsWithIds
           .map(
-            ({ name, display, version, description, incompatible }) =>
+            ({ id, display, version, description, incompatible }) =>
               `${chalk.bold(
-                `${chalk.yellow(toKebabCase(name))}: ${display}${
+                `${chalk.yellow(id)}: ${display}${
                   typeof version === 'string' ? ` v${version}` : ''
                 }`
               )}\n${removeHtmlTags(description.replaceAll('<br>', '\n'))}${
                 incompatible.length > 0
-                  ? `\n${chalk.red('Incompatible with:')} ${incompatible
-                      .map((incompatibleName) => toKebabCase(incompatibleName))
-                      .join(', ')}`
+                  ? `\n${chalk.red('Incompatible with:')} ${incompatible.join(
+                      ', '
+                    )}`
                   : ''
               }`
           )
           .join('\n\n')
-      : packs.map(({ name }) => toKebabCase(name)).join('\n')
+      : packsWithIds.map(({ id }) => id).join('\n')
   );
+};
