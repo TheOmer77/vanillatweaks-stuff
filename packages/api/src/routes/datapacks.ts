@@ -1,4 +1,4 @@
-import { Elysia, NotFoundError } from 'elysia';
+import { Elysia } from 'elysia';
 
 import {
   DATAPACKS_RESOURCE_NAME,
@@ -9,6 +9,7 @@ import {
   getDatapacksZipLink,
   getPacksByCategory,
   getZipFile,
+  HttpError,
   packListFromCategories,
   packListWithIds,
   stringSubst,
@@ -36,11 +37,12 @@ datapacksRouter.get(
       selectedPack = packList.find(({ id }) => id === packId);
 
     if (!selectedPack)
-      throw new NotFoundError(
+      throw new HttpError(
         stringSubst(NONEXISTENT_SINGLE_MSG, {
           resource: DATAPACKS_RESOURCE_NAME,
           packs: packId,
-        })
+        }),
+        404
       );
 
     const packsByCategory = getPacksByCategory([packId], categories);
@@ -58,11 +60,12 @@ datapacksRouter.get(
       : null;
 
     if (!packFile)
-      throw new Error(
+      throw new HttpError(
         stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, {
           resource: DATAPACKS_RESOURCE_NAME,
           packId,
-        })
+        }),
+        500
       );
 
     return new Response(packFile, {

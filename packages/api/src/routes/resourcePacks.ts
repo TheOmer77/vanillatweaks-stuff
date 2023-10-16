@@ -1,4 +1,4 @@
-import { Elysia, NotFoundError } from 'elysia';
+import { Elysia } from 'elysia';
 
 import {
   DEFAULT_MC_VERSION,
@@ -12,6 +12,7 @@ import {
   getPacksByCategory,
   getResourcePacksCategories,
   getResourcePacksZipLink,
+  HttpError,
   modifiedZipFromBuffer,
   packListFromCategories,
   packListWithIds,
@@ -42,8 +43,7 @@ resourcePacksRouter.get(
       (packId) => !packList.some(({ id }) => packId === id)
     );
     if (invalidPackIds.length > 0)
-      // TODO: Replace with custom BadRequestError
-      throw new Error(
+      throw new HttpError(
         stringSubst(
           invalidPackIds.length === 1
             ? NONEXISTENT_SINGLE_MSG
@@ -52,7 +52,8 @@ resourcePacksRouter.get(
             resource: RESOURCEPACKS_RESOURCE_NAME,
             packs: invalidPackIds.join(', '),
           }
-        )
+        ),
+        400
       );
 
     const packsByCategory = getPacksByCategory(packIds, categories);
@@ -83,11 +84,12 @@ resourcePacksRouter.get(
       selectedPack = packList.find(({ id }) => id === packId);
 
     if (!selectedPack)
-      throw new NotFoundError(
+      throw new HttpError(
         stringSubst(NONEXISTENT_SINGLE_MSG, {
           resource: RESOURCEPACKS_RESOURCE_NAME,
           packs: packId,
-        })
+        }),
+        404
       );
 
     const packsByCategory = getPacksByCategory([packId], categories);
@@ -112,11 +114,12 @@ resourcePacksRouter.get(
     ).map((promise) => promise?.value);
 
     if (!zipBuffer)
-      throw new Error(
+      throw new HttpError(
         stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, {
           resource: RESOURCEPACKS_RESOURCE_NAME,
           packId,
-        })
+        }),
+        500
       );
 
     const modifiedZipBuffer = await modifiedZipFromBuffer(zipBuffer, (zip) => {

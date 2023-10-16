@@ -1,4 +1,4 @@
-import { Elysia, NotFoundError } from 'elysia';
+import { Elysia } from 'elysia';
 import {
   CRAFTINGTWEAKS_ICON_URL,
   CRAFTINGTWEAKS_RESOURCE_NAME,
@@ -9,6 +9,7 @@ import {
   getCraftingTweaksCategories,
   getCraftingTweaksZipLink,
   getPacksByCategory,
+  HttpError,
   modifiedZipFromBuffer,
   packListFromCategories,
   packListWithIds,
@@ -36,11 +37,12 @@ craftingTweaksRouter.get(
       selectedPack = packList.find(({ id }) => id === packId);
 
     if (!selectedPack)
-      throw new NotFoundError(
+      throw new HttpError(
         stringSubst(NONEXISTENT_SINGLE_MSG, {
           resource: CRAFTINGTWEAKS_RESOURCE_NAME,
           packs: packId,
-        })
+        }),
+        404
       );
 
     const packsByCategory = getPacksByCategory([packId], categories);
@@ -65,11 +67,12 @@ craftingTweaksRouter.get(
     ).map((promise) => promise?.value);
 
     if (!zipBuffer)
-      throw new Error(
+      throw new HttpError(
         stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, {
           resource: CRAFTINGTWEAKS_RESOURCE_NAME,
           packId,
-        })
+        }),
+        500
       );
 
     const modifiedZipBuffer = await modifiedZipFromBuffer(zipBuffer, (zip) => {
