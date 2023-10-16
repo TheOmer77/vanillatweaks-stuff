@@ -3,9 +3,11 @@ import { Elysia, NotFoundError } from 'elysia';
 import {
   DEFAULT_MC_VERSION,
   DOWNLOAD_PACKS_URL,
+  NONEXISTENT_MULTIPLE_MSG,
   NONEXISTENT_SINGLE_MSG,
   RESOURCEPACKS_ICON_URL,
   RESOURCEPACKS_RESOURCE_NAME,
+  RESOURCEPACKS_ZIP_DEFAULT_NAME,
   downloadFile,
   getPacksByCategory,
   getResourcePacksCategories,
@@ -15,7 +17,7 @@ import {
   packListWithIds,
   stringSubst,
 } from 'core';
-import { getPacksHook } from '../hooks/packs';
+import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
 import { DOWNLOAD_FAIL_SINGLE_MSG } from '../constants/general';
 
 const resourcePacksRouter = new Elysia();
@@ -27,6 +29,50 @@ resourcePacksRouter.get(
       packListFromCategories(await getResourcePacksCategories(version))
     ),
   getPacksHook
+);
+
+resourcePacksRouter.get(
+  '/zip',
+  async ({ query: { packs, version } }) => {
+    const packIds = packs.split(',');
+    const categories = await getResourcePacksCategories(version),
+      packList = packListWithIds(packListFromCategories(categories));
+
+    const invalidPackIds = packIds.filter(
+      (packId) => !packList.some(({ id }) => packId === id)
+    );
+    if (invalidPackIds.length > 0)
+      // TODO: Replace with custom BadRequestError
+      throw new Error(
+        stringSubst(
+          invalidPackIds.length === 1
+            ? NONEXISTENT_SINGLE_MSG
+            : `${NONEXISTENT_MULTIPLE_MSG}%packs`,
+          {
+            resource: RESOURCEPACKS_RESOURCE_NAME,
+            packs: invalidPackIds.join(', '),
+          }
+        )
+      );
+
+    const packsByCategory = getPacksByCategory(packIds, categories);
+
+    const zipFilename = (
+        await getResourcePacksZipLink(version, packsByCategory)
+      )
+        .split('/')
+        .at(-1) as string,
+      zipBuffer = await downloadFile(
+        stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
+      );
+
+    return new Response(zipBuffer, {
+      headers: {
+        'Content-Disposition': `attachment; filename=${RESOURCEPACKS_ZIP_DEFAULT_NAME}`,
+      },
+    });
+  },
+  downloadPacksZipHook
 );
 
 resourcePacksRouter.get(
