@@ -2,10 +2,12 @@ import { Elysia } from 'elysia';
 import {
   CRAFTINGTWEAKS_ICON_URL,
   CRAFTINGTWEAKS_RESOURCE_NAME,
+  CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
   DEFAULT_MC_VERSION,
   DOWNLOAD_PACKS_URL,
   NONEXISTENT_SINGLE_MSG,
   downloadFile,
+  downloadZippedPacks,
   getCraftingTweaksCategories,
   getCraftingTweaksZipLink,
   getPacksByCategory,
@@ -15,7 +17,7 @@ import {
   packListWithIds,
   stringSubst,
 } from 'core';
-import { getPacksHook } from '../hooks/packs';
+import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
 import { DOWNLOAD_FAIL_SINGLE_MSG } from '../constants/general';
 
 const craftingTweaksRouter = new Elysia();
@@ -27,6 +29,25 @@ craftingTweaksRouter.get(
       packListFromCategories(await getCraftingTweaksCategories(version))
     ),
   getPacksHook
+);
+
+craftingTweaksRouter.get(
+  '/zip',
+  async ({ query: { packs, version } }) => {
+    const packIds = packs.split(',');
+    const zipBuffer = await downloadZippedPacks(
+      'craftingTweak',
+      packIds,
+      version
+    );
+
+    return new Response(zipBuffer, {
+      headers: {
+        'Content-Disposition': `attachment; filename=${CRAFTINGTWEAKS_ZIP_DEFAULT_NAME}`,
+      },
+    });
+  },
+  downloadPacksZipHook
 );
 
 craftingTweaksRouter.get(
