@@ -1,7 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
 import chalk from 'chalk';
-import AdmZip from 'adm-zip';
 
 import {
   DATAPACKS_RESOURCE_NAME,
@@ -17,10 +16,11 @@ import {
   getDatapacksCategories,
   getDatapacksZipLink,
   getPacksByCategory,
-  getZipEntryData,
+  getZipFile,
   packListFromCategories,
   stringSubst,
   toKebabCase,
+  zipFromBuffer,
   type MinecraftVersion,
 } from 'core';
 
@@ -179,18 +179,18 @@ const downloadDatapacks = async (
     );
   }
 
-  const zip = new AdmZip(zipBuffer),
-    zipEntries = zip
-      .getEntries()
-      .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
+  const zip = await zipFromBuffer(zipBuffer),
+    zipFiles = Object.values(zip.files).sort((a, b) =>
+      a.name > b.name ? 1 : a.name < b.name ? -1 : 0
+    );
 
   const files = await Promise.allSettled(
-      zipEntries.map(async (entry) => {
-        const pack = packList.find((pack) => entry.name.includes(pack.name)),
-          fileName = pack ? `${toKebabCase(pack.name)}.zip` : entry.name;
+      zipFiles.map(async (zipFile) => {
+        const pack = packList.find((pack) => zipFile.name.includes(pack.name)),
+          fileName = pack ? `${toKebabCase(pack.name)}.zip` : zipFile.name;
         return Bun.write(
           path.join(outDir, fileName),
-          await getZipEntryData(entry)
+          await getZipFile(zipFile)
         );
       })
     ),
