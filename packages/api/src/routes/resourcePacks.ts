@@ -3,12 +3,12 @@ import { Elysia } from 'elysia';
 import {
   DEFAULT_MC_VERSION,
   DOWNLOAD_PACKS_URL,
-  NONEXISTENT_MULTIPLE_MSG,
   NONEXISTENT_SINGLE_MSG,
   RESOURCEPACKS_ICON_URL,
   RESOURCEPACKS_RESOURCE_NAME,
   RESOURCEPACKS_ZIP_DEFAULT_NAME,
   downloadFile,
+  downloadZippedPacks,
   getPacksByCategory,
   getResourcePacksCategories,
   getResourcePacksZipLink,
@@ -36,36 +36,11 @@ resourcePacksRouter.get(
   '/zip',
   async ({ query: { packs, version } }) => {
     const packIds = packs.split(',');
-    const categories = await getResourcePacksCategories(version),
-      packList = packListWithIds(packListFromCategories(categories));
-
-    const invalidPackIds = packIds.filter(
-      (packId) => !packList.some(({ id }) => packId === id)
+    const zipBuffer = await downloadZippedPacks(
+      'resourcePack',
+      packIds,
+      version
     );
-    if (invalidPackIds.length > 0)
-      throw new HttpError(
-        stringSubst(
-          invalidPackIds.length === 1
-            ? NONEXISTENT_SINGLE_MSG
-            : `${NONEXISTENT_MULTIPLE_MSG}%packs`,
-          {
-            resource: RESOURCEPACKS_RESOURCE_NAME,
-            packs: invalidPackIds.join(', '),
-          }
-        ),
-        400
-      );
-
-    const packsByCategory = getPacksByCategory(packIds, categories);
-
-    const zipFilename = (
-        await getResourcePacksZipLink(version, packsByCategory)
-      )
-        .split('/')
-        .at(-1) as string,
-      zipBuffer = await downloadFile(
-        stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
-      );
 
     return new Response(zipBuffer, {
       headers: {

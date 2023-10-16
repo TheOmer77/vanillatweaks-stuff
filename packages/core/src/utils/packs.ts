@@ -1,5 +1,20 @@
 import { removeHtmlTags, toKebabCase } from './string';
+import { HttpError } from './httpError';
+import {
+  getResourcePacksCategories,
+  getResourcePacksZipLink,
+} from '../api/resourcePacks';
+import { getDatapacksCategories, getDatapacksZipLink } from '../api/datapacks';
+import {
+  getCraftingTweaksCategories,
+  getCraftingTweaksZipLink,
+} from '../api/craftingTweaks';
+import { INVALID_PACK_TYPE_MSG, PACK_TYPES } from '../constants/general';
+import { RESOURCEPACKS_RESOURCE_NAME } from '../constants/resourcePacks';
+import { DATAPACKS_RESOURCE_NAME } from '../constants/datapacks';
+import { CRAFTINGTWEAKS_RESOURCE_NAME } from '../constants/craftingTweaks';
 import type { Pack, PackWithId, PacksCategory } from '../types/api';
+import type { PackType } from '../types/packType';
 
 export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
   categories
@@ -53,3 +68,27 @@ export const getPacksByCategory = (
         : obj,
     {}
   );
+
+export const validatePackType = (packType: PackType) => {
+  if (!PACK_TYPES.includes(packType))
+    throw new HttpError(INVALID_PACK_TYPE_MSG, 400);
+};
+
+export const getResourceName = (packType: PackType) =>
+  packType === 'resourcePack'
+    ? RESOURCEPACKS_RESOURCE_NAME
+    : packType === 'datapack'
+    ? DATAPACKS_RESOURCE_NAME
+    : CRAFTINGTWEAKS_RESOURCE_NAME;
+export const getCategoriesFn = (packType: PackType) =>
+  packType === 'resourcePack'
+    ? getResourcePacksCategories
+    : packType === 'datapack'
+    ? getDatapacksCategories
+    : getCraftingTweaksCategories;
+export const getZipLinkFn = (packType: PackType) =>
+  packType === 'resourcePack'
+    ? getResourcePacksZipLink
+    : packType === 'datapack'
+    ? getDatapacksZipLink
+    : getCraftingTweaksZipLink;

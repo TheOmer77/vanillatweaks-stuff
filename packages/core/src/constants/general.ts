@@ -1,6 +1,11 @@
 //#region General constants
 
 export const EXEC_NAME = 'vanillatweaks';
+export const PACK_TYPES = [
+  'resourcePack',
+  'datapack',
+  'craftingTweak',
+] as const;
 
 //#endregion
 
@@ -17,6 +22,10 @@ export const USAGE_OPTIONS_PREFIX_MSG = `Options: `;
 
 //#region Packs error messages
 
+export const INVALID_PACK_TYPE_MSG =
+  `Invalid pack type. Pack type must be one of: ${PACK_TYPES.join(
+    ','
+  )}` as const;
 export const INVALID_VERSION_MSG =
   "'%version' is not a valid version for Vanilla Tweaks packs.";
 export const INVALID_RESOURCE_VERSION_MSG =
