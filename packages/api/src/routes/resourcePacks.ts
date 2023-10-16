@@ -2,8 +2,10 @@ import { Elysia, NotFoundError } from 'elysia';
 import JSZip from 'jszip';
 
 import {
+  DEFAULT_MC_VERSION,
   DOWNLOAD_PACKS_URL,
   NONEXISTENT_SINGLE_MSG,
+  RESOURCEPACKS_ICON_URL,
   RESOURCEPACKS_RESOURCE_NAME,
   downloadFile,
   formatPacksList,
@@ -29,7 +31,7 @@ resourcePacksRouter.get(
 
 resourcePacksRouter.get(
   '/:packId',
-  async ({ params: { packId }, query: { version } }) => {
+  async ({ params: { packId }, query: { version = DEFAULT_MC_VERSION } }) => {
     const categories = await getResourcePacksCategories(version),
       packList = formatPacksList(packListFromCategories(categories)),
       selectedPack = packList.find(({ id }) => id === packId);
@@ -45,13 +47,23 @@ resourcePacksRouter.get(
     const packsByCategory = getPacksByCategory([packId], categories);
 
     const zipFilename = (
-        await getResourcePacksZipLink(version, packsByCategory)
-      )
-        .split('/')
-        .at(-1) as string,
-      zipBuffer = await downloadFile(
-        stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
-      );
+      await getResourcePacksZipLink(version, packsByCategory)
+    )
+      .split('/')
+      .at(-1) as string;
+    const [zipBuffer, iconBuffer] = (
+      (await Promise.allSettled([
+        downloadFile(
+          stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
+        ),
+        downloadFile(
+          stringSubst(RESOURCEPACKS_ICON_URL, {
+            version,
+            pack: selectedPack.name,
+          })
+        ),
+      ])) as PromiseFulfilledResult<Buffer>[]
+    ).map((promise) => promise?.value);
 
     if (!zipBuffer)
       throw new Error(
@@ -61,10 +73,10 @@ resourcePacksRouter.get(
         })
       );
 
-    // TODO: Modify ZIP so it includes the specific pack's pack.png
-
+    // TODO: Move into function in core, do not use JSZip directly
     const zip = await JSZip.loadAsync(zipBuffer);
     zip.remove('Selected Packs.txt');
+    if (iconBuffer) zip.file('pack.png', iconBuffer);
     const modifiedZipBuffer = Buffer.from(
       await zip.generateAsync({ type: 'arraybuffer' })
     );
