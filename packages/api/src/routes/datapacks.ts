@@ -66,7 +66,7 @@ datapacksRouter.get(
       );
 
     return new Response(packFile, {
-      headers: { 'Content-Type': `attachment; filename=${packId}.zip` },
+      headers: { 'Content-Disposition': `attachment; filename=${packId}.zip` },
     });
   },
   getPacksHook

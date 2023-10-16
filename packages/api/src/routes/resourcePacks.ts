@@ -79,7 +79,7 @@ resourcePacksRouter.get(
     });
 
     return new Response(modifiedZipBuffer, {
-      headers: { 'Content-Type': `attachment; filename=${packId}.zip` },
+      headers: { 'Content-Disposition': `attachment; filename=${packId}.zip` },
     });
   },
   getPacksHook
