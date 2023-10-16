@@ -5,12 +5,12 @@ import {
   DOWNLOAD_PACKS_URL,
   NONEXISTENT_SINGLE_MSG,
   downloadFile,
-  formatPacksList,
   getDatapacksCategories,
   getDatapacksZipLink,
   getPacksByCategory,
   getZipFile,
   packListFromCategories,
+  packListWithIds,
   stringSubst,
   zipFromBuffer,
 } from 'core';
@@ -22,7 +22,7 @@ const datapacksRouter = new Elysia();
 datapacksRouter.get(
   '/',
   async ({ query: { version } }) =>
-    formatPacksList(
+    packListWithIds(
       packListFromCategories(await getDatapacksCategories(version))
     ),
   getPacksHook
@@ -32,7 +32,7 @@ datapacksRouter.get(
   '/:packId',
   async ({ params: { packId }, query: { version } }) => {
     const categories = await getDatapacksCategories(version),
-      packList = formatPacksList(packListFromCategories(categories)),
+      packList = packListWithIds(packListFromCategories(categories)),
       selectedPack = packList.find(({ id }) => id === packId);
 
     if (!selectedPack)

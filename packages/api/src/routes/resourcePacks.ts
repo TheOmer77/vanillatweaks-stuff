@@ -7,12 +7,12 @@ import {
   RESOURCEPACKS_ICON_URL,
   RESOURCEPACKS_RESOURCE_NAME,
   downloadFile,
-  formatPacksList,
   getPacksByCategory,
   getResourcePacksCategories,
   getResourcePacksZipLink,
   modifiedZipFromBuffer,
   packListFromCategories,
+  packListWithIds,
   stringSubst,
 } from 'core';
 import { getPacksHook } from '../hooks/packs';
@@ -23,7 +23,7 @@ const resourcePacksRouter = new Elysia();
 resourcePacksRouter.get(
   '/',
   async ({ query: { version } }) =>
-    formatPacksList(
+    packListWithIds(
       packListFromCategories(await getResourcePacksCategories(version))
     ),
   getPacksHook
@@ -33,7 +33,7 @@ resourcePacksRouter.get(
   '/:packId',
   async ({ params: { packId }, query: { version = DEFAULT_MC_VERSION } }) => {
     const categories = await getResourcePacksCategories(version),
-      packList = formatPacksList(packListFromCategories(categories)),
+      packList = packListWithIds(packListFromCategories(categories)),
       selectedPack = packList.find(({ id }) => id === packId);
 
     if (!selectedPack)

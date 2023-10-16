@@ -6,12 +6,12 @@ import {
   DOWNLOAD_PACKS_URL,
   NONEXISTENT_SINGLE_MSG,
   downloadFile,
-  formatPacksList,
   getCraftingTweaksCategories,
   getCraftingTweaksZipLink,
   getPacksByCategory,
   modifiedZipFromBuffer,
   packListFromCategories,
+  packListWithIds,
   stringSubst,
 } from 'core';
 import { getPacksHook } from '../hooks/packs';
@@ -22,7 +22,7 @@ const craftingTweaksRouter = new Elysia();
 craftingTweaksRouter.get(
   '/',
   async ({ query: { version } }) =>
-    formatPacksList(
+    packListWithIds(
       packListFromCategories(await getCraftingTweaksCategories(version))
     ),
   getPacksHook
@@ -32,7 +32,7 @@ craftingTweaksRouter.get(
   '/:packId',
   async ({ params: { packId }, query: { version = DEFAULT_MC_VERSION } }) => {
     const categories = await getCraftingTweaksCategories(version),
-      packList = formatPacksList(packListFromCategories(categories)),
+      packList = packListWithIds(packListFromCategories(categories)),
       selectedPack = packList.find(({ id }) => id === packId);
 
     if (!selectedPack)

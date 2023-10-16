@@ -15,7 +15,7 @@ export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
     )
     .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
-export const formatPacksList = (packs: Pack[]): PackWithId[] =>
+export const packListWithIds = (packs: Pack[]): PackWithId[] =>
   packs.map(({ name, display, description, ...rest }) => ({
     id: toKebabCase(name),
     name,
