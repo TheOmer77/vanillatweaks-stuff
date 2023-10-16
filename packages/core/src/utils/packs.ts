@@ -18,6 +18,7 @@ export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
 export const formatPacksList = (packs: Pack[]): PackWithId[] =>
   packs.map(({ name, display, description, ...rest }) => ({
     id: toKebabCase(name),
+    name,
     display,
     description: removeHtmlTags(description.replaceAll('<br>', ' ')),
     ...rest,

@@ -14,7 +14,7 @@ export interface PacksCategory {
   packs: Pack[];
 }
 
-export interface PackWithId extends Omit<Pack, 'name'> {
+export interface PackWithId extends Pack {
   id: string;
 }
 
