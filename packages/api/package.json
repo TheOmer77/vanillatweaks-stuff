@@ -6,7 +6,6 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "adm-zip": "^0.5.10",
     "core": "workspace:*",
     "elysia": "^0.7.16"
   }
