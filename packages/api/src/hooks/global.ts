@@ -7,10 +7,16 @@ export const logResponseInfo: Handler = ({ set, path, request: { method } }) =>
 export const errorHandler: ErrorHandler = ({
   error,
   set,
+  code,
   path,
   request: { method },
 }) => {
-  set.status = error instanceof HttpError ? error.status : 500;
+  set.status =
+    error instanceof HttpError
+      ? error.status
+      : code === 'VALIDATION'
+      ? 400
+      : 500;
 
   console.error(method, path, set.status.toString());
   error.stack && console.error(error.stack);
