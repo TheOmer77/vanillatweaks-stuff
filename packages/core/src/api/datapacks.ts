@@ -2,6 +2,7 @@ import { isAxiosError } from 'axios';
 
 import { api } from './instance';
 import { capitalize, stringSubst } from '../utils/string';
+import { HttpError } from '../utils/httpError';
 import { DATAPACKS_CATEGORIES_URL, DATAPACKS_ZIP_URL } from '../constants/api';
 import { INVALID_RESOURCE_VERSION_MSG } from '../constants/general';
 import { DEFAULT_MC_VERSION } from '../constants/versions';
@@ -20,11 +21,12 @@ export const getDatapacksCategories = async (
     ).data.categories;
   } catch (err) {
     if (isAxiosError(err) && err.response?.status === 404)
-      throw new Error(
+      throw new HttpError(
         stringSubst(INVALID_RESOURCE_VERSION_MSG, {
           resource: capitalize(DATAPACKS_RESOURCE_NAME),
           version,
-        })
+        }),
+        err.response.status
       );
     throw err;
   }
