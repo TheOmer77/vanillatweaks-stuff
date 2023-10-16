@@ -1,5 +1,5 @@
 import { Elysia, NotFoundError } from 'elysia';
-import AdmZip from 'adm-zip';
+import JSZip from 'jszip';
 
 import {
   DOWNLOAD_PACKS_URL,
@@ -63,9 +63,11 @@ resourcePacksRouter.get(
 
     // TODO: Modify ZIP so it includes the specific pack's pack.png
 
-    const zip = new AdmZip(zipBuffer);
-    zip.deleteFile('Selected Packs.txt');
-    const modifiedZipBuffer = await zip.toBufferPromise();
+    const zip = await JSZip.loadAsync(zipBuffer);
+    zip.remove('Selected Packs.txt');
+    const modifiedZipBuffer = Buffer.from(
+      await zip.generateAsync({ type: 'arraybuffer' })
+    );
 
     return new Response(modifiedZipBuffer, {
       headers: { 'Content-Type': `attachment; filename=${packId}.zip` },

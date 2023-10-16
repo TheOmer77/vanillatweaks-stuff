@@ -1,5 +1,5 @@
 import { Elysia, NotFoundError } from 'elysia';
-import AdmZip from 'adm-zip';
+import JSZip from 'jszip';
 
 import {
   DATAPACKS_RESOURCE_NAME,
@@ -10,7 +10,6 @@ import {
   getDatapacksCategories,
   getDatapacksZipLink,
   getPacksByCategory,
-  getZipEntryData,
   packListFromCategories,
   stringSubst,
 } from 'core';
@@ -52,20 +51,11 @@ datapacksRouter.get(
         stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
       );
 
-    const zip = new AdmZip(zipBuffer),
-      zipEntries = zip
-        .getEntries()
-        .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
-
-    const packFile = (
-      (
-        await Promise.allSettled(
-          zipEntries.map(async (entry) => await getZipEntryData(entry))
-        )
-      ).filter(
-        ({ status }) => status === 'fulfilled'
-      ) as PromiseFulfilledResult<Buffer>[]
-    )?.[0]?.value;
+    const zip = await JSZip.loadAsync(zipBuffer);
+    // TODO: Move into function in core, do not use JSZip directly
+    const packFile = Object.values(zip.files)[0]
+      ? Buffer.from(await Object.values(zip.files)[0].async('arraybuffer'))
+      : null;
 
     if (!packFile)
       throw new Error(
