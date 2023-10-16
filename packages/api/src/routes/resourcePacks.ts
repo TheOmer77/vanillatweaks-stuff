@@ -1,5 +1,4 @@
 import { Elysia, NotFoundError } from 'elysia';
-import JSZip from 'jszip';
 
 import {
   DEFAULT_MC_VERSION,
@@ -12,6 +11,7 @@ import {
   getPacksByCategory,
   getResourcePacksCategories,
   getResourcePacksZipLink,
+  modifiedZipFromBuffer,
   packListFromCategories,
   stringSubst,
 } from 'core';
@@ -73,13 +73,10 @@ resourcePacksRouter.get(
         })
       );
 
-    // TODO: Move into function in core, do not use JSZip directly
-    const zip = await JSZip.loadAsync(zipBuffer);
-    zip.remove('Selected Packs.txt');
-    if (iconBuffer) zip.file('pack.png', iconBuffer);
-    const modifiedZipBuffer = Buffer.from(
-      await zip.generateAsync({ type: 'arraybuffer' })
-    );
+    const modifiedZipBuffer = await modifiedZipFromBuffer(zipBuffer, (zip) => {
+      zip.remove('Selected Packs.txt');
+      if (iconBuffer) zip.file('pack.png', iconBuffer);
+    });
 
     return new Response(modifiedZipBuffer, {
       headers: { 'Content-Type': `attachment; filename=${packId}.zip` },

@@ -1,5 +1,4 @@
 import { Elysia, NotFoundError } from 'elysia';
-import JSZip from 'jszip';
 
 import {
   DATAPACKS_RESOURCE_NAME,
@@ -10,8 +9,10 @@ import {
   getDatapacksCategories,
   getDatapacksZipLink,
   getPacksByCategory,
+  getZipFile,
   packListFromCategories,
   stringSubst,
+  zipFromBuffer,
 } from 'core';
 import { getPacksHook } from '../hooks/packs';
 import { DOWNLOAD_FAIL_SINGLE_MSG } from '../constants/general';
@@ -51,10 +52,9 @@ datapacksRouter.get(
         stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
       );
 
-    const zip = await JSZip.loadAsync(zipBuffer);
-    // TODO: Move into function in core, do not use JSZip directly
+    const zip = await zipFromBuffer(zipBuffer);
     const packFile = Object.values(zip.files)[0]
-      ? Buffer.from(await Object.values(zip.files)[0].async('arraybuffer'))
+      ? await getZipFile(Object.values(zip.files)[0])
       : null;
 
     if (!packFile)
