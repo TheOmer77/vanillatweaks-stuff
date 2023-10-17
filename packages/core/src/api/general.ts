@@ -76,6 +76,11 @@ export const downloadSinglePack = async (
 ) => {
   validatePackType(packType);
 
+  /* TEMP: This function is not meant to be used with datapacks yet,
+ see TODO below */
+  if (packType === 'datapack')
+    return await downloadZippedPacks(packType, [packId], version);
+
   const resourceName = getResourceName(packType),
     iconUrl = getIconUrl(packType),
     getCategories = getCategoriesFn(packType),
