@@ -1,23 +1,15 @@
 import path from 'path';
 import fs from 'fs/promises';
-import chalk from 'chalk';
 
 import {
   DEFAULT_MC_VERSION,
-  DOWNLOAD_PACKS_URL,
-  INCOMPATIBLE_PACKS_MSG,
-  INVALID_PACK_IDS_MSG,
-  NONEXISTENT_MULTIPLE_MSG,
-  NONEXISTENT_SINGLE_MSG,
   RESOURCEPACKS_RESOURCE_NAME,
   RESOURCEPACKS_ZIP_DEFAULT_NAME,
   checkValidVersion,
-  downloadFile,
-  getPacksByCategory,
+  downloadMultiplePacks,
+  downloadZippedPacks,
   getResourcePacksCategories,
-  getResourcePacksZipLink,
   packListFromCategories,
-  packListWithIds,
   stringSubst,
   type MinecraftVersion,
 } from 'core';
@@ -89,83 +81,78 @@ const downloadResourcePacks = async (
     throw new Error(INCORRECT_USAGE_MSG);
   }
 
-  const categories = await getResourcePacksCategories(version),
-    packList = packListWithIds(packListFromCategories(categories));
+  const resolvedOutDir = path.resolve(outDir);
+  const outDirExists = await fs.exists(resolvedOutDir);
 
-  const validPackIds = packIds.filter((packId) =>
-      packList.some(({ id }) => packId === id)
-    ),
-    invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
+  if (args.noUnzip) {
+    const outPath = path.join(resolvedOutDir, RESOURCEPACKS_ZIP_DEFAULT_NAME);
+    const zipBuffer = await downloadZippedPacks(
+      'resourcePack',
+      packIds,
+      version
+    );
 
-  if (invalidPackIds.length > 0)
-    console.warn(
-      invalidPackIds.length === 1
-        ? chalk.bold.yellow(
-            stringSubst(NONEXISTENT_SINGLE_MSG, {
+    if (!outDirExists) await fs.mkdir(resolvedOutDir, { recursive: true });
+    await Bun.write(outPath, zipBuffer);
+
+    return console.log(
+      stringSubst(
+        packIds.length === 1
+          ? DOWNLOAD_SUCCESS_SINGLE_MSG
+          : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+        {
+          count: packIds.length.toString(),
+          resource: RESOURCEPACKS_RESOURCE_NAME,
+          path: outPath,
+        }
+      )
+    );
+  }
+
+  const packBuffers = await downloadMultiplePacks(
+    'resourcePack',
+    packIds,
+    version,
+    {
+      onDownloading: (packs) =>
+        console.log(
+          stringSubst(
+            packs.length === 1
+              ? DOWNLOADING_SINGLE_MSG
+              : DOWNLOADING_MULTIPLE_MSG,
+            {
+              count: packs.length.toString(),
               resource: RESOURCEPACKS_RESOURCE_NAME,
-              packs: invalidPackIds.join(', '),
-            })
+              packs: packs.map(({ display }) => display).join(', '),
+            }
           )
-        : stringSubst(
-            `${chalk.yellow.bold(
-              NONEXISTENT_MULTIPLE_MSG
-            )}${invalidPackIds.join(', ')}`,
-            { resource: RESOURCEPACKS_RESOURCE_NAME }
-          )
-    );
-  if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
-
-  const incompatiblePackIds = validPackIds.filter((packId) => {
-    const pack = packList.find(({ id }) => packId === id);
-    if (!pack) return false;
-    return packIds.some((packId) => pack.incompatible.includes(packId));
-  });
-  if (incompatiblePackIds.length > 0)
-    throw new Error(
-      stringSubst(INCOMPATIBLE_PACKS_MSG, {
-        resource: RESOURCEPACKS_RESOURCE_NAME,
-        packs: incompatiblePackIds.join(', '),
-      })
-    );
-
-  const packsByCategory = getPacksByCategory(validPackIds, categories);
-
-  console.log(
-    stringSubst(
-      validPackIds.length === 1
-        ? DOWNLOADING_SINGLE_MSG
-        : DOWNLOADING_MULTIPLE_MSG,
-      {
-        count: validPackIds.length.toString(),
-        resource: RESOURCEPACKS_RESOURCE_NAME,
-        packs: packList
-          .filter(({ id }) => validPackIds.includes(id))
-          .map(({ display }) => display)
-          .join(', '),
-      }
-    )
+        ),
+    }
   );
 
-  const zipFilename = (await getResourcePacksZipLink(version, packsByCategory))
-      .split('/')
-      .at(-1) as string,
-    zipBuffer = await downloadFile(
-      stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
-    );
+  if (!outDirExists) await fs.mkdir(resolvedOutDir, { recursive: true });
 
-  const outDirExists = await fs.exists(outDir);
-  if (!outDirExists) await fs.mkdir(outDir, { recursive: true });
+  const successfulWrites = (
+    await Promise.allSettled(
+      packBuffers.map(async (buffer, index) => {
+        if (buffer)
+          await Bun.write(
+            path.join(resolvedOutDir, `${packIds[index]}.zip`),
+            buffer
+          );
+      })
+    )
+  ).filter(({ status }) => status === 'fulfilled');
 
-  await Bun.write(path.join(outDir, RESOURCEPACKS_ZIP_DEFAULT_NAME), zipBuffer);
   return console.log(
     stringSubst(
-      validPackIds.length === 1
+      successfulWrites.length === 1
         ? DOWNLOAD_SUCCESS_SINGLE_MSG
         : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
       {
-        count: validPackIds.length.toString(),
+        count: successfulWrites.length.toString(),
         resource: RESOURCEPACKS_RESOURCE_NAME,
-        path: path.join(path.resolve(outDir), RESOURCEPACKS_ZIP_DEFAULT_NAME),
+        path: path.resolve(outDir),
       }
     )
   );
