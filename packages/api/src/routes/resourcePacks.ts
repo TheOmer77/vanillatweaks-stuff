@@ -42,7 +42,7 @@ resourcePacksRouter.get(
 );
 
 resourcePacksRouter.get(
-  '/:packId',
+  '/packs/:packId',
   async ({ params: { packId }, query: { version = DEFAULT_MC_VERSION } }) => {
     const zipBuffer = await downloadSinglePack('resourcePack', packId, version);
 

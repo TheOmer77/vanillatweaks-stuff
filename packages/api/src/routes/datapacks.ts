@@ -37,7 +37,7 @@ datapacksRouter.get(
 );
 
 datapacksRouter.get(
-  '/:packId',
+  '/packs/:packId',
   async ({ params: { packId }, query: { version } }) => {
     const zipBuffer = await downloadSinglePack('datapack', packId, version);
 

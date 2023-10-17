@@ -42,7 +42,7 @@ craftingTweaksRouter.get(
 );
 
 craftingTweaksRouter.get(
-  '/:packId',
+  '/packs/:packId',
   async ({ params: { packId }, query: { version = DEFAULT_MC_VERSION } }) => {
     const zipBuffer = await downloadSinglePack(
       'craftingTweak',
