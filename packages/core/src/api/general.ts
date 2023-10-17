@@ -11,6 +11,7 @@ import {
   validatePackType,
 } from '../utils/packs';
 import { stringSubst } from '../utils/string';
+import { getZipFile, modifiedZipFromBuffer, zipFromBuffer } from '../utils/zip';
 import { DEFAULT_MC_VERSION } from '../constants/versions';
 import {
   DOWNLOAD_FAIL_SINGLE_MSG,
@@ -18,9 +19,9 @@ import {
   NONEXISTENT_SINGLE_MSG,
 } from '../constants/general';
 import { DOWNLOAD_PACKS_URL } from '../constants/api';
+import type { PackWithId } from '../types/api';
 import type { PackType } from '../types/packType';
 import type { MinecraftVersion } from '../types/versions';
-import { getZipFile, modifiedZipFromBuffer, zipFromBuffer } from '../utils/zip';
 
 /**
  * General function to download any file from Vanilla Tweaks.
@@ -151,4 +152,89 @@ export const downloadSinglePack = async (
       500
     );
   return packZipBuffer;
+};
+
+export const downloadMultiplePacks = async (
+  packType: PackType,
+  packIds: string[],
+  version: MinecraftVersion = DEFAULT_MC_VERSION,
+  { onDownloading }: { onDownloading?: (packs: PackWithId[]) => void } = {}
+) => {
+  validatePackType(packType);
+
+  // TODO: Remove when datapacks are supported
+  if (packType === 'datapack')
+    throw new Error('No datapack support here yet 😕');
+
+  const resourceName = getResourceName(packType),
+    iconUrl = getIconUrl(packType),
+    getCategories = getCategoriesFn(packType),
+    getZipLink = getZipLinkFn(packType);
+
+  const categories = await getCategories(version),
+    packList = packListWithIds(packListFromCategories(categories));
+
+  const invalidPackIds = packIds.filter(
+    (packId) => !packList.some(({ id }) => packId === id)
+  );
+  if (invalidPackIds.length > 0)
+    throw new HttpError(
+      stringSubst(
+        invalidPackIds.length === 1
+          ? NONEXISTENT_SINGLE_MSG
+          : `${NONEXISTENT_MULTIPLE_MSG}%packs`,
+        {
+          resource: resourceName,
+          packs: invalidPackIds.join(', '),
+        }
+      ),
+      400
+    );
+
+  // Invalid packs were already checked, so these can't be undefined
+  const packs = packIds
+    .map((packId) => packList.find(({ id }) => id === packId))
+    .filter(Boolean) as PackWithId[];
+  onDownloading?.(packs);
+
+  const packBuffers = (
+    (await Promise.allSettled(
+      packs.map(async ({ id, name }) => {
+        const packByCategory = getPacksByCategory([id], categories);
+
+        const zipFilename = (await getZipLink(version, packByCategory))
+          .split('/')
+          .at(-1) as string;
+        const [zipBuffer, iconBuffer] = (
+          (await Promise.allSettled([
+            downloadFile(
+              stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
+            ),
+            downloadFile(
+              stringSubst(iconUrl, {
+                version,
+                pack: name,
+              })
+            ),
+          ])) as PromiseFulfilledResult<Buffer>[]
+        ).map((promise) => promise?.value);
+
+        if (!zipBuffer)
+          throw new HttpError(
+            stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, {
+              resource: resourceName,
+              packId: id,
+            }),
+            500
+          );
+
+        return await modifiedZipFromBuffer(zipBuffer, (zip) => {
+          zip.remove('Selected Packs.txt');
+          if (iconBuffer) zip.file('pack.png', iconBuffer);
+        });
+      })
+    )) as PromiseFulfilledResult<Buffer | undefined>[]
+  ).map((promise) => promise?.value);
+
+  return packBuffers;
 };
