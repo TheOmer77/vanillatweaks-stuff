@@ -117,7 +117,7 @@ export const downloadSinglePack = async (
     .split('/')
     .at(-1) as string;
   const [zipBuffer, iconBuffer] = (
-    (await Promise.allSettled([
+    await Promise.allSettled([
       downloadFile(stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })),
       downloadFile(
         stringSubst(iconUrl, {
@@ -125,8 +125,10 @@ export const downloadSinglePack = async (
           pack: selectedPack.name,
         })
       ),
-    ])) as PromiseFulfilledResult<Buffer>[]
-  ).map((promise) => promise?.value);
+    ])
+  ).map((promiseRes) =>
+    promiseRes.status === 'fulfilled' ? promiseRes.value : undefined
+  );
 
   if (!zipBuffer)
     throw new HttpError(
@@ -210,7 +212,7 @@ export const downloadMultiplePacks = async (
   onDownloading?.(packs);
 
   const packBuffers = (
-    (await Promise.allSettled(
+    await Promise.allSettled(
       packs.map(async ({ id, name }) => {
         const packByCategory = getPacksByCategory([id], categories);
 
@@ -218,7 +220,7 @@ export const downloadMultiplePacks = async (
           .split('/')
           .at(-1) as string;
         const [zipBuffer, iconBuffer] = (
-          (await Promise.allSettled([
+          await Promise.allSettled([
             downloadFile(
               stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
             ),
@@ -228,8 +230,10 @@ export const downloadMultiplePacks = async (
                 pack: name,
               })
             ),
-          ])) as PromiseFulfilledResult<Buffer>[]
-        ).map((promise) => promise?.value);
+          ])
+        ).map((promiseRes) =>
+          promiseRes.status === 'fulfilled' ? promiseRes.value : undefined
+        );
 
         if (!zipBuffer)
           throw new HttpError(
@@ -245,8 +249,10 @@ export const downloadMultiplePacks = async (
           if (iconBuffer) zip.file('pack.png', iconBuffer);
         });
       })
-    )) as PromiseFulfilledResult<Buffer | undefined>[]
-  ).map((promise) => promise?.value);
+    )
+  ).map((promiseRes) =>
+    promiseRes.status === 'fulfilled' ? promiseRes.value : undefined
+  );
 
   return packBuffers;
 };
