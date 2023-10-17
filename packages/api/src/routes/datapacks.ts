@@ -3,13 +3,10 @@ import { Elysia } from 'elysia';
 import {
   DATAPACKS_RESOURCE_NAME,
   DATAPACKS_ZIP_DEFAULT_NAME,
-  DOWNLOAD_PACKS_URL,
-  NONEXISTENT_SINGLE_MSG,
-  downloadFile,
+  DOWNLOAD_FAIL_SINGLE_MSG,
+  downloadSinglePack,
   downloadZippedPacks,
   getDatapacksCategories,
-  getDatapacksZipLink,
-  getPacksByCategory,
   getZipFile,
   HttpError,
   packListFromCategories,
@@ -18,7 +15,6 @@ import {
   zipFromBuffer,
 } from 'core';
 import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
-import { DOWNLOAD_FAIL_SINGLE_MSG } from '../constants/general';
 
 const datapacksRouter = new Elysia();
 
@@ -49,28 +45,9 @@ datapacksRouter.get(
 datapacksRouter.get(
   '/:packId',
   async ({ params: { packId }, query: { version } }) => {
-    const categories = await getDatapacksCategories(version),
-      packList = packListWithIds(packListFromCategories(categories)),
-      selectedPack = packList.find(({ id }) => id === packId);
+    const zipBuffer = await downloadSinglePack('datapack', packId, version);
 
-    if (!selectedPack)
-      throw new HttpError(
-        stringSubst(NONEXISTENT_SINGLE_MSG, {
-          resource: DATAPACKS_RESOURCE_NAME,
-          packs: packId,
-        }),
-        404
-      );
-
-    const packsByCategory = getPacksByCategory([packId], categories);
-
-    const zipFilename = (await getDatapacksZipLink(version, packsByCategory))
-        .split('/')
-        .at(-1) as string,
-      zipBuffer = await downloadFile(
-        stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
-      );
-
+    // TODO: Move extraction into downloadSinglePack
     const zip = await zipFromBuffer(zipBuffer);
     const packFile = Object.values(zip.files)[0]
       ? await getZipFile(Object.values(zip.files)[0])
