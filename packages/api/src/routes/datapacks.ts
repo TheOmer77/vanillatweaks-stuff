@@ -1,18 +1,12 @@
 import { Elysia } from 'elysia';
 
 import {
-  DATAPACKS_RESOURCE_NAME,
   DATAPACKS_ZIP_DEFAULT_NAME,
-  DOWNLOAD_FAIL_SINGLE_MSG,
   downloadSinglePack,
   downloadZippedPacks,
   getDatapacksCategories,
-  getZipFile,
-  HttpError,
   packListFromCategories,
   packListWithIds,
-  stringSubst,
-  zipFromBuffer,
 } from 'core';
 import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
 
@@ -47,22 +41,7 @@ datapacksRouter.get(
   async ({ params: { packId }, query: { version } }) => {
     const zipBuffer = await downloadSinglePack('datapack', packId, version);
 
-    // TODO: Move extraction into downloadSinglePack
-    const zip = await zipFromBuffer(zipBuffer);
-    const packFile = Object.values(zip.files)[0]
-      ? await getZipFile(Object.values(zip.files)[0])
-      : null;
-
-    if (!packFile)
-      throw new HttpError(
-        stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, {
-          resource: DATAPACKS_RESOURCE_NAME,
-          packId,
-        }),
-        500
-      );
-
-    return new Response(packFile, {
+    return new Response(zipBuffer, {
       headers: { 'Content-Disposition': `attachment; filename=${packId}.zip` },
     });
   },

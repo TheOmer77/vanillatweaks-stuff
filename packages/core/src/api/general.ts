@@ -20,7 +20,7 @@ import {
 import { DOWNLOAD_PACKS_URL } from '../constants/api';
 import type { PackType } from '../types/packType';
 import type { MinecraftVersion } from '../types/versions';
-import { modifiedZipFromBuffer } from '../utils/zip';
+import { getZipFile, modifiedZipFromBuffer, zipFromBuffer } from '../utils/zip';
 
 export const downloadFile = async (url: string) =>
   (await api.get<Buffer>(url, { responseType: 'arraybuffer' })).data;
@@ -71,15 +71,9 @@ export const downloadZippedPacks = async (
 export const downloadSinglePack = async (
   packType: PackType,
   packId: string,
-  version: MinecraftVersion = DEFAULT_MC_VERSION,
-  { modifyZip = true } = {}
+  version: MinecraftVersion = DEFAULT_MC_VERSION
 ) => {
   validatePackType(packType);
-
-  /* TEMP: This function is not meant to be used with datapacks yet,
- see TODO below */
-  if (packType === 'datapack')
-    return await downloadZippedPacks(packType, [packId], version);
 
   const resourceName = getResourceName(packType),
     iconUrl = getIconUrl(packType),
@@ -107,13 +101,12 @@ export const downloadSinglePack = async (
   const [zipBuffer, iconBuffer] = (
     (await Promise.allSettled([
       downloadFile(stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })),
-      modifyZip &&
-        downloadFile(
-          stringSubst(iconUrl, {
-            version,
-            pack: selectedPack.name,
-          })
-        ),
+      downloadFile(
+        stringSubst(iconUrl, {
+          version,
+          pack: selectedPack.name,
+        })
+      ),
     ])) as PromiseFulfilledResult<Buffer>[]
   ).map((promise) => promise?.value);
 
@@ -123,11 +116,22 @@ export const downloadSinglePack = async (
       500
     );
 
-  // TODO: Must extract zip if packType = datapack
-  return modifyZip
-    ? await modifiedZipFromBuffer(zipBuffer, (zip) => {
-        zip.remove('Selected Packs.txt');
-        if (iconBuffer) zip.file('pack.png', iconBuffer);
-      })
-    : zipBuffer;
+  // Must extract zip if packType = datapack
+  if (packType !== 'datapack')
+    return await modifiedZipFromBuffer(zipBuffer, (zip) => {
+      zip.remove('Selected Packs.txt');
+      if (iconBuffer) zip.file('pack.png', iconBuffer);
+    });
+
+  const zip = await zipFromBuffer(zipBuffer);
+  const packZipBuffer = Object.values(zip.files)[0]
+    ? await getZipFile(Object.values(zip.files)[0])
+    : null;
+
+  if (!packZipBuffer)
+    throw new HttpError(
+      stringSubst(DOWNLOAD_FAIL_SINGLE_MSG, { resource: resourceName, packId }),
+      500
+    );
+  return packZipBuffer;
 };
