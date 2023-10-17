@@ -22,9 +22,19 @@ import type { PackType } from '../types/packType';
 import type { MinecraftVersion } from '../types/versions';
 import { getZipFile, modifiedZipFromBuffer, zipFromBuffer } from '../utils/zip';
 
+/**
+ * General function to download any file from Vanilla Tweaks.
+ * @param url URL within Vanilla Tweaks of the file to download
+ */
 export const downloadFile = async (url: string) =>
   (await api.get<Buffer>(url, { responseType: 'arraybuffer' })).data;
 
+/**
+ * Download multiple packs in a zip, as provided by Vanilla Tweaks.
+ * @param packType Pack type.
+ * @param packIds Pack IDs of packs to include in the resulting zip.
+ * @param version Minecraft version.
+ */
 export const downloadZippedPacks = async (
   packType: PackType,
   packIds: string[],
@@ -68,6 +78,13 @@ export const downloadZippedPacks = async (
   return zipBuffer;
 };
 
+/**
+ * Download a single pack file in the correct format for resource
+ * packs/datapacks.
+ * @param packType Pack type.
+ * @param packId Pack ID of the pack to download.
+ * @param version Minecraft version.
+ */
 export const downloadSinglePack = async (
   packType: PackType,
   packId: string,
