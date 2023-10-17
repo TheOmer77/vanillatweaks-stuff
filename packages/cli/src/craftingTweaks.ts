@@ -1,23 +1,15 @@
 import path from 'path';
 import fs from 'fs/promises';
-import chalk from 'chalk';
 
 import {
   CRAFTINGTWEAKS_RESOURCE_NAME,
   CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
   DEFAULT_MC_VERSION,
-  DOWNLOAD_PACKS_URL,
-  INCOMPATIBLE_PACKS_MSG,
-  INVALID_PACK_IDS_MSG,
-  NONEXISTENT_MULTIPLE_MSG,
-  NONEXISTENT_SINGLE_MSG,
   checkValidVersion,
-  downloadFile,
+  downloadMultiplePacks,
+  downloadZippedPacks,
   getCraftingTweaksCategories,
-  getCraftingTweaksZipLink,
-  getPacksByCategory,
   packListFromCategories,
-  packListWithIds,
   stringSubst,
   type MinecraftVersion,
 } from 'core';
@@ -89,86 +81,78 @@ const downloadCraftingTweaks = async (
     throw new Error(INCORRECT_USAGE_MSG);
   }
 
-  const categories = await getCraftingTweaksCategories(version),
-    packList = packListWithIds(packListFromCategories(categories));
+  const resolvedOutDir = path.resolve(outDir);
+  const outDirExists = await fs.exists(resolvedOutDir);
 
-  const validPackIds = packIds.filter((packId) =>
-      packList.some(({ id }) => packId === id)
-    ),
-    invalidPackIds = packIds.filter((id) => !validPackIds.includes(id));
+  if (args.noUnzip) {
+    const outPath = path.join(resolvedOutDir, CRAFTINGTWEAKS_ZIP_DEFAULT_NAME);
+    const zipBuffer = await downloadZippedPacks(
+      'craftingTweak',
+      packIds,
+      version
+    );
 
-  if (invalidPackIds.length > 0)
-    console.warn(
-      invalidPackIds.length === 1
-        ? chalk.bold.yellow(
-            stringSubst(NONEXISTENT_SINGLE_MSG, {
+    if (!outDirExists) await fs.mkdir(resolvedOutDir, { recursive: true });
+    await Bun.write(outPath, zipBuffer);
+
+    return console.log(
+      stringSubst(
+        packIds.length === 1
+          ? DOWNLOAD_SUCCESS_SINGLE_MSG
+          : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+        {
+          count: packIds.length.toString(),
+          resource: CRAFTINGTWEAKS_RESOURCE_NAME,
+          path: outPath,
+        }
+      )
+    );
+  }
+
+  const packBuffers = await downloadMultiplePacks(
+    'craftingTweak',
+    packIds,
+    version,
+    {
+      onDownloading: (packs) =>
+        console.log(
+          stringSubst(
+            packs.length === 1
+              ? DOWNLOADING_SINGLE_MSG
+              : DOWNLOADING_MULTIPLE_MSG,
+            {
+              count: packs.length.toString(),
               resource: CRAFTINGTWEAKS_RESOURCE_NAME,
-              packs: invalidPackIds.join(', '),
-            })
+              packs: packs.map(({ display }) => display).join(', '),
+            }
           )
-        : stringSubst(
-            `${chalk.yellow.bold(
-              NONEXISTENT_MULTIPLE_MSG
-            )}${invalidPackIds.join(', ')}`,
-            { resource: CRAFTINGTWEAKS_RESOURCE_NAME }
-          )
-    );
-  if (validPackIds.length < 1) throw new Error(INVALID_PACK_IDS_MSG);
+        ),
+    }
+  );
 
-  const incompatiblePackIds = validPackIds.filter((packId) => {
-    const pack = packList.find(({ id }) => id === packId);
-    if (!pack) return false;
-    return packIds.some((packId) => pack.incompatible.includes(packId));
-  });
-  if (incompatiblePackIds.length > 0)
-    throw new Error(
-      stringSubst(INCOMPATIBLE_PACKS_MSG, {
-        resource: CRAFTINGTWEAKS_RESOURCE_NAME,
-        packs: incompatiblePackIds.join(', '),
+  if (!outDirExists) await fs.mkdir(resolvedOutDir, { recursive: true });
+
+  const successfulWrites = (
+    await Promise.allSettled(
+      packBuffers.map(async (buffer, index) => {
+        if (buffer)
+          await Bun.write(
+            path.join(resolvedOutDir, `${packIds[index]}.zip`),
+            buffer
+          );
       })
-    );
-
-  const packsByCategory = getPacksByCategory(validPackIds, categories);
-
-  console.log(
-    stringSubst(
-      validPackIds.length === 1
-        ? DOWNLOADING_SINGLE_MSG
-        : DOWNLOADING_MULTIPLE_MSG,
-      {
-        count: validPackIds.length.toString(),
-        resource: CRAFTINGTWEAKS_RESOURCE_NAME,
-        packs: packList
-          .filter(({ id }) => validPackIds.includes(id))
-          .map(({ display }) => display)
-          .join(', '),
-      }
     )
-  );
+  ).filter(({ status }) => status === 'fulfilled');
 
-  const zipFilename = (await getCraftingTweaksZipLink(version, packsByCategory))
-      .split('/')
-      .at(-1) as string,
-    zipBuffer = await downloadFile(
-      stringSubst(DOWNLOAD_PACKS_URL, { filename: zipFilename })
-    );
-
-  const outDirExists = await fs.exists(outDir);
-  if (!outDirExists) await fs.mkdir(outDir, { recursive: true });
-
-  await Bun.write(
-    path.join(outDir, CRAFTINGTWEAKS_ZIP_DEFAULT_NAME),
-    zipBuffer
-  );
   return console.log(
     stringSubst(
-      validPackIds.length === 1
+      successfulWrites.length === 1
         ? DOWNLOAD_SUCCESS_SINGLE_MSG
         : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
       {
-        count: validPackIds.length.toString(),
+        count: successfulWrites.length.toString(),
         resource: CRAFTINGTWEAKS_RESOURCE_NAME,
-        path: path.join(path.resolve(outDir), CRAFTINGTWEAKS_ZIP_DEFAULT_NAME),
+        path: path.resolve(outDir),
       }
     )
   );
