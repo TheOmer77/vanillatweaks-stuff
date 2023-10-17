@@ -20,7 +20,7 @@ export const USAGE_OPTIONS_PREFIX_MSG = `Options: `;
 
 //#endregion
 
-//#region Packs error messages
+//#region Error messages
 
 export const INVALID_PACK_TYPE_MSG =
   `Invalid pack type. Pack type must be one of: ${PACK_TYPES.join(
@@ -35,5 +35,7 @@ export const NONEXISTENT_SINGLE_MSG = "The %resource '%packs' does not exist.",
 export const INVALID_PACK_IDS_MSG = 'All pack IDs given are invalid.';
 export const INCOMPATIBLE_PACKS_MSG =
   'The following %resources are incompatible with each other: %packs';
+export const DOWNLOAD_FAIL_SINGLE_MSG =
+  "Failed to download %resource '%packId'.";
 
 //#endregion

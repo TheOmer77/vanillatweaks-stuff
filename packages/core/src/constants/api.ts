@@ -10,6 +10,8 @@ export const RESOURCEPACKS_ZIP_URL = '/assets/server/zipresourcepacks.php';
 
 export const DATAPACKS_CATEGORIES_URL =
   '/assets/resources/json/%version/dpcategories.json';
+export const DATAPACKS_ICON_URL =
+  '/assets/resources/icons/datapacks/%version/%pack.png';
 export const DATAPACKS_ZIP_URL = '/assets/server/zipdatapacks.php';
 
 export const CRAFTINGTWEAKS_CATEGORIES_URL =

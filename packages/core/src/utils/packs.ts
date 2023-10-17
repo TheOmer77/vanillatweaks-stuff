@@ -9,6 +9,11 @@ import {
   getCraftingTweaksCategories,
   getCraftingTweaksZipLink,
 } from '../api/craftingTweaks';
+import {
+  CRAFTINGTWEAKS_ICON_URL,
+  DATAPACKS_ICON_URL,
+  RESOURCEPACKS_ICON_URL,
+} from '../constants/api';
 import { INVALID_PACK_TYPE_MSG, PACK_TYPES } from '../constants/general';
 import { RESOURCEPACKS_RESOURCE_NAME } from '../constants/resourcePacks';
 import { DATAPACKS_RESOURCE_NAME } from '../constants/datapacks';
@@ -80,6 +85,12 @@ export const getResourceName = (packType: PackType) =>
     : packType === 'datapack'
     ? DATAPACKS_RESOURCE_NAME
     : CRAFTINGTWEAKS_RESOURCE_NAME;
+export const getIconUrl = (packType: PackType) =>
+  packType === 'resourcePack'
+    ? RESOURCEPACKS_ICON_URL
+    : packType === 'datapack'
+    ? DATAPACKS_ICON_URL
+    : CRAFTINGTWEAKS_ICON_URL;
 export const getCategoriesFn = (packType: PackType) =>
   packType === 'resourcePack'
     ? getResourcePacksCategories
