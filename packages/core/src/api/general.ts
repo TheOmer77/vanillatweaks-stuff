@@ -162,9 +162,21 @@ export const downloadMultiplePacks = async (
 ) => {
   validatePackType(packType);
 
-  // TODO: Remove when datapacks are supported
-  if (packType === 'datapack')
-    throw new Error('No datapack support here yet 😕');
+  if (packType === 'datapack') {
+    const zipBuffer = await downloadZippedPacks(packType, packIds, version),
+      zip = await zipFromBuffer(zipBuffer);
+    const packBuffers = (
+      await Promise.allSettled(
+        Object.keys(zip.files).map(
+          async (key) => await getZipFile(zip.files[key])
+        )
+      )
+    ).map((promiseRes) =>
+      promiseRes.status === 'fulfilled' ? promiseRes?.value : undefined
+    );
+
+    return packBuffers;
+  }
 
   const resourceName = getResourceName(packType),
     iconUrl = getIconUrl(packType),
