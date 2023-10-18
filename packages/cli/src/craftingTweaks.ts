@@ -16,6 +16,7 @@ import {
 
 import { args } from './utils/args';
 import { printPackList } from './utils/cli';
+import { exists } from './utils/fs';
 import {
   DOWNLOAD_FAIL_MULTIPLE_MSG,
   DOWNLOAD_FAIL_SINGLE_MSG,
@@ -85,7 +86,7 @@ const downloadCraftingTweaks = async (
   }
 
   const resolvedOutDir = path.resolve(outDir);
-  const outDirExists = await fs.exists(resolvedOutDir);
+  const outDirExists = await exists(resolvedOutDir);
 
   if (zipped) {
     const outPath = path.join(resolvedOutDir, CRAFTINGTWEAKS_ZIP_DEFAULT_NAME);
