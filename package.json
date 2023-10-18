@@ -5,7 +5,10 @@
   "scripts": {
     "start:api": "bun packages/api/src/index.ts",
     "start:cli": "bun packages/cli/src/index.ts",
-    "dev:api": "bun --watch packages/api/src/index.ts"
+    "dev:api": "bun --watch packages/api/src/index.ts",
+    "build:cli": "bun run build:cli:js && bun run build:cli:exec",
+    "build:cli:js": "esbuild packages/cli/src/index.ts --bundle --platform=node --target=node18 --outdir=dist/",
+    "build:cli:exec": "pkg -t node18-linux-x64,node18-windows-x64,node18-macos-x64 -o dist/vanillatweaks dist/index.js"
   },
   "workspaces": [
     "packages/*"
