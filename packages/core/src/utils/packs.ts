@@ -33,7 +33,13 @@ export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
       ],
       [] as Pack[]
     )
-    .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
+    .sort((a, b) =>
+      a.name.toLowerCase() > b.name.toLowerCase()
+        ? 1
+        : a.name.toLowerCase() < b.name.toLowerCase()
+        ? -1
+        : 0
+    );
 
 export const packListWithIds = (packs: Pack[]): PackWithId[] =>
   packs.map(
