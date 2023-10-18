@@ -31,3 +31,8 @@ export interface ZipErrorResponse {
   message: string;
 }
 export type ZipResponse = ZipSuccessResponse | ZipErrorResponse;
+
+export interface DownloadPacksOptions {
+  /** Function to run when packs start downloading. */
+  onDownloading?: (packs: PackWithId[]) => void;
+}

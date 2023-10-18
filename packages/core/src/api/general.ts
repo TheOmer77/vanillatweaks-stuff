@@ -19,7 +19,7 @@ import {
   NONEXISTENT_SINGLE_MSG,
 } from '../constants/general';
 import { DOWNLOAD_PACKS_URL } from '../constants/api';
-import type { PackWithId } from '../types/api';
+import type { DownloadPacksOptions, PackWithId } from '../types/api';
 import type { PackType } from '../types/packType';
 import type { MinecraftVersion } from '../types/versions';
 
@@ -39,7 +39,8 @@ export const downloadFile = async (url: string) =>
 export const downloadZippedPacks = async (
   packType: PackType,
   packIds: string[],
-  version: MinecraftVersion = DEFAULT_MC_VERSION
+  version: MinecraftVersion = DEFAULT_MC_VERSION,
+  { onDownloading }: DownloadPacksOptions = {}
 ) => {
   validatePackType(packType);
 
@@ -67,6 +68,12 @@ export const downloadZippedPacks = async (
       400
     );
 
+  // Invalid packs were already checked, so these can't be undefined
+  const packs = packIds
+    .map((packId) => packList.find(({ id }) => id === packId))
+    .filter(Boolean) as PackWithId[];
+  onDownloading?.(packs);
+
   const packsByCategory = getPacksByCategory(packIds, categories);
 
   const zipFilename = (await getZipLink(version, packsByCategory))
@@ -89,7 +96,8 @@ export const downloadZippedPacks = async (
 export const downloadSinglePack = async (
   packType: PackType,
   packId: string,
-  version: MinecraftVersion = DEFAULT_MC_VERSION
+  version: MinecraftVersion = DEFAULT_MC_VERSION,
+  { onDownloading }: DownloadPacksOptions = {}
 ) => {
   validatePackType(packType);
 
@@ -110,6 +118,8 @@ export const downloadSinglePack = async (
       }),
       404
     );
+
+  onDownloading?.([selectedPack]);
 
   const packsByCategory = getPacksByCategory([packId], categories);
 
@@ -160,12 +170,14 @@ export const downloadMultiplePacks = async (
   packType: PackType,
   packIds: string[],
   version: MinecraftVersion = DEFAULT_MC_VERSION,
-  { onDownloading }: { onDownloading?: (packs: PackWithId[]) => void } = {}
+  { onDownloading }: DownloadPacksOptions = {}
 ) => {
   validatePackType(packType);
 
   if (packType === 'datapack') {
-    const zipBuffer = await downloadZippedPacks(packType, packIds, version),
+    const zipBuffer = await downloadZippedPacks(packType, packIds, version, {
+        onDownloading,
+      }),
       zip = await zipFromBuffer(zipBuffer);
     const packBuffers = (
       await Promise.allSettled(
