@@ -147,11 +147,12 @@ const downloadDatapacks = async (
 
   const fileWrites = await Promise.allSettled(
       packBuffers.map(async (buffer, index) => {
-        if (buffer)
-          await Bun.write(
-            path.join(resolvedOutDir, `${packIds[index]}.zip`),
-            buffer
-          );
+        // Error message doesn't matter here, just reject this promise
+        if (!buffer) throw new Error();
+        await Bun.write(
+          path.join(resolvedOutDir, `${packIds[index]}.zip`),
+          buffer
+        );
       })
     ),
     successfulWrites = fileWrites.filter(

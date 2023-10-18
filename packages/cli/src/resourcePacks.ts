@@ -17,6 +17,8 @@ import {
 import { args } from './utils/args';
 import { printPackList } from './utils/cli';
 import {
+  DOWNLOAD_FAIL_MULTIPLE_MSG,
+  DOWNLOAD_FAIL_SINGLE_MSG,
   DOWNLOAD_SUCCESS_MULTIPLE_MSG,
   DOWNLOAD_SUCCESS_SINGLE_MSG,
   DOWNLOADING_MULTIPLE_MSG,
@@ -89,7 +91,22 @@ const downloadResourcePacks = async (
     const zipBuffer = await downloadZippedPacks(
       'resourcePack',
       packIds,
-      version
+      version,
+      {
+        onDownloading: (packs) =>
+          console.log(
+            stringSubst(
+              packs.length === 1
+                ? DOWNLOADING_SINGLE_MSG
+                : DOWNLOADING_MULTIPLE_MSG,
+              {
+                count: packs.length.toString(),
+                resource: RESOURCEPACKS_RESOURCE_NAME,
+                packs: packs.map(({ display }) => display).join(', '),
+              }
+            )
+          ),
+      }
     );
 
     if (!outDirExists) await fs.mkdir(resolvedOutDir, { recursive: true });
@@ -132,30 +149,48 @@ const downloadResourcePacks = async (
 
   if (!outDirExists) await fs.mkdir(resolvedOutDir, { recursive: true });
 
-  const successfulWrites = (
-    await Promise.allSettled(
+  const fileWrites = await Promise.allSettled(
       packBuffers.map(async (buffer, index) => {
-        if (buffer)
-          await Bun.write(
-            path.join(resolvedOutDir, `${packIds[index]}.zip`),
-            buffer
-          );
+        // Error message doesn't matter here, just reject this promise
+        if (!buffer) throw new Error();
+        await Bun.write(
+          path.join(resolvedOutDir, `${packIds[index]}.zip`),
+          buffer
+        );
       })
-    )
-  ).filter(({ status }) => status === 'fulfilled');
+    ),
+    successfulWrites = fileWrites.filter(
+      ({ status }) => status === 'fulfilled'
+    ),
+    failedWrites = fileWrites.filter(({ status }) => status === 'rejected');
 
-  return console.log(
-    stringSubst(
-      successfulWrites.length === 1
-        ? DOWNLOAD_SUCCESS_SINGLE_MSG
-        : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
-      {
-        count: successfulWrites.length.toString(),
-        resource: RESOURCEPACKS_RESOURCE_NAME,
-        path: path.resolve(outDir),
-      }
-    )
-  );
+  if (successfulWrites.length > 0)
+    console.log(
+      stringSubst(
+        successfulWrites.length === 1
+          ? DOWNLOAD_SUCCESS_SINGLE_MSG
+          : DOWNLOAD_SUCCESS_MULTIPLE_MSG,
+        {
+          count: successfulWrites.length.toString(),
+          resource: RESOURCEPACKS_RESOURCE_NAME,
+          path: outDir,
+        }
+      )
+    );
+
+  if (failedWrites.length > 0)
+    console.log(
+      stringSubst(
+        failedWrites.length === 1
+          ? DOWNLOAD_FAIL_SINGLE_MSG
+          : DOWNLOAD_FAIL_MULTIPLE_MSG,
+        {
+          count: failedWrites.length.toString(),
+          resource: RESOURCEPACKS_RESOURCE_NAME,
+          path: outDir,
+        }
+      )
+    );
 };
 
 /**
