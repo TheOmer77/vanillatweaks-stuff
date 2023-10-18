@@ -1,35 +1,13 @@
-import { getCommandHelpMsg, getSubcommandHelpMsg } from '../utils/cli';
-import type { ReadonlyCliSubcommand } from '../types/cli';
+import {
+  getCommandHelpMsg,
+  getSubcommandHelpMsg,
+  getSubcommands,
+} from '../utils/cli';
 
 //#region Subcommands & usage
 
 export const CRAFTINGTWEAKS_COMMAND = 'craftingtweaks';
-export const CRAFTINGTWEAKS_SUBCOMMANDS = [
-  {
-    id: 'list',
-    description: `List all available crafting tweaks.`,
-    usage: `[OPTIONS]`,
-    options: [
-      {
-        args: ['detailed'],
-        description:
-          'Print list with additional details, such as descriptions and incompatible packs.',
-      },
-    ],
-  },
-  {
-    id: 'download',
-    description: `Download crafting tweaks.`,
-    usage: `[OPTIONS] PACK_IDS...`,
-    options: [
-      {
-        args: ['outDir', 'o'],
-        description:
-          'Directory where file(s) will be downloaded. (Default: current directory)',
-      },
-    ],
-  },
-] as const satisfies readonly ReadonlyCliSubcommand[];
+export const CRAFTINGTWEAKS_SUBCOMMANDS = getSubcommands('craftingTweak');
 
 //#endregion
 

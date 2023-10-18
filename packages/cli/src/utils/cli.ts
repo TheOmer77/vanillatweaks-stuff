@@ -8,15 +8,54 @@ import {
   USAGE_PREFIX_MSG,
   USAGE_SUBCOMMAND_MSG,
   equalLengthStrings,
+  getResourceName,
+  packListWithIds,
+  PackType,
   removeHtmlTags,
   stringSubst,
+  validatePackType,
   type Pack,
-  packListWithIds,
 } from 'core';
 
 import { args } from './args';
 import { GENERAL_OPTIONS, MAIN_COMMANDS } from '../constants/general';
 import type { CliSubcommand, ReadonlyCliSubcommand } from '../types/cli';
+
+export const getSubcommands = (packType: PackType): CliSubcommand[] => {
+  validatePackType(packType);
+  const resourceName = getResourceName(packType);
+
+  return [
+    {
+      id: 'list',
+      description: `List all available ${resourceName}s.`,
+      usage: `[OPTIONS]`,
+      options: [
+        {
+          args: ['detailed'],
+          description:
+            'Print list with additional details, such as descriptions and incompatible packs.',
+        },
+      ],
+    },
+    {
+      id: 'download',
+      description: `Download ${resourceName}s.`,
+      usage: `[OPTIONS] PACK_IDS...`,
+      options: [
+        {
+          args: ['outDir', 'o'],
+          description:
+            'Directory where file(s) will be downloaded. (Default: current directory)',
+        },
+        {
+          args: ['noUnzip'],
+          description: `Save a single zip file containing all ${resourceName}s, instead of multiple files.`,
+        },
+      ],
+    },
+  ];
+};
 
 export const getMainHelpMsg = () => {
   const formattedCommandIds = equalLengthStrings(

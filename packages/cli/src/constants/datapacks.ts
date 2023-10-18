@@ -1,40 +1,13 @@
-import { getCommandHelpMsg, getSubcommandHelpMsg } from '../utils/cli';
-import type { ReadonlyCliSubcommand } from '../types/cli';
+import {
+  getCommandHelpMsg,
+  getSubcommandHelpMsg,
+  getSubcommands,
+} from '../utils/cli';
 
 //#region Subcommands & usage
 
 export const DATAPACKS_COMMAND = 'datapacks';
-export const DATAPACKS_SUBCOMMANDS = [
-  {
-    id: 'list',
-    description: `List all available datapacks.`,
-    usage: `[OPTIONS]`,
-    options: [
-      {
-        args: ['detailed'],
-        description:
-          'Print list with additional details, such as descriptions and incompatible packs.',
-      },
-    ],
-  },
-  {
-    id: 'download',
-    description: `Download datapacks.`,
-    usage: `[OPTIONS] PACK_IDS...`,
-    options: [
-      {
-        args: ['outDir', 'o'],
-        description:
-          'Directory where file(s) will be downloaded. (Default: current directory)',
-      },
-      {
-        args: ['noUnzip'],
-        description:
-          'Save a single zip file containing all datapacks, instead of multiple files.',
-      },
-    ],
-  },
-] as const satisfies readonly ReadonlyCliSubcommand[];
+export const DATAPACKS_SUBCOMMANDS = getSubcommands('datapack');
 
 //#endregion
 
