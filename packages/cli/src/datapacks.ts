@@ -105,7 +105,7 @@ const downloadDatapacks = async (
     });
 
     if (!outDirExists) await fs.mkdir(resolvedOutDir, { recursive: true });
-    await Bun.write(outPath, zipBuffer);
+    await fs.writeFile(outPath, zipBuffer);
 
     return console.log(
       stringSubst(
@@ -148,7 +148,7 @@ const downloadDatapacks = async (
       packBuffers.map(async (buffer, index) => {
         // Error message doesn't matter here, just reject this promise
         if (!buffer) throw new Error();
-        await Bun.write(
+        await fs.writeFile(
           path.join(resolvedOutDir, `${packIds[index]}.zip`),
           buffer
         );
