@@ -60,9 +60,6 @@ const listDatapacks = async (
 /**
  * Download datapack zip files.
  *
- * Datapacks will be saved as individual files unless the `--noUnzip` flag is
- * used, in which case a single zip file will be saved.
- *
  * @param version Minecraft version.
  * @param packIds IDs of datapacks to download.
  */
@@ -71,6 +68,7 @@ const downloadDatapacks = async (
   packIds: string[]
 ) => {
   const showHelp = args.help || args.h,
+    zipped = args.zipped || args.z,
     outDir = args.outDir || args.o || process.cwd();
   const incorrectUsage =
     typeof version !== 'string' ||
@@ -87,7 +85,7 @@ const downloadDatapacks = async (
   const resolvedOutDir = path.resolve(outDir);
   const outDirExists = await fs.exists(resolvedOutDir);
 
-  if (args.noUnzip) {
+  if (zipped) {
     const outPath = path.join(resolvedOutDir, DATAPACKS_ZIP_DEFAULT_NAME);
     const zipBuffer = await downloadZippedPacks('datapack', packIds, version, {
       onDownloading: (packs) =>

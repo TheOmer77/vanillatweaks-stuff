@@ -49,7 +49,7 @@ export const getSubcommands = (packType: PackType): CliSubcommand[] => {
             'Directory where file(s) will be downloaded. (Default: current directory)',
         },
         {
-          args: ['noUnzip'],
+          args: ['zipped', 'z'],
           description: `Save a single zip file containing all ${resourceName}s, instead of multiple files.`,
         },
       ],

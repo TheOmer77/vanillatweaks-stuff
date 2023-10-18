@@ -70,6 +70,7 @@ const downloadCraftingTweaks = async (
   packIds: string[]
 ) => {
   const showHelp = args.help || args.h,
+    zipped = args.zipped || args.z,
     outDir = args.outDir || args.o || process.cwd();
   const incorrectUsage =
     typeof version !== 'string' ||
@@ -86,7 +87,7 @@ const downloadCraftingTweaks = async (
   const resolvedOutDir = path.resolve(outDir);
   const outDirExists = await fs.exists(resolvedOutDir);
 
-  if (args.noUnzip) {
+  if (zipped) {
     const outPath = path.join(resolvedOutDir, CRAFTINGTWEAKS_ZIP_DEFAULT_NAME);
     const zipBuffer = await downloadZippedPacks(
       'craftingTweak',

@@ -34,7 +34,9 @@ export interface ArgsOptions {
   /**
    * Save a single zip file instead of multiple files.
    */
-  noUnzip?: boolean;
+  zipped?: boolean;
+  /** Shorthand for `--zipped`. */
+  z?: ArgsOptions['zipped'];
 
   /**
    * Print error stack traces & additional debug logging.
@@ -43,6 +45,6 @@ export interface ArgsOptions {
 }
 
 export const args = minimist<ArgsOptions>(process.argv.slice(2), {
-  boolean: ['help', 'h', 'detailed', 'noUnzip', 'debug'],
+  boolean: ['help', 'h', 'detailed', 'zipped', 'debug'],
   string: ['version', 'v', 'outDir', 'o'],
 });

@@ -70,6 +70,7 @@ const downloadResourcePacks = async (
   packIds: string[]
 ) => {
   const showHelp = args.help || args.h,
+    zipped = args.zipped || args.z,
     outDir = args.outDir || args.o || process.cwd();
   const incorrectUsage =
     typeof version !== 'string' ||
@@ -86,7 +87,7 @@ const downloadResourcePacks = async (
   const resolvedOutDir = path.resolve(outDir);
   const outDirExists = await fs.exists(resolvedOutDir);
 
-  if (args.noUnzip) {
+  if (zipped) {
     const outPath = path.join(resolvedOutDir, RESOURCEPACKS_ZIP_DEFAULT_NAME);
     const zipBuffer = await downloadZippedPacks(
       'resourcePack',
