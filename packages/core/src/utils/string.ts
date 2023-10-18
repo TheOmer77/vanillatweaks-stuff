@@ -47,7 +47,7 @@ export const stringSubst = (str: string, vars: Record<string, string>) =>
  * @param padChar Character used for padding strings.
  */
 export const equalLengthStrings = (strings: string[], padChar = ' ') => {
-  const longestLength = strings.toSorted((a, b) =>
+  const longestLength = [...strings].sort((a, b) =>
     a.length < b.length ? 1 : a.length > b.length ? -1 : 0
   )[0].length;
   return strings.map((str) =>
