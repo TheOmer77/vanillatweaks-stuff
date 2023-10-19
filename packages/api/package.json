@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "module": "src/index.js",
   "scripts": {
+    "start": "bun run src/index.ts",
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
