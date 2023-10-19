@@ -1,9 +1,9 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "module": "src/index.js",
+  "module": "src/index.ts",
   "scripts": {
-    "start": "bun run src/index.ts",
+    "start": "bun run dist/index.js",
     "dev": "bun run --watch src/index.ts",
     "build": "bun --silent lint && bun build src/index.ts --target bun --minify --outdir dist",
     "lint": "tsc && eslint --max-warnings=0 src"
