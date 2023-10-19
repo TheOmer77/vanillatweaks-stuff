@@ -4,7 +4,8 @@
   "module": "src/index.js",
   "scripts": {
     "start": "bun run src/index.ts",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "lint": "tsc && eslint --max-warnings=0 src"
   },
   "dependencies": {
     "core": "workspace:*",
