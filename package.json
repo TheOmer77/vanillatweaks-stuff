@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start:api": "bun packages/api/src/index.ts",
-    "start:cli": "bun packages/cli/src/index.ts",
+    "start:cli": "bun --silent --cwd packages/cli start",
     "dev:api": "bun --watch packages/api/src/index.ts",
     "build:cli": "bun --silent --cwd packages/cli build"
   },
