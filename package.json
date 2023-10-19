@@ -6,6 +6,7 @@
     "start:api": "bun --silent --cwd packages/api start",
     "start:cli": "bun --silent --cwd packages/cli start",
     "dev:api": "bun --silent --cwd packages/api dev",
+    "build:api": "bun --silent --cwd packages/api build",
     "build:cli": "bun --silent --cwd packages/cli build",
     "lint": "bun --silent lint:core && bun --silent lint:api && bun --silent lint:cli",
     "lint:api": "bun --silent --cwd packages/api lint",

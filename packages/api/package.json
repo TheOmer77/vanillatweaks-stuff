@@ -5,6 +5,7 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --watch src/index.ts",
+    "build": "bun --silent lint && bun build src/index.ts --target bun --minify --outdir dist",
     "lint": "tsc && eslint --max-warnings=0 src"
   },
   "dependencies": {
