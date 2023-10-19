@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "core": "workspace:*",
-    "elysia": "^0.7.16"
+    "elysia": "^0.7.17"
   }
 }
