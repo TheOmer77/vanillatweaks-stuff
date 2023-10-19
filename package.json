@@ -3,9 +3,9 @@
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start:api": "bun packages/api/src/index.ts",
+    "start:api": "bun --silent --cwd packages/api start",
     "start:cli": "bun --silent --cwd packages/cli start",
-    "dev:api": "bun --watch packages/api/src/index.ts",
+    "dev:api": "bun --silent --cwd packages/api dev",
     "build:cli": "bun --silent --cwd packages/cli build"
   },
   "workspaces": [
