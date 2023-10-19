@@ -10,7 +10,8 @@
     "lint": "bun --silent lint:core && bun --silent lint:api && bun --silent lint:cli",
     "lint:api": "bun --silent --cwd packages/api lint",
     "lint:cli": "bun --silent --cwd packages/cli lint",
-    "lint:core": "bun --silent --cwd packages/core lint"
+    "lint:core": "bun --silent --cwd packages/core lint",
+    "format": "prettier --write packages/**/*.ts"
   },
   "workspaces": [
     "packages/*"
