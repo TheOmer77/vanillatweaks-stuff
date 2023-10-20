@@ -21,7 +21,7 @@ export const MAIN_COMMANDS = [
 export const GENERAL_OPTIONS = [
   {
     args: ['version', 'v'],
-    description: `Minecraft version. (Default: ${DEFAULT_MC_VERSION})`,
+    description: `Specify a Minecraft version. (Default: ${DEFAULT_MC_VERSION})`,
   },
   {
     args: ['help', 'h'],
