@@ -10,6 +10,12 @@ This repo includes a REST API and a CLI app, for listing and downloading Minecra
 
 The REST API allows listing and downloading pack files, or downloading a zip containing several packs.
 
+By default the latest Minecraft version is used, but a `version` query parameter can be used in all routes to specify a version. For example:
+
+```
+/datapacks?version=1.20
+```
+
 For each pack type (`resoucepacks`, `datapacks`, `craftingtweaks`), the following routes are available:
 
 #### `/{PACK_TYPE}`
