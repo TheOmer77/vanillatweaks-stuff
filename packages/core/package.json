@@ -1,8 +1,6 @@
 {
   "name": "core",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
-  "type": "module",
+  "main": "src/index.ts",
   "scripts": {
     "lint": "tsc && eslint --max-warnings=0 src"
   },
