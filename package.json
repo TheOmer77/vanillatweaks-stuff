@@ -1,23 +1,18 @@
 {
   "name": "vanillatweaks-stuff",
-  "module": "src/index.ts",
-  "type": "module",
   "packageManager": "pnpm@8.15.5+sha256.4b4efa12490e5055d59b9b9fc9438b7d581a6b7af3b5675eb5c5f447cee1a589",
   "scripts": {
-    "start:api": "bun --silent --cwd packages/api start",
-    "start:cli": "bun --silent --cwd packages/cli start",
-    "dev:api": "bun --silent --cwd packages/api dev",
-    "build:api": "bun --silent --cwd packages/api build",
-    "build:cli": "bun --silent --cwd packages/cli build",
-    "lint": "bun --silent lint:core && bun --silent lint:api && bun --silent lint:cli",
-    "lint:api": "bun --silent --cwd packages/api lint",
-    "lint:cli": "bun --silent --cwd packages/cli lint",
-    "lint:core": "bun --silent --cwd packages/core lint",
+    "start:api": "pnpm --silent -F api start",
+    "start:cli": "pnpm --silent -F cli start",
+    "dev:api": "pnpm --silent -F api dev",
+    "build:api": "pnpm --silent -F api build",
+    "build:cli": "pnpm --silent -F cli build",
+    "lint": "pnpm --silent lint:core && pnpm --silent lint:api && pnpm --silent lint:cli",
+    "lint:api": "pnpm --silent -F api lint",
+    "lint:cli": "pnpm --silent -F cli lint",
+    "lint:core": "pnpm --silent -F core lint",
     "format": "prettier --write packages/**/*.ts"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "devDependencies": {
     "@types/minimist": "^1.2.5",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
