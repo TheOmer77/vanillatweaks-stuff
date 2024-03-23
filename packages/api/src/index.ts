@@ -1,14 +1,18 @@
-import { Elysia } from 'elysia';
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
+
 import router from './routes';
-import { errorHandler, logResponseInfo } from './hooks/global';
+// import { errorHandler, logResponseInfo } from './hooks/global';
 
-const app = new Elysia();
+const app = new Hono();
 
-app.onError(errorHandler);
-app.onAfterHandle(logResponseInfo);
+// TODO
+/* app.onError(errorHandler);
+app.onAfterHandle(logResponseInfo); */
 
-app.use(router);
+app.route('/', router);
 
-app.listen(process.env.PORT || 3000, (server) =>
-  console.log(`Server is running at ${server.hostname}:${server.port}`)
+serve(
+  { fetch: app.fetch, port: Number(process.env.PORT) || 3000 },
+  ({ address, port }) => console.log(`Server is running at ${address}:${port}`)
 );

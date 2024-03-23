@@ -1,31 +1,40 @@
-import { Elysia } from 'elysia';
+import { Hono } from 'hono';
 
 import {
-  DEFAULT_MC_VERSION,
   RESOURCEPACKS_ZIP_DEFAULT_NAME,
+  downloadSinglePack,
   downloadZippedPacks,
   getResourcePacksCategories,
   packListFromCategories,
   packListWithIds,
-  downloadSinglePack,
+  type MinecraftVersion,
 } from 'core';
-import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
+// TODO: Replace with Zod schemas
+// import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
 
-const resourcePacksRouter = new Elysia();
+const resourcePacksRouter = new Hono();
 
 resourcePacksRouter.get(
   '/',
-  async ({ query: { version } }) =>
-    packListWithIds(
-      packListFromCategories(await getResourcePacksCategories(version))
-    ),
-  getPacksHook
+  // TODO: Zod validation - getPacks
+  async (ctx) =>
+    ctx.json(
+      packListWithIds(
+        packListFromCategories(
+          await getResourcePacksCategories(
+            ctx.req.query('version') as MinecraftVersion
+          )
+        )
+      )
+    )
 );
 
 resourcePacksRouter.get(
   '/zip',
-  async ({ query: { packs, version } }) => {
-    const packIds = packs.split(',');
+  // TODO: Zod validation - downloadPacksZip
+  async (ctx) => {
+    const version = ctx.req.query('version') as MinecraftVersion,
+      packIds = ctx.req.query('packs')?.split(',') || [];
     const zipBuffer = await downloadZippedPacks(
       'resourcePack',
       packIds,
@@ -37,20 +46,21 @@ resourcePacksRouter.get(
         'Content-Disposition': `attachment; filename=${RESOURCEPACKS_ZIP_DEFAULT_NAME}`,
       },
     });
-  },
-  downloadPacksZipHook
+  }
 );
 
 resourcePacksRouter.get(
   '/packs/:packId',
-  async ({ params: { packId }, query: { version = DEFAULT_MC_VERSION } }) => {
+  // TODO: Zod validation - getPacks
+  async (ctx) => {
+    const version = ctx.req.query('version') as MinecraftVersion,
+      packId = ctx.req.param('packId');
     const zipBuffer = await downloadSinglePack('resourcePack', packId, version);
 
     return new Response(zipBuffer, {
       headers: { 'Content-Disposition': `attachment; filename=${packId}.zip` },
     });
-  },
-  getPacksHook
+  }
 );
 
 export default resourcePacksRouter;

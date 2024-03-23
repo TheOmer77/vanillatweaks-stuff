@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { Hono } from 'hono';
 
 import {
   DATAPACKS_ZIP_DEFAULT_NAME,
@@ -7,24 +7,34 @@ import {
   getDatapacksCategories,
   packListFromCategories,
   packListWithIds,
+  type MinecraftVersion,
 } from 'core';
-import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
+// TODO: Replace with Zod schemas
+// import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
 
-const datapacksRouter = new Elysia();
+const datapacksRouter = new Hono();
 
 datapacksRouter.get(
   '/',
-  async ({ query: { version } }) =>
-    packListWithIds(
-      packListFromCategories(await getDatapacksCategories(version))
-    ),
-  getPacksHook
+  // TODO: Zod validation - getPacks
+  async (ctx) =>
+    ctx.json(
+      packListWithIds(
+        packListFromCategories(
+          await getDatapacksCategories(
+            ctx.req.query('version') as MinecraftVersion
+          )
+        )
+      )
+    )
 );
 
 datapacksRouter.get(
   '/zip',
-  async ({ query: { packs, version } }) => {
-    const packIds = packs.split(',');
+  // TODO: Zod validation - downloadPacksZip
+  async (ctx) => {
+    const version = ctx.req.query('version') as MinecraftVersion,
+      packIds = ctx.req.query('packs')?.split(',') || [];
     const zipBuffer = await downloadZippedPacks('datapack', packIds, version);
 
     return new Response(zipBuffer, {
@@ -32,20 +42,21 @@ datapacksRouter.get(
         'Content-Disposition': `attachment; filename=${DATAPACKS_ZIP_DEFAULT_NAME}`,
       },
     });
-  },
-  downloadPacksZipHook
+  }
 );
 
 datapacksRouter.get(
   '/packs/:packId',
-  async ({ params: { packId }, query: { version } }) => {
+  // TODO: Zod validation - getPacks
+  async (ctx) => {
+    const version = ctx.req.query('version') as MinecraftVersion,
+      packId = ctx.req.param('packId');
     const zipBuffer = await downloadSinglePack('datapack', packId, version);
 
     return new Response(zipBuffer, {
       headers: { 'Content-Disposition': `attachment; filename=${packId}.zip` },
     });
-  },
-  getPacksHook
+  }
 );
 
 export default datapacksRouter;

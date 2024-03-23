@@ -1,4 +1,6 @@
-import { type ErrorHandler, type Handler } from 'elysia';
+// TODO: Error handler (app.onError)
+/*
+import type { ErrorHandler, Handler } from 'elysia';
 import { HttpError } from 'core';
 
 export const logResponseInfo: Handler = ({ set, path, request: { method } }) =>
@@ -23,3 +25,4 @@ export const errorHandler: ErrorHandler = ({
 
   return { success: false, message: error.message };
 };
+*/

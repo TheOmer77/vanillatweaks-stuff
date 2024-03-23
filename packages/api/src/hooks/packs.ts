@@ -1,6 +1,7 @@
-import { t } from 'elysia';
+// TODO: Convert into Zod schema
+/* import { t } from 'elysia';
 
-import { MinecraftVersion } from 'core';
+import type { MinecraftVersion } from 'core';
 import { PACKS_QUERY_MISSING_MSG } from '../constants/general';
 
 export const getPacksHook = {
@@ -15,3 +16,4 @@ export const downloadPacksZipHook = {
     version: t.Optional(t.Unsafe<MinecraftVersion>(t.String())),
   }),
 };
+ */
