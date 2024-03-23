@@ -37,8 +37,8 @@ export const packListFromCategories = (categories: PacksCategory[]): Pack[] =>
       a.name.toLowerCase() > b.name.toLowerCase()
         ? 1
         : a.name.toLowerCase() < b.name.toLowerCase()
-        ? -1
-        : 0
+          ? -1
+          : 0
     );
 
 export const packListWithIds = (packs: Pack[]): PackWithId[] =>
@@ -89,23 +89,23 @@ export const getResourceName = (packType: PackType) =>
   packType === 'resourcePack'
     ? RESOURCEPACKS_RESOURCE_NAME
     : packType === 'datapack'
-    ? DATAPACKS_RESOURCE_NAME
-    : CRAFTINGTWEAKS_RESOURCE_NAME;
+      ? DATAPACKS_RESOURCE_NAME
+      : CRAFTINGTWEAKS_RESOURCE_NAME;
 export const getIconUrl = (packType: PackType) =>
   packType === 'resourcePack'
     ? RESOURCEPACKS_ICON_URL
     : packType === 'datapack'
-    ? DATAPACKS_ICON_URL
-    : CRAFTINGTWEAKS_ICON_URL;
+      ? DATAPACKS_ICON_URL
+      : CRAFTINGTWEAKS_ICON_URL;
 export const getCategoriesFn = (packType: PackType) =>
   packType === 'resourcePack'
     ? getResourcePacksCategories
     : packType === 'datapack'
-    ? getDatapacksCategories
-    : getCraftingTweaksCategories;
+      ? getDatapacksCategories
+      : getCraftingTweaksCategories;
 export const getZipLinkFn = (packType: PackType) =>
   packType === 'resourcePack'
     ? getResourcePacksZipLink
     : packType === 'datapack'
-    ? getDatapacksZipLink
-    : getCraftingTweaksZipLink;
+      ? getDatapacksZipLink
+      : getCraftingTweaksZipLink;

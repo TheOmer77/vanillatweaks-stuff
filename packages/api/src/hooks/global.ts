@@ -15,8 +15,8 @@ export const errorHandler: ErrorHandler = ({
     error instanceof HttpError
       ? error.status
       : code === 'VALIDATION'
-      ? 400
-      : 500;
+        ? 400
+        : 500;
 
   console.error(method, path, set.status.toString());
   error.stack && console.error(error.stack);
