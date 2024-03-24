@@ -16,7 +16,9 @@ const version = z.optional(
     },
   })
 );
-const packs = z.string({ required_error: PACKS_QUERY_MISSING_MSG });
+const packs = z
+  .string({ required_error: PACKS_QUERY_MISSING_MSG })
+  .transform((value) => value.split(',').map((packId) => packId.trim()));
 
 export const getPacksSchema = z.object({ version });
 export const downloadPacksZipSchema = z.object({ packs, version });

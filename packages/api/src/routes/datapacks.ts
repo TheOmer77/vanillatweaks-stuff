@@ -27,9 +27,8 @@ datapacksRouter.get(
   '/zip',
   zValidator('query', downloadPacksZipSchema),
   async (ctx) => {
-    const { version, packs } = ctx.req.valid('query'),
-      packIds = packs.split(',');
-    const zipBuffer = await downloadZippedPacks('datapack', packIds, version);
+    const { version, packs } = ctx.req.valid('query');
+    const zipBuffer = await downloadZippedPacks('datapack', packs, version);
 
     return new Response(zipBuffer, {
       headers: {
