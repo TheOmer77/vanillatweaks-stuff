@@ -1,20 +1,20 @@
 import chalk from 'chalk';
 
 import {
+  equalLengthStrings,
+  getResourceName,
+  packListWithIds,
+  removeHtmlTags,
+  stringSubst,
   USAGE_COMMAND_MSG,
   USAGE_COMMANDS_PREFIX_MSG,
   USAGE_MAIN_MSG,
   USAGE_OPTIONS_PREFIX_MSG,
   USAGE_PREFIX_MSG,
   USAGE_SUBCOMMAND_MSG,
-  equalLengthStrings,
-  getResourceName,
-  packListWithIds,
-  PackType,
-  removeHtmlTags,
-  stringSubst,
   validatePackType,
   type Pack,
+  type PackType,
 } from 'core';
 
 import { args } from './args';

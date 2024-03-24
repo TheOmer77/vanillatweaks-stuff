@@ -1,7 +1,7 @@
 import axios, {
-  InternalAxiosRequestConfig,
   isAxiosError,
   type AxiosResponse,
+  type InternalAxiosRequestConfig,
 } from 'axios';
 import chalk from 'chalk';
 

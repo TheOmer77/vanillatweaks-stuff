@@ -1,4 +1,4 @@
-import JSZip, { JSZipObject } from 'jszip';
+import JSZip, { type JSZipObject } from 'jszip';
 
 export const zipFromBuffer = async (buffer: Buffer) =>
   await JSZip.loadAsync(buffer);
