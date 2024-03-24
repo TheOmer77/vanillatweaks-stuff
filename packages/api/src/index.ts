@@ -2,13 +2,12 @@ import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 
 import router from './routes';
-import { handleError } from './middleware';
+import { handleError, logResponseInfo } from './middleware';
 
 const app = new Hono();
 
 app.onError(handleError);
-// TODO
-// app.onAfterHandle(logResponseInfo);
+app.use(logResponseInfo);
 
 app.route('/', router);
 
