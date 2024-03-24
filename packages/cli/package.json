@@ -3,8 +3,8 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "build": "pnpm --silent lint && pnpm --silent build:js && pnpm --silent build:exec",
-    "build:js": "esbuild src/index.ts --bundle --platform=node --target=node18 --outdir=dist/",
-    "build:exec": "pkg -t node18-linux-x64,node18-windows-x64,node18-macos-x64 -o dist/vanillatweaks dist/index.js",
+    "build:js": "esbuild src/index.ts --platform=node --target=node20 --bundle --minify --outdir=dist/",
+    "build:exec": "pkg -t node20-linux-x64,node20-windows-x64,node20-macos-x64 -o dist/vanillatweaks dist/index.js",
     "lint": "tsc && eslint --max-warnings=0 src"
   },
   "dependencies": {
