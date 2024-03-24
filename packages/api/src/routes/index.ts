@@ -7,11 +7,6 @@ import craftingTweaksRouter from './craftingTweaks';
 
 const router = new Hono();
 
-// TODO: Middleware
-/* router.onBeforeHandle(({ query: { version } }) => {
-  if (version) checkValidVersion(version as MinecraftVersion);
-}); */
-
 router.get('/', (ctx) =>
   ctx.json({
     success: true,
