@@ -2,14 +2,18 @@ ARG PORT=80
 
 FROM node:20.11.1-alpine3.19 AS base
 WORKDIR /app
+RUN corepack enable pnpm
 
 FROM base AS builder
 RUN apk add --no-cache libc6-compat
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json .eslintrc.json .prettierrc ./
-RUN pnpm install --frozen-lockfile && \
-  pnpm run lint:core && \ 
-  pnpm run build:api && \
-  pnpm prune --prod
+COPY packages/core/package.json packages/core/package.json
+COPY packages/api/package.json packages/api/package.json
+RUN pnpm install --frozen-lockfile
+
+COPY packages/core packages/core
+COPY packages/api packages/api
+RUN pnpm run lint:core && pnpm run build:api
 
 FROM base AS runner
 ARG PORT
