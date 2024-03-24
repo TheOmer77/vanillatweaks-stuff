@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
 
 import {
   DATAPACKS_ZIP_DEFAULT_NAME,
@@ -7,34 +8,27 @@ import {
   getDatapacksCategories,
   packListFromCategories,
   packListWithIds,
-  type MinecraftVersion,
 } from 'core';
-// TODO: Replace with Zod schemas
-// import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
+import { downloadPacksZipSchema, getPacksSchema } from '../schemas/packs';
 
 const datapacksRouter = new Hono();
 
-datapacksRouter.get(
-  '/',
-  // TODO: Zod validation - getPacks
-  async (ctx) =>
-    ctx.json(
-      packListWithIds(
-        packListFromCategories(
-          await getDatapacksCategories(
-            ctx.req.query('version') as MinecraftVersion
-          )
-        )
+datapacksRouter.get('/', zValidator('query', getPacksSchema), async (ctx) =>
+  ctx.json(
+    packListWithIds(
+      packListFromCategories(
+        await getDatapacksCategories(ctx.req.valid('query').version)
       )
     )
+  )
 );
 
 datapacksRouter.get(
   '/zip',
-  // TODO: Zod validation - downloadPacksZip
+  zValidator('query', downloadPacksZipSchema),
   async (ctx) => {
-    const version = ctx.req.query('version') as MinecraftVersion,
-      packIds = ctx.req.query('packs')?.split(',') || [];
+    const { version, packs } = ctx.req.valid('query'),
+      packIds = packs.split(',');
     const zipBuffer = await downloadZippedPacks('datapack', packIds, version);
 
     return new Response(zipBuffer, {
@@ -47,9 +41,9 @@ datapacksRouter.get(
 
 datapacksRouter.get(
   '/packs/:packId',
-  // TODO: Zod validation - getPacks
+  zValidator('query', getPacksSchema),
   async (ctx) => {
-    const version = ctx.req.query('version') as MinecraftVersion,
+    const { version } = ctx.req.valid('query'),
       packId = ctx.req.param('packId');
     const zipBuffer = await downloadSinglePack('datapack', packId, version);
 

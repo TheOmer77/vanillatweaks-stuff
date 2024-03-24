@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
 
 import {
   CRAFTINGTWEAKS_ZIP_DEFAULT_NAME,
@@ -7,23 +8,19 @@ import {
   getCraftingTweaksCategories,
   packListFromCategories,
   packListWithIds,
-  type MinecraftVersion,
 } from 'core';
-// TODO: Replace with Zod schemas
-// import { downloadPacksZipHook, getPacksHook } from '../hooks/packs';
+import { downloadPacksZipSchema, getPacksSchema } from '../schemas/packs';
 
 const craftingTweaksRouter = new Hono();
 
 craftingTweaksRouter.get(
   '/',
-  // TODO: Zod validation - getPacks
+  zValidator('query', getPacksSchema),
   async (ctx) =>
     ctx.json(
       packListWithIds(
         packListFromCategories(
-          await getCraftingTweaksCategories(
-            ctx.req.query('version') as MinecraftVersion
-          )
+          await getCraftingTweaksCategories(ctx.req.valid('query').version)
         )
       )
     )
@@ -31,10 +28,10 @@ craftingTweaksRouter.get(
 
 craftingTweaksRouter.get(
   '/zip',
-  // TODO: Zod validation - downloadPacksZip
+  zValidator('query', downloadPacksZipSchema),
   async (ctx) => {
-    const version = ctx.req.query('version') as MinecraftVersion,
-      packIds = ctx.req.query('packs')?.split(',') || [];
+    const { version, packs } = ctx.req.valid('query'),
+      packIds = packs.split(',');
     const zipBuffer = await downloadZippedPacks(
       'craftingTweak',
       packIds,
@@ -51,9 +48,9 @@ craftingTweaksRouter.get(
 
 craftingTweaksRouter.get(
   '/packs/:packId',
-  // TODO: Zod validation - getPacks
+  zValidator('query', getPacksSchema),
   async (ctx) => {
-    const version = ctx.req.query('version') as MinecraftVersion,
+    const { version } = ctx.req.valid('query'),
       packId = ctx.req.param('packId');
     const zipBuffer = await downloadSinglePack(
       'craftingTweak',
