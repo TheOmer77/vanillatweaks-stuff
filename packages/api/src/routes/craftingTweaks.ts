@@ -10,12 +10,13 @@ import {
   packListWithIds,
 } from 'core';
 import { downloadPacksZipSchema, getPacksSchema } from '../schemas/packs';
+import { handleValidationError } from '../middleware';
 
 const craftingTweaksRouter = new Hono();
 
 craftingTweaksRouter.get(
   '/',
-  zValidator('query', getPacksSchema),
+  zValidator('query', getPacksSchema, handleValidationError),
   async (ctx) =>
     ctx.json(
       packListWithIds(
@@ -28,7 +29,7 @@ craftingTweaksRouter.get(
 
 craftingTweaksRouter.get(
   '/zip',
-  zValidator('query', downloadPacksZipSchema),
+  zValidator('query', downloadPacksZipSchema, handleValidationError),
   async (ctx) => {
     const { version, packs } = ctx.req.valid('query');
     const zipBuffer = await downloadZippedPacks(
@@ -47,7 +48,7 @@ craftingTweaksRouter.get(
 
 craftingTweaksRouter.get(
   '/packs/:packId',
-  zValidator('query', getPacksSchema),
+  zValidator('query', getPacksSchema, handleValidationError),
   async (ctx) => {
     const { version } = ctx.req.valid('query'),
       packId = ctx.req.param('packId');

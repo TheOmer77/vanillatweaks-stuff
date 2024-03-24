@@ -10,22 +10,26 @@ import {
   packListWithIds,
 } from 'core';
 import { downloadPacksZipSchema, getPacksSchema } from '../schemas/packs';
+import { handleValidationError } from '../middleware';
 
 const resourcePacksRouter = new Hono();
 
-resourcePacksRouter.get('/', zValidator('query', getPacksSchema), async (ctx) =>
-  ctx.json(
-    packListWithIds(
-      packListFromCategories(
-        await getResourcePacksCategories(ctx.req.valid('query').version)
+resourcePacksRouter.get(
+  '/',
+  zValidator('query', getPacksSchema, handleValidationError),
+  async (ctx) =>
+    ctx.json(
+      packListWithIds(
+        packListFromCategories(
+          await getResourcePacksCategories(ctx.req.valid('query').version)
+        )
       )
     )
-  )
 );
 
 resourcePacksRouter.get(
   '/zip',
-  zValidator('query', downloadPacksZipSchema),
+  zValidator('query', downloadPacksZipSchema, handleValidationError),
   async (ctx) => {
     const { version, packs } = ctx.req.valid('query');
     const zipBuffer = await downloadZippedPacks('resourcePack', packs, version);
@@ -40,7 +44,7 @@ resourcePacksRouter.get(
 
 resourcePacksRouter.get(
   '/packs/:packId',
-  zValidator('query', getPacksSchema),
+  zValidator('query', getPacksSchema, handleValidationError),
   async (ctx) => {
     const { version } = ctx.req.valid('query'),
       packId = ctx.req.param('packId');
