@@ -91,43 +91,53 @@ Options:
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/)
+- [Node.js](https://nodejs.org/) 20
+- [PNPM](https://pnpm.io/) as the package manager
+- [Docker](https://www.docker.com/), if you want to run the API as a docker container
 
 To install dependencies:
 
 ```bash
-bun install
+pnpm install
 ```
 
 ### Scripts
 
-#### `bun start:api`
+#### `pnpm start:api`
 
 Run the **built** API server from `packages/api/dist/` on [localhost:3000](http://localhost:3000).
 
-#### `bun start:cli <COMMAND> ...`
+#### `pnpm start:cli <COMMAND> ...`
 
 Run the CLI. Command and args are passed to the script.
 
-#### `bun dev:api`
+#### `pnpm dev:api`
 
 Run the API server in development mode. This means saving any code changes will restart the server.
 
-#### `bun build:api`
+#### `pnpm build:api`
 
 Build the API server into a single JS file in `packages/api/dist/`.
 
-#### `bun build:cli`
+#### `pnpm build:cli`
 
 Build the CLI app into a single JS file, then to executable files for several platforms, in `packages/cli/dist/`.
 
-#### `bun lint`
+#### `pnpm lint`
 
 Run TypeScript type checking & ESLint linting. Scripts for individual packages are available: `lint:api`, `lint:cli`, `lint:core`.
 
-#### `bun format`
+#### `pnpm format`
 
 Format all files using Prettier.
+
+### Build the API as a Docker container
+
+Run the following at the project root:
+
+```bash
+docker build -t vanillatweaks-api -f packages/api/Dockerfile .
+```
 
 ## Credits
 
