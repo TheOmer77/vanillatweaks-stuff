@@ -1,6 +1,6 @@
 {
   "name": "vanillatweaks-stuff",
-  "packageManager": "pnpm@8.15.5+sha256.4b4efa12490e5055d59b9b9fc9438b7d581a6b7af3b5675eb5c5f447cee1a589",
+  "packageManager": "pnpm@9.3.0+sha512.ee7b93e0c2bd11409c6424f92b866f31d3ea1bef5fbe47d3c7500cdc3c9668833d2e55681ad66df5b640c61fa9dc25d546efa54d76d7f8bf54b13614ac293631",
   "scripts": {
     "start:api": "pnpm --silent -F api start",
     "start:cli": "pnpm --silent -F cli start",
