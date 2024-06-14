@@ -9,6 +9,7 @@ export const MC_VERSIONS = [
   '1.18',
   '1.19',
   '1.20',
+  '1.21',
 ] as const;
 export const DEFAULT_MC_VERSION =
   '1.20' as const satisfies (typeof MC_VERSIONS)[number];
